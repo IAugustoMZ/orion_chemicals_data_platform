@@ -1,0 +1,147 @@
+# The documentation site (ADR-0008). Tutorial: docs/tutorials/docs-site.md
+#
+#   poetry install --with docs && poetry run mkdocs serve     # http://127.0.0.1:8000, live reload
+#   docker compose up --build docs                            # same site, in a container
+#
+# `docs_dir: .` (with the same-dir plugin) publishes the repository as it is: the README is the
+# home page and every relative link works identically on the site and in the files.
+
+site_name: Orion Chemicals Data Platform
+site_description: Spec-driven, AI-native data platform for Orion Chemicals, governed by people.
+docs_dir: .
+site_dir: .cache/site
+use_directory_urls: true
+
+exclude_docs: |
+  .venv/
+  .git/
+  .cache/
+  .pytest_cache/
+  .mypy_cache/
+  .ruff_cache/
+  .import_linter_cache/
+  __pycache__/
+  site/
+  .claude/
+  .cursor/
+  .github/
+  .gemini/
+  CLAUDE.md
+  GEMINI.md
+  poetry.toml
+  .coverage
+
+plugins:
+  - same-dir
+  - search
+
+theme:
+  name: material
+  language: en
+  icon:
+    logo: material/flask-outline
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: indigo
+      accent: teal
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: indigo
+      accent: teal
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - search.suggest
+    - search.highlight
+    - content.code.copy
+    - toc.follow
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.tasklist:
+      custom_checkbox: true
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+
+validation:
+  omitted_files: info
+  absolute_links: warn
+  unrecognized_links: warn
+  anchors: warn
+
+nav:
+  - Home: README.md
+  - Learn:
+      - Learning path: docs/learn/README.md
+      - "Tutorial: your first feature": docs/tutorials/first-feature.md
+      - "Tutorial: working with coding agents": docs/tutorials/agents.md
+      - "Tutorial: the documentation site": docs/tutorials/docs-site.md
+      - Primers:
+          - Spec-driven development: docs/learn/primers/spec-driven-development.md
+          - Clean architecture and SOLID: docs/learn/primers/clean-architecture-and-solid.md
+          - Design patterns: docs/learn/primers/design-patterns.md
+          - Architecture decision records: docs/learn/primers/architecture-decision-records.md
+          - Acceptance criteria (EARS): docs/learn/primers/acceptance-criteria.md
+      - Glossary: docs/learn/glossary.md
+  - Harness:
+      - harness/README.md
+      - How it works: harness/how-it-works.md
+      - Constitution: harness/constitution.md
+      - Lifecycle: harness/lifecycle.md
+      - Gates: harness/gates.md
+      - Engineering principles: harness/principles.md
+      - Security: harness/security.md
+      - Quality: harness/quality.md
+      - Documentation standard: harness/documentation-standard.md
+      - Architecture upkeep: harness/architecture-upkeep.md
+      - Context plane: harness/context-plane.md
+      - AI control plane: harness/ai-control-plane.md
+      - Agent roles: harness/roles/README.md
+      - Templates: harness/templates/README.md
+      - AGENTS.md: AGENTS.md
+  - Specs:
+      - specs/README.md
+      - "000 · The SDD harness":
+          - PRD: specs/000-sdd-harness/prd.md
+          - Backlog: specs/000-sdd-harness/backlog.md
+          - Approach: specs/000-sdd-harness/ux-approach.md
+          - Specification: specs/000-sdd-harness/spec.md
+          - Plan: specs/000-sdd-harness/plan.md
+          - Tasks: specs/000-sdd-harness/tasks.md
+          - Validation: specs/000-sdd-harness/validation.md
+          - Teaching guide: specs/000-sdd-harness/teaching-guide.md
+          - Release: specs/000-sdd-harness/release.md
+  - Architecture:
+      - docs/architecture/README.md
+      - Deployment: docs/architecture/deployment.md
+      - Secrets register: docs/architecture/secrets.md
+      - Decisions (ADRs): docs/architecture/decisions/README.md
+  - Requirements:
+      - docs/requirements/README.md
+      - Traceability: docs/requirements/traceability.md
+  - Research: docs/research/sdd-landscape.md
+  - Contributing: CONTRIBUTING.md

@@ -1,0 +1,121 @@
+# Orion Chemicals data platform: one Poetry project for the whole repository (ADR-0005).
+# Dependency groups keep each tool's footprint small: `dev` for the quality suite (gate G5),
+# `docs` for the MkDocs site. Platform components add their own group when a spec introduces them.
+
+[project]
+name = "orion-chemicals-data-platform"
+version = "0.1.0"
+description = "Spec-driven, AI-native data platform for Orion Chemicals, and the SDD harness that builds it."
+readme = "README.md"
+requires-python = ">=3.11,<3.14"
+dependencies = [
+    "pyyaml (>=6.0.2,<7.0.0)",
+    "typer (>=0.12.5,<1.0.0)",
+]
+
+[project.scripts]
+sdd = "sdd.interfaces.cli.app:main"
+
+[tool.poetry]
+packages = [{ include = "sdd", from = "tools" }]
+
+[tool.poetry.group.dev.dependencies]
+pytest = ">=8.3,<10"
+pytest-cov = ">=6.0,<8"
+mypy = "^1.13"
+types-pyyaml = "^6.0"
+ruff = ">=0.8,<1.0"
+import-linter = "^2.1"
+bandit = "^1.8"
+pip-audit = "^2.7"
+detect-secrets = "^1.5"
+pre-commit = "^4.0"
+
+[tool.poetry.group.docs]
+optional = true
+
+[tool.poetry.group.docs.dependencies]
+mkdocs = "^1.6.1"
+mkdocs-material = "^9.7"
+mkdocs-same-dir = "^0.1.3"
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+# --------------------------------------------------------------------------------------------
+# Quality suite configuration (harness/quality.md). Every tool reads its settings from here so
+# that a check gives the same answer in the terminal, in pre-commit and in `sdd verify`.
+# --------------------------------------------------------------------------------------------
+
+[tool.ruff]
+line-length = 99
+target-version = "py311"
+src = ["tools", "tests"]
+
+[tool.ruff.lint]
+# E/W/F pycodestyle+pyflakes, I isort, B bugbear, UP pyupgrade, S bandit-style security,
+# N naming, D docstrings (nothing is "obvious", harness/principles.md), ANN annotations,
+# SIM simplifications, C90 complexity, RET returns, PT pytest style, ERA commented-out code.
+select = ["E", "W", "F", "I", "B", "UP", "S", "N", "D", "ANN", "SIM", "C90", "RET", "PT", "ERA"]
+ignore = ["D203", "D213"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.mccabe]
+max-complexity = 8
+
+[tool.ruff.lint.per-file-ignores]
+# Tests: asserts are the point (S101); fixtures call `git` with fixed arguments (S603, S607);
+# compound asserts read better than split ones in behaviour tests (PT018).
+"tests/**" = ["S101", "S603", "S607", "PT018", "D", "ANN"]
+# YAML arrives untyped at the boundary; the mappers turn `Any` into typed domain objects.
+"tools/sdd/infrastructure/**" = ["ANN401"]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+mypy_path = "tools"
+packages = ["sdd", "agent_hooks"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["tools"]
+addopts = "--cov=sdd --cov=agent_hooks --cov-report=term-missing --cov-fail-under=85"
+
+[tool.coverage.run]
+branch = true
+
+[tool.bandit]
+exclude_dirs = ["tests", ".venv"]
+
+# Clean-architecture contracts (ADR-0007). `lint-imports` fails the build when a layer reaches
+# outwards, so the rule in harness/principles.md is enforced by a machine, not by memory.
+[tool.importlinter]
+root_packages = ["sdd"]
+include_external_packages = true
+
+[[tool.importlinter.contracts]]
+name = "Layers point inwards: interfaces > bootstrap > infrastructure > application > domain"
+type = "layers"
+layers = [
+    "sdd.interfaces",
+    "sdd.bootstrap",
+    "sdd.infrastructure",
+    "sdd.application",
+    "sdd.domain",
+]
+
+[[tool.importlinter.contracts]]
+name = "Interfaces never touch infrastructure directly (only through the composition root)"
+type = "forbidden"
+source_modules = ["sdd.interfaces"]
+forbidden_modules = ["sdd.infrastructure"]
+allow_indirect_imports = true
+
+[[tool.importlinter.contracts]]
+name = "Domain and application stay free of frameworks and I/O libraries"
+type = "forbidden"
+source_modules = ["sdd.domain", "sdd.application"]
+forbidden_modules = ["yaml", "typer", "subprocess"]

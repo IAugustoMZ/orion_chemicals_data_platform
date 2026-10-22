@@ -1,0 +1,26 @@
+---
+name: sdd-release
+description: Phase 7 (Release & Learn) of spec-driven development. Use after a dossier was merged to release it with Docker Compose, observe telemetry, collect feedback and write release.md with results against the PRD goals, until gate G7 is ready.
+---
+
+# Release and learn (phase 7 · gate G7)
+
+Role: [release steward](../../../harness/roles/release-steward.md). Phase reference:
+[lifecycle, phase 7](../../../harness/lifecycle.md#phase-7-release-and-learn).
+
+## Steps
+
+1. `poetry run sdd status <id>`: G6 passed and the branch merged into `main`.
+2. **Release:** `docker compose up -d --build <services>` (or the spec's commands);
+   `docker compose ps` healthy; record the merge commit and images in `release.md`.
+3. **Observe:** collect the metrics and logs that the PRD's goals need; compare with baselines.
+4. **Feedback:** ask us how it was to use; record what worked, what confused, what is missing.
+5. **Results:** for each PRD goal, met / partly met / not met, with evidence.
+6. **Learnings:** about the problem, the platform and the harness. A process lesson becomes a
+   proposal for a new enabler dossier, not an edit of `harness/`.
+7. `poetry run sdd check`, then hand over with the skill `sdd-review-gate`.
+   **Never run `sdd approve`.**
+
+## Done when
+
+`release.md` is complete and every PRD goal has a verdict with evidence.

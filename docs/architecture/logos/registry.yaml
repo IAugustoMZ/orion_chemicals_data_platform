@@ -1,0 +1,86 @@
+# Official logos of the tools that appear in our diagrams (harness/documentation-standard.md).
+#
+# Every Mermaid flowchart node that names one of these tools embeds its logo in the label:
+#
+#   API["<img src='https://cdn.simpleicons.org/fastapi/009688' width='32' height='32'/><br/>FastAPI"]
+#
+# `sdd check` (rule `mermaid-logo`) flags a node that names a tool without an <img>: an error in
+# docs/architecture/ and the root README, a warning elsewhere. Sources, in order of preference:
+# Simple Icons (https://simpleicons.org, brand colour in the URL) and Devicon
+# (https://devicon.dev) for brands Simple Icons does not carry. A new tool in a diagram means a
+# new entry here, in the same change.
+#
+#   name     the tool as written in diagrams (word match, case-insensitive)
+#   aliases  other spellings that mean the same tool
+#   url      the official logo
+
+logos:
+  # Languages, packaging and runtime
+  - name: Python
+    url: https://cdn.simpleicons.org/python/3776AB
+  - name: Poetry
+    url: https://cdn.simpleicons.org/poetry/60A5FA
+  - name: Docker
+    aliases: [Docker Compose, Dockerfile]
+    url: https://cdn.simpleicons.org/docker/2496ED
+  - name: Git
+    url: https://cdn.simpleicons.org/git/F05032
+
+  # Quality suite (gate G5)
+  - name: pre-commit
+    url: https://cdn.simpleicons.org/precommit/FAB040
+  - name: Ruff
+    url: https://cdn.simpleicons.org/ruff/D7FF64
+  - name: pytest
+    url: https://cdn.simpleicons.org/pytest/0A9EDC
+
+  # Documentation
+  - name: Mermaid
+    url: https://cdn.simpleicons.org/mermaid/FF3670
+  - name: MkDocs
+    aliases: [Material for MkDocs]
+    url: https://cdn.simpleicons.org/materialformkdocs/526CFE
+
+  # Coding agents and editors (the harness is tool-agnostic, ADR-0002)
+  - name: Claude Code
+    aliases: [Claude]
+    url: https://cdn.simpleicons.org/claude/D97757
+  - name: Cursor
+    url: https://cdn.simpleicons.org/cursor/000000
+  - name: Codex
+    aliases: [OpenAI Codex]
+    # Removed from the live Simple Icons CDN; the last pinned release that carries it:
+    url: https://cdn.jsdelivr.net/npm/simple-icons@13.21.0/icons/openai.svg
+  - name: GitHub Copilot
+    aliases: [Copilot]
+    url: https://cdn.simpleicons.org/githubcopilot/000000
+  - name: Gemini CLI
+    aliases: [Gemini]
+    url: https://cdn.simpleicons.org/googlegemini/8E75B2
+  - name: VS Code
+    aliases: [Visual Studio Code]
+    url: https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/vscode/vscode-original.svg
+
+  # Candidate platform technologies (each one is adopted only through an ADR)
+  - name: PostgreSQL
+    aliases: [Postgres]
+    url: https://cdn.simpleicons.org/postgresql/4169E1
+  - name: FastAPI
+    url: https://cdn.simpleicons.org/fastapi/009688
+  - name: OpenTelemetry
+    url: https://cdn.simpleicons.org/opentelemetry/425CC7
+  - name: Grafana
+    url: https://cdn.simpleicons.org/grafana/F46800
+  - name: Prometheus
+    url: https://cdn.simpleicons.org/prometheus/E6522C
+  - name: MinIO
+    url: https://cdn.simpleicons.org/minio/C72E49
+  - name: Apache Parquet
+    aliases: [Parquet]
+    url: https://cdn.simpleicons.org/apacheparquet/50ABF1
+  - name: DuckDB
+    url: https://cdn.simpleicons.org/duckdb/FFF000
+  - name: Prefect
+    url: https://cdn.simpleicons.org/prefect/024DFD
+  - name: Redis
+    url: https://cdn.simpleicons.org/redis/FF4438

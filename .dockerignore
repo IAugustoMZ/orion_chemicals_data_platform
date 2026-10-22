@@ -1,0 +1,4 @@
+# The docs image needs only the dependency files; the repository is mounted at run time.
+*
+!pyproject.toml
+!poetry.lock

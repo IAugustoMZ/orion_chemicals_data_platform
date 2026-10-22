@@ -1,0 +1,52 @@
+# The deterministic quality suite that closes gate G5 (harness/quality.md).
+#
+# `poetry run sdd verify <dossier>` runs every check in this order, without a shell, from the
+# repository root, inside the Poetry environment. A check passes when its command exits with 0.
+# Adding a check is a data change here (open/closed); it then applies to every dossier.
+#
+#   id          short id shown in reports and stored in dossier.yaml
+#   title       what the check proves
+#   command     program + arguments (no shell, no pipes)
+#   pass_files  append the repository's files (tracked + new, not ignored) to the command
+
+checks:
+  - id: format
+    title: Code is formatted (ruff format)
+    command: [ruff, format, --check, .]
+
+  - id: lint
+    title: Lint, docstrings, security smells, complexity (ruff)
+    command: [ruff, check, .]
+
+  - id: types
+    title: Static types, strict mode (mypy)
+    command: [mypy]
+
+  - id: architecture
+    title: Clean-architecture layer contracts (import-linter)
+    command: [lint-imports]
+
+  - id: tests
+    title: Unit and integration tests with coverage threshold (pytest)
+    command: [pytest, -q]
+
+  - id: security
+    title: Static security analysis of the code (bandit)
+    command: [bandit, -q, -c, pyproject.toml, -r, tools]
+
+  - id: secrets
+    title: No credentials in the repository (detect-secrets)
+    command: [detect-secrets-hook, --baseline, .secrets.baseline]
+    pass_files: true
+
+  - id: dependencies
+    title: No known vulnerabilities in dependencies (pip-audit, needs network)
+    command: [pip-audit, --skip-editable, --progress-spinner, "off"]
+
+  - id: harness
+    title: Dossiers, documentation and generated files are consistent (sdd check)
+    command: [sdd, check]
+
+  - id: docs-site
+    title: The documentation site builds without warnings (mkdocs --strict)
+    command: [mkdocs, build, --strict, --quiet, --site-dir, .cache/site]

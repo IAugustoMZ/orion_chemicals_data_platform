@@ -1,0 +1,54 @@
+---
+name: sdd-review-gate
+description: Use at the end of every human phase (G1, G2, G3, G4, G6, G7), when an artifact is complete and a gate is next. Runs the review with us in the chat - the agent explains, asks specific questions, applies changes - and stops until we approve at our terminals and `sdd status` shows the gate passed. Never drafts the next artifact before that.
+---
+
+# Review a gate with us (the chat is where we review, the terminal is where we approve)
+
+Why this exists: if the agent drafts everything and we only click approve, approvals become
+rubber stamps (automation bias) and nothing proves we engaged with the content. So the agent
+works **one gate at a time**, and an approval is preceded by a conversation that cannot be
+answered without reading ([ADR-0015](../../../docs/architecture/decisions/0015-one-gate-at-a-time-reviewed-in-chat.md)).
+
+## Steps
+
+1. **Confirm the state.** `poetry run sdd status <id>`: the previous gate is passed, and this
+   gate's artifacts are complete (`poetry run sdd check` has no finding about them). Do not
+   start a review of something unfinished.
+2. **Brief us in pieces, not a file dump.** In the chat, cover, in this order:
+   1. what this gate commits us to (one paragraph);
+   2. the main decisions, each with the alternative that lost and why;
+   3. **what you assumed or invented** and are least sure about (be candid: this is the most
+      useful part);
+   4. the risks and what it would cost to change course later;
+   5. when this is a revision, only what changed since we last looked.
+   Link the files and line ranges so we can read the source, never paraphrase it as if it were
+   the source.
+3. **Ask 3 to 5 specific questions about the content.** They must not be answerable with
+   "yes". Mix:
+   - a *choice* ("The PRD measures success by X or Y. Which one do you believe, and why?");
+   - a *cut* ("Which scope item would you remove first?");
+   - a *spot check* (quote one line, ask whether it is right);
+   - a *consequence* ("If this assumption is wrong, what breaks first?").
+4. **Wait.** Do not continue until we answered every question. If we ask for changes, make
+   them, then re-brief only the changes and ask again. If an answer reveals a misunderstanding,
+   explain and re-ask differently.
+5. **Hand over the approval.** When all questions are answered and nothing is pending, say:
+   "G<n> is ready for your approvals", propose a one-line `--note` that summarises *our
+   answers* (the trace of what we engaged with), and show the two commands:
+
+   ```bash
+   poetry run sdd approve <id> G<n> --as mentor --note "..."
+   poetry run sdd approve <id> G<n> --as mentee --note "..."
+   ```
+
+   The mentee approves in their own terminal after their own review. Remind us of that when
+   only one of us took part in the chat.
+6. **Stop.** Do not draft the next gate's artifact, do not "get ahead". **Never run
+   `sdd approve`.**
+7. **Verify, do not trust.** When we say we approved, run `poetry run sdd status <id>`. Only if
+   the gate shows *passed* start the skill of the next phase.
+
+## Done when
+
+`sdd status` shows the gate passed, and the next phase has not started before that.

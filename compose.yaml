@@ -1,0 +1,49 @@
+# Local runtime of the platform (ADR-0006: Docker Compose instead of Kubernetes).
+#
+# Today it runs one service, the documentation site. Platform services are added by the specs
+# that introduce them, each with its ADR, and must follow the hardening baseline below
+# (harness/security.md, "Containers").
+#
+#   docker compose up --build docs     # http://127.0.0.1:8000
+#   docker compose down
+
+name: orion
+
+services:
+  docs:
+    build:
+      context: .
+      dockerfile: docker/docs.Dockerfile
+    image: orion/docs:local
+    ports:
+      - "127.0.0.1:8000:8000" # loopback only: nothing is exposed to the network
+    # Only the folders the site publishes, each read-only: the container can never change our
+    # files, and the host's .venv/.git (thousands of files) stay out of the file watcher.
+    volumes:
+      - ./mkdocs.yml:/workspace/mkdocs.yml:ro
+      - ./README.md:/workspace/README.md:ro
+      - ./AGENTS.md:/workspace/AGENTS.md:ro
+      - ./CONTRIBUTING.md:/workspace/CONTRIBUTING.md:ro
+      - ./docs:/workspace/docs:ro
+      - ./harness:/workspace/harness:ro
+      - ./specs:/workspace/specs:ro
+      - ./.agents:/workspace/.agents:ro
+      - ./tools:/workspace/tools:ro
+      - ./tests:/workspace/tests:ro
+      - ./docker:/workspace/docker:ro
+      - ./compose.yaml:/workspace/compose.yaml:ro
+      - ./pyproject.toml:/workspace/pyproject.toml:ro
+    read_only: true
+    tmpfs:
+      - /tmp
+    user: "10001:10001"
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/')"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+    restart: unless-stopped

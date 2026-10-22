@@ -1,0 +1,21 @@
+# Who "we" are (ADR-0003).
+#
+# Every human activity of the target operating model (stakeholder, product owner, designer,
+# tech lead, QA engineer) is played by the two of us: the mentor and the mentee. Each human gate
+# (G1, G2, G3, G4, G6, G7) is closed by our approvals, recorded with `sdd approve`.
+#
+#   approval_policy: all   both of us must approve the current artifacts (default, joint decisions)
+#   approval_policy: any   one approval is enough (only as a deliberate, temporary choice)
+#
+# `id` is what you type in `poetry run sdd approve <dossier> <gate> --as <id>`.
+# This file is a guardrail: coding agents are not allowed to edit it.
+
+approval_policy: all
+
+members:
+  - id: mentor
+    name: "Icaro Zelioli"
+    role: mentor
+  - id: mentee
+    name: "André Freitas"
+    role: mentee
