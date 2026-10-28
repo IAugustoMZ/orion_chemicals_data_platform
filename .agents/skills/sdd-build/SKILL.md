@@ -1,0 +1,38 @@
+---
+name: sdd-build
+description: Phase 5 (Build) of spec-driven development. Use to implement an approved spec task by task with tests, docstrings and documentation, looping on `sdd verify` (gate G5) within the loop limit of 3 failures.
+---
+
+# Build: implement and verify (phase 5 · gate G5)
+
+Roles: [implementer](../../../harness/roles/implementer.md),
+[verifier](../../../harness/roles/verifier.md). Phase reference:
+[lifecycle, phase 5](../../../harness/lifecycle.md#phase-5-build).
+
+## Preconditions
+
+- `poetry run sdd status <id>`: **G4 passed**. Branch: `spec/<id>-<slug>`. Otherwise stop.
+
+## The loop (one task at a time, in `tasks.md` order)
+
+1. Test first for the task's behaviour; then the code, in the right layer
+   ([principles](../../../harness/principles.md)); docstrings (why + contract) and type hints
+   everywhere.
+2. Update the documents the task touches
+   ([architecture-upkeep](../../../harness/architecture-upkeep.md)); note decisions and
+   snippets for the teaching guide as you go.
+3. `poetry run sdd verify <id>`.
+   - All checks pass: tick the task in `tasks.md`, commit (pre-commit runs), next task.
+   - A check fails: read the summary, fix, verify again.
+   - **Third consecutive failure on the same task:** stop, write what you tried in the
+     "Build log" of `validation.md`, and ask us.
+4. If the spec turns out wrong or incomplete: stop and propose the spec change. Do not change
+   the approved files silently (G4 would become stale).
+
+## After the last task
+
+- `poetry run sdd verify <id>` passes on the final code (G5 passed, not stale).
+- `poetry run sdd sync` and `poetry run sdd check` are clean.
+- Fill "Verification (G5)" and "Build log" in `validation.md`; hand over to `sdd-validate`.
+
+Never `--no-verify`, never edit guardrails or approvals, never touch secrets.

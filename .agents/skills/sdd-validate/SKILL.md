@@ -1,0 +1,32 @@
+---
+name: sdd-validate
+description: Phase 6 (Validate) of spec-driven development. Use to run the independent code, architecture and security review, the functional validation, and to complete validation.md and teaching-guide.md until gate G6 (approved for merge) is ready.
+---
+
+# Validate: review and prepare the merge (phase 6 · gate G6)
+
+Roles: [reviewer](../../../harness/roles/reviewer.md) (in a session that did not build the
+change), [QA explorer](../../../harness/roles/qa-explorer.md),
+[teacher](../../../harness/roles/teacher.md). Phase reference:
+[lifecycle, phase 6](../../../harness/lifecycle.md#phase-6-validate).
+
+## Steps
+
+1. `poetry run sdd status <id>`: **G5 passed and not stale**.
+2. **Review** (skill `commit-review` for the upkeep part): read the spec, then
+   `git diff main...HEAD`; record findings under Code, Architecture and Security review in
+   `validation.md` (file, line, issue, why, suggested fix, severity) and what was found fine.
+3. **Functional validation:** for every SPEC behaviour and RT verification, run the check and
+   record how and the result; add exploratory findings.
+4. Blocking findings go back to the build (`sdd-build`); verify again after the fixes.
+5. **Teaching guide:** complete all fourteen sections (skill `write-teaching-guide`).
+6. Tick the documentation upkeep list in `validation.md`; `poetry run sdd sync`,
+   `poetry run sdd check`.
+7. Hand over with the skill `sdd-review-gate`, including a summary of the review and the diff
+   stats. **Never run `sdd approve`**; once `sdd status` shows G6 passed we merge:
+   `git switch main && git merge --no-ff <branch>`.
+
+## Done when
+
+`validation.md` and `teaching-guide.md` have no `TODO(sdd)`, G5 is passed, and nothing blocking
+is open.

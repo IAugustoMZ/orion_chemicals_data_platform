@@ -1,0 +1,35 @@
+# Python and Poetry
+.venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# Tool caches
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.import_linter_cache/
+.coverage
+coverage.xml
+htmlcov/
+
+# Documentation site build
+site/
+
+# Secrets never leave the machine (RT36, harness/security.md)
+.env
+.env.*
+!.env.example
+deploy/secrets/
+*.pem
+*.key
+
+# Agent and editor local state (shared configuration is committed)
+.claude/settings.local.json
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

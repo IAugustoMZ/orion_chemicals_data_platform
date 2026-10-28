@@ -1,0 +1,29 @@
+---
+name: write-teaching-guide
+description: Use during phases 5-6 to write the dossier's teaching-guide.md - a detailed, didactic explanation for the mentee of every decision, from architecture to classes, abstractions and patterns, heavy on Mermaid diagrams.
+---
+
+# Write the teaching guide
+
+Role: [teacher](../../../harness/roles/teacher.md). Standard:
+[documentation standard, teaching guide](../../../harness/documentation-standard.md#the-teaching-guide).
+
+## Steps
+
+1. Read the whole dossier, its ADRs and `git diff main...HEAD`.
+2. Fill the fourteen sections of `specs/<id>-<slug>/teaching-guide.md`, replacing every
+   `TODO(sdd)` and every placeholder diagram:
+   1. problem in plain words (define every term); 2. requirements served and where;
+   3. architecture before/after with logos, each change narrated; 4. each decision with a table of
+   alternatives and a link to its ADR; 5. `classDiagram`, each class's responsibility, patterns
+   and why, SOLID mapped to code, *why each abstraction exists*; 6. sequences and states, narrated;
+   7. data and contracts, invariants and where enforced; 8. code tour in reading order with
+   snippets; 9. security; 10. testing strategy; 11. "run it yourself" exercise with exact
+   commands; 12. pitfalls; 13. five to ten questions for the mentee; 14. glossary.
+3. Add new terms to `docs/learn/glossary.md` and link the guide from
+   `docs/learn/README.md` (learning path) when it is a new chapter.
+4. `poetry run sdd check`.
+
+## Done when
+
+The mentee could rebuild the feature and defend every decision from the guide alone.

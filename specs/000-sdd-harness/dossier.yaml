@@ -1,0 +1,26 @@
+# Dossier metadata (harness/how-it-works.md, "The dossier").
+# Edit freely: title, requirements (RT ids from docs/requirements/rt-catalog.yaml), rationale.
+# Never edit by hand: `approvals` (written by `sdd approve`, humans only) and `verification`
+# (written by `sdd verify`). Both are bound to content digests; a hand edit is detected.
+id: '000'
+slug: sdd-harness
+title: The SDD harness
+kind: enabler
+created: 2026-10-21
+requirements:
+- RT36
+- RT38
+- RT42
+rationale: 'Every later feature is built, approved and taught through this harness: the lifecycle, the
+  gates G0-G7 approved by both of us, the sdd tool that enforces them locally, the agent adapters and
+  the documentation standard. It supports RT36 (no credentials: secret scanning and the agent guard),
+  RT38 (audit: approvals record actor, time, digest and note) and RT42 (automated validation before publication:
+  gate G5 and pre-commit) without delivering them for platform data.'
+approvals:
+  G1:
+  - member: mentor
+    at: '2026-10-22T12:40:27+00:00'
+    digest: sha256:dd4e9b2c30ed1eee92a1f81a4f8e4986e7c2833c75d2c39c11037ad7f1b5e98a
+    git_identity: (git identity not configured)
+    note: ''
+verification: null

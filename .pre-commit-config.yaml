@@ -1,0 +1,81 @@
+# Local gates that run on every `git commit` (ADR-0004: no CI, everything runs here).
+#
+# Install once per clone:   poetry run pre-commit install
+# Run on everything:        poetry run pre-commit run --all-files
+#
+# The hooks use the tools pinned in poetry.lock (`language: system` + `poetry run`), so a hook
+# gives the same answer as `sdd verify`. This file is a guardrail: agents may not edit it, and
+# skipping it (`git commit --no-verify`) is blocked by the agent guard.
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v5.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+        exclude: ^mkdocs\.yml$ # uses !!python/name tags understood only by MkDocs
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+        args: [--maxkb=1024]
+      - id: mixed-line-ending
+        args: [--fix=lf]
+
+  - repo: local
+    hooks:
+      # --- The commit guard: governed files change only on an approved spec branch (G4) ---
+      - id: sdd-guard-commit
+        name: sdd guard-commit (governed changes need G4)
+        entry: poetry run sdd guard-commit
+        language: system
+        pass_filenames: true
+
+      # --- Code quality (a fast subset of gate G5) ---
+      - id: ruff-format
+        name: ruff format
+        entry: poetry run ruff format
+        language: system
+        types: [python]
+      - id: ruff-lint
+        name: ruff check
+        entry: poetry run ruff check --fix
+        language: system
+        types: [python]
+      - id: mypy
+        name: mypy (strict)
+        entry: poetry run mypy
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: import-contracts
+        name: clean-architecture contracts (import-linter)
+        entry: poetry run lint-imports
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: pytest
+        name: pytest
+        entry: poetry run pytest -q
+        language: system
+        types: [python]
+        pass_filenames: false
+      - id: detect-secrets
+        name: detect-secrets
+        entry: poetry run detect-secrets-hook --baseline .secrets.baseline
+        language: system
+
+      # --- Harness consistency: regenerate derived documents, then check everything ---
+      - id: sdd-sync
+        name: sdd sync (README status, traceability, adapters)
+        entry: poetry run sdd sync
+        language: system
+        pass_filenames: false
+        always_run: true
+      - id: sdd-check
+        name: sdd check (dossiers, docs, logos, links, ADRs)
+        entry: poetry run sdd check
+        language: system
+        pass_filenames: false
+        always_run: true

@@ -1,0 +1,8 @@
+# One line-ending convention for every checkout (Windows, macOS, Linux, containers): LF.
+# The harness digests (approvals, G5) normalise line endings anyway; this keeps diffs clean.
+* text=auto eol=lf
+
+*.pdf binary
+*.png binary
+*.jpg binary
+*.svg text eol=lf

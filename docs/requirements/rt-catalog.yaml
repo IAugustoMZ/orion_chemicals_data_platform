@@ -1,0 +1,732 @@
+# Machine-readable catalogue of the technical requirements RT01-RT42 (ADR-0011).
+#
+# Source of truth: Requisitos_Tecnicos_Orion_Chemicals.pdf (same folder). This file is a faithful
+# transcription so that tools can check references (`sdd check` rejects an unknown RT id) and build
+# the traceability matrix (docs/requirements/traceability.md). If the PDF and this file disagree,
+# the PDF wins and this file is corrected in the same change.
+#
+# Fields
+#   id            RTnn, unique, never reused.
+#   category      one of the five sections of the PDF (see `categories`).
+#   phase         P = prototype, A = operational expansion ("ampliação operacional").
+#   priority      true for the RTs the PDF asks to tackle first (risk discovery).
+#   rqs           business requirements (RQ01-RQ25 of the Business Case Canvas) the RT derives from.
+#   statement     English translation of the requirement (the repository language, ADR-0009).
+#   verification  English translation of "Forma de verificar": how we prove the RT holds.
+#   original      the Portuguese text exactly as written in the PDF.
+
+source:
+  document: Requisitos_Tecnicos_Orion_Chemicals.pdf
+  title: "Technical requirements / Orion Chemicals: from data need to verifiable solution"
+  basis: "Business Case Canvas + 25-RQ matrix, v1.0"
+  date: 2026-09-28
+  notes:
+    - >-
+      Each RT describes a verifiable property; the choice of product, database or orchestrator
+      remains an architecture decision (an ADR).
+    - >-
+      Pending criteria: end-to-end latency, query times, concurrency, recovery, retention and
+      budget are agreed after inventorying sources and user decisions. The "batch every five
+      minutes" hypothesis is not an availability SLA.
+    - >-
+      Scale: 15,000 tags sampled at 1 Hz would produce 1.296 billion observations/day, about
+      233 billion over 180 days. This is an illustrative roadmap scenario, not a confirmed volume.
+      The proposed slice of 100 pieces of equipment and 500 tags requires actually measured
+      frequencies.
+    - >-
+      Next review: define for each RT an owner, dependencies, an executable test and a target
+      value where limits are missing. Prioritise RT01, RT09, RT12, RT20-25, RT28-29, RT34 and RT39
+      to discover the access, identity, time, reconstruction, scale and value risks early.
+  references:
+    - {title: "NIST SP 800-82 Rev. 3 - Operational technology security", url: "https://csrc.nist.gov/pubs/sp/800/82/r3/final"}
+    - {title: "NIST SP 800-53 Rev. 5 - Access, audit and continuity", url: "https://csrc.nist.gov/pubs/sp/800/53/r5/final"}
+    - {title: "Apache Airflow - Repeatable tasks and complete results", url: "https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html"}
+    - {title: "OpenLineage - Datasets, jobs and runs object model", url: "https://openlineage.io/docs/spec/object-model/"}
+    - {title: "OpenTelemetry - Signals and observability conventions", url: "https://opentelemetry.io/docs/concepts/signals/"}
+    - {title: "OpenAPI Specification - HTTP interface contracts", url: "https://spec.openapis.org/oas/"}
+
+phases:
+  P: Prototype
+  A: Operational expansion
+
+categories:
+  integration: "01 / Data integration and ingestion"
+  identity-quality: "02 / Identity, model and quality"
+  preservation: "03 / Preservation, corrections and reprocessing"
+  capacity-value: "04 / Capacity, consumption and value"
+  security-operations: "05 / Security, operations and delivery"
+
+requirements:
+  # ---------------------------------------------------------------- 01 / Integration and ingestion
+  - id: RT01
+    category: integration
+    phase: P
+    priority: true
+    rqs: ["04", "25"]
+    statement: >-
+      Each integration shall use an authorised read interface, with no credentials that allow
+      commands or changes in the industrial system.
+    verification: >-
+      Review the permissions and demonstrate that a write attempt is denied.
+    original:
+      statement: >-
+        Cada integração deverá usar uma interface autorizada de leitura, sem credenciais que
+        permitam comandos ou alterações no sistema industrial.
+      verification: Revisar permissões e demonstrar que uma tentativa de escrita é negada.
+
+  - id: RT02
+    category: integration
+    phase: P
+    priority: false
+    rqs: ["04", "05", "06"]
+    statement: >-
+      Each source shall have an integration contract with an owner, interface, fields,
+      identifier, time reference, extraction limits, frequency and available history.
+    verification: >-
+      Check the contract against examples from the source before enabling the load.
+    original:
+      statement: >-
+        Cada fonte deverá ter contrato de integração com responsável, interface, campos,
+        identificador, referência temporal, limites de extração, frequência e histórico disponível.
+      verification: Conferir o contrato contra exemplos da fonte antes de ativar a carga.
+
+  - id: RT03
+    category: integration
+    phase: P
+    priority: false
+    rqs: ["05", "18"]
+    statement: >-
+      Historical and incremental loads shall record the requested interval and the interval
+      actually received.
+    verification: >-
+      Interrupt and resume a load; compare coverage and counts with the source.
+    original:
+      statement: >-
+        Cargas histórica e incremental deverão registrar intervalo solicitado e intervalo
+        efetivamente recebido.
+      verification: Interromper e retomar uma carga; comparar cobertura e contagens com a fonte.
+
+  - id: RT04
+    category: integration
+    phase: P
+    priority: false
+    rqs: ["18", "19"]
+    statement: >-
+      The resume point (checkpoint) shall advance only after the source data has been preserved
+      and the load completed successfully.
+    verification: >-
+      Simulate a failure between extraction and publication; resume without losing any period.
+    original:
+      statement: >-
+        O ponto de retomada deverá avançar apenas após preservação e conclusão bem-sucedida dos
+        dados da fonte.
+      verification: Simular falha entre extração e publicação; retomar sem perda de período.
+
+  - id: RT05
+    category: integration
+    phase: P
+    priority: false
+    rqs: ["04", "18", "21"]
+    statement: >-
+      Transient failures shall have bounded retries, progressive back-off and logging; permanent
+      failures shall require visible intervention.
+    verification: >-
+      Simulate temporary unavailability and an invalid credential; compare how each is handled.
+    original:
+      statement: >-
+        Falhas transitórias deverão ter tentativas limitadas, espera progressiva e registro;
+        falhas permanentes deverão exigir intervenção visível.
+      verification: >-
+        Simular indisponibilidade temporária e credencial inválida; comparar o tratamento.
+
+  - id: RT06
+    category: integration
+    phase: P
+    priority: false
+    rqs: ["04", "07"]
+    statement: >-
+      Extractions shall respect the agreed volume and concurrency limits per source.
+    verification: >-
+      Load-test and check that the documented limits are not exceeded.
+    original:
+      statement: >-
+        Extrações deverão respeitar limites acordados de volume e concorrência por fonte.
+      verification: Testar carga e conferir que não excede os limites documentados.
+
+  - id: RT07
+    category: integration
+    phase: P
+    priority: false
+    rqs: ["06", "08", "09", "10", "11", "18"]
+    statement: >-
+      When available, the occurrence time, the update time at the source and the reception time
+      shall be stored separately.
+    verification: >-
+      Receive today an old record that was corrected; verify the three timestamps.
+    original:
+      statement: >-
+        Quando disponíveis, horários de ocorrência, atualização na fonte e recebimento deverão ser
+        armazenados distintamente.
+      verification: Receber hoje um registro antigo corrigido; verificar os três tempos.
+
+  - id: RT08
+    category: integration
+    phase: P
+    priority: false
+    rqs: ["05", "12"]
+    statement: >-
+      The ingestion mechanism shall support batch, continuous arrival or trigger, without
+      imposing one pattern on every source.
+    verification: >-
+      Demonstrate batch and document how another arrival pattern would be connected.
+    original:
+      statement: >-
+        O mecanismo de entrada deverá admitir lote, chegada contínua ou disparo, sem impor um
+        padrão a todas as fontes.
+      verification: Demonstrar lote e documentar como outra forma de chegada seria ligada.
+
+  # ---------------------------------------------------------------- 02 / Identity, model, quality
+  - id: RT09
+    category: identity-quality
+    phase: P
+    priority: true
+    rqs: ["01", "02"]
+    statement: >-
+      Original identifiers shall be stored with their source; the combination source + code
+      shall never point to two pieces of equipment at the same time.
+    verification: >-
+      Try to insert a conflicting mapping and verify that it is rejected.
+    original:
+      statement: >-
+        Identificadores originais deverão ser armazenados com sua fonte; a combinação fonte +
+        código não poderá apontar simultaneamente para dois equipamentos.
+      verification: Tentar inserir correspondência conflitante e verificar rejeição.
+
+  - id: RT10
+    category: identity-quality
+    phase: P
+    priority: false
+    rqs: ["02", "03"]
+    statement: >-
+      Records with an unknown equipment or tag shall remain retrievable and pending, with a
+      reason, without any presumed association.
+    verification: >-
+      Send an unknown code and confirm that it does not appear under another asset.
+    original:
+      statement: >-
+        Registros com equipamento ou tag desconhecido deverão permanecer recuperáveis e
+        pendentes, com motivo, sem associação presumida.
+      verification: Enviar código desconhecido e confirmar que ele não aparece em outro ativo.
+
+  - id: RT11
+    category: identity-quality
+    phase: P
+    priority: false
+    rqs: ["08", "09", "10", "11", "22"]
+    statement: >-
+      Every published dataset shall declare its grain and its relationship keys.
+    verification: >-
+      Join a work order with multiple activities without multiplying the count of orders.
+    original:
+      statement: >-
+        Cada conjunto publicado deverá declarar o grão e as chaves de relacionamento.
+      verification: Unir ordem com múltiplas atividades sem multiplicar a contagem de ordens.
+
+  - id: RT12
+    category: identity-quality
+    phase: P
+    priority: true
+    rqs: ["06", "10", "11"]
+    statement: >-
+      Interpretable timestamps shall be standardised in UTC, preserving the original
+      representation and time zone/offset when known; ambiguities shall be flagged.
+    verification: >-
+      Test two time zones and one record with an ambiguous time.
+    original:
+      statement: >-
+        Horários interpretáveis deverão ser padronizados em UTC, preservando representação e
+        fuso/deslocamento originais quando conhecidos; ambiguidades serão sinalizadas.
+      verification: Testar dois fusos e um registro de horário ambíguo.
+
+  - id: RT13
+    category: identity-quality
+    phase: P
+    priority: false
+    rqs: ["03", "06", "10", "16"]
+    statement: >-
+      The original value, unit and quality shall be preserved; a conversion is published only
+      with a sufficient rule and context.
+    verification: >-
+      Compare a valid conversion with a pressure value lacking a sufficient reference.
+    original:
+      statement: >-
+        Valor, unidade e qualidade originais deverão ser preservados; conversão será publicada só
+        com regra e contexto suficientes.
+      verification: Comparar conversão válida com pressão sem referência suficiente.
+
+  - id: RT14
+    category: identity-quality
+    phase: P
+    priority: false
+    rqs: ["16", "21"]
+    statement: >-
+      Quality rules shall have a version, scope, severity and a defined destination: publish,
+      alert or keep pending.
+    verification: >-
+      Distinguish invalid data from an abnormal but valid value.
+    original:
+      statement: >-
+        Regras de qualidade deverão ter versão, escopo, severidade e destino definido: publicar,
+        alertar ou manter pendente.
+      verification: Distinguir dado inválido de valor anormal, porém válido.
+
+  - id: RT15
+    category: identity-quality
+    phase: P
+    priority: false
+    rqs: ["12"]
+    statement: >-
+      Compatible schema extensions shall be accepted; incompatible changes shall block only the
+      affected publication and produce a diagnosis.
+    verification: >-
+      Add an optional field; then change the type of a mandatory field.
+    original:
+      statement: >-
+        Extensões compatíveis de estrutura deverão ser aceitas; mudanças incompatíveis deverão
+        bloquear apenas a publicação afetada e gerar diagnóstico.
+      verification: Adicionar campo opcional; depois alterar tipo de campo obrigatório.
+
+  - id: RT16
+    category: identity-quality
+    phase: A
+    priority: false
+    rqs: ["13"]
+    statement: >-
+      Documents shall preserve content, ID, origin, revision and known links to equipment,
+      system or area.
+    verification: >-
+      Register two revisions and retrieve both without confusing which one is current.
+    original:
+      statement: >-
+        Documentos deverão preservar conteúdo, ID, origem, revisão e vínculos conhecidos com
+        equipamento, sistema ou área.
+      verification: Cadastrar duas revisões e recuperar ambas sem confundir a vigente.
+
+  - id: RT17
+    category: identity-quality
+    phase: P
+    priority: false
+    rqs: ["03", "16", "21"]
+    statement: >-
+      Completeness shall only be computed when the expected frequency or quantity is defined.
+    verification: >-
+      Do not apply the same denominator to a periodic tag and to a report-by-exception tag.
+    original:
+      statement: >-
+        Completude só deverá ser calculada quando a frequência ou quantidade esperada estiver
+        definida.
+      verification: >-
+        Não aplicar o mesmo denominador a tag periódica e tag por mudança de valor.
+
+  - id: RT18
+    category: identity-quality
+    phase: A
+    priority: false
+    rqs: ["16", "22"]
+    statement: >-
+      Observed values shall be distinguishable from estimated ones, with the estimation method
+      and parameters.
+    verification: >-
+      Identify interpolated points in a period query.
+    original:
+      statement: >-
+        Valores observados deverão ser distinguíveis dos estimados, com método e parâmetros da
+        estimativa.
+      verification: Identificar pontos interpolados em consulta de período.
+
+  - id: RT19
+    category: identity-quality
+    phase: P
+    priority: false
+    rqs: ["02", "16", "22", "23", "24"]
+    statement: >-
+      Common rules of identity, unit, time and quality shall produce the same result for every
+      consumer.
+    verification: >-
+      Compare the same asset and period in a query, a dataset and an export.
+    original:
+      statement: >-
+        Regras comuns de identidade, unidade, tempo e qualidade deverão produzir o mesmo resultado
+        em todos os consumidores.
+      verification: Comparar mesmo ativo e período em consulta, conjunto e exportação.
+
+  # ---------------------------------------------------------------- 03 / Preservation, reprocessing
+  - id: RT20
+    category: preservation
+    phase: P
+    priority: true
+    rqs: ["12", "13", "14", "20"]
+    statement: >-
+      Received content shall be kept separate from transformed results, with source, load,
+      reception and a means of checking integrity.
+    verification: >-
+      Select a result and retrieve the input that produced it.
+    original:
+      statement: >-
+        O conteúdo recebido deverá ficar separado dos resultados transformados, com fonte, carga,
+        recebimento e meio de conferir integridade.
+      verification: Selecionar resultado e recuperar a entrada que o originou.
+
+  - id: RT21
+    category: preservation
+    phase: P
+    priority: true
+    rqs: ["17"]
+    statement: >-
+      Reprocessing an identical input shall produce the same logical published dataset, without
+      new duplicated facts.
+    verification: >-
+      Run the same batch twice; compare keys, counts and values.
+    original:
+      statement: >-
+        Reprocessar uma entrada idêntica deverá produzir o mesmo conjunto lógico publicado, sem
+        novos fatos duplicados.
+      verification: Executar o mesmo lote duas vezes; comparar chaves, quantidades e valores.
+
+  - id: RT22
+    category: preservation
+    phase: P
+    priority: true
+    rqs: ["08", "09", "10", "17"]
+    statement: >-
+      Corrections shall follow a documented precedence; conflicts without a reliable rule shall
+      not be resolved by arrival order alone.
+    verification: >-
+      Send a new version followed by a late old version.
+    original:
+      statement: >-
+        Correções deverão seguir precedência documentada; conflitos sem regra confiável não
+        poderão ser resolvidos apenas pela ordem de chegada.
+      verification: Enviar versão nova seguida de versão antiga atrasada.
+
+  - id: RT23
+    category: preservation
+    phase: P
+    priority: true
+    rqs: ["18"]
+    statement: >-
+      Late data shall be placed in its occurrence period and identify the derived results that
+      must be updated.
+    verification: >-
+      Simulate a six-hour interruption, recover the period and check the aggregates.
+    original:
+      statement: >-
+        Dados atrasados deverão compor seu período de ocorrência e identificar resultados
+        derivados a atualizar.
+      verification: Simular interrupção de seis horas, recuperar período e conferir agregados.
+
+  - id: RT24
+    category: preservation
+    phase: P
+    priority: true
+    rqs: ["19", "20"]
+    statement: >-
+      Reprocessing runs shall record inputs, slice, parameters and versions of code and rules.
+    verification: >-
+      Repeat a slice and explain the differences between runs.
+    original:
+      statement: >-
+        Reprocessamentos deverão registrar entradas, recorte, parâmetros e versões de código e
+        regras.
+      verification: Repetir recorte e explicar diferenças entre execuções.
+
+  - id: RT25
+    category: preservation
+    phase: P
+    priority: true
+    rqs: ["19", "23"]
+    statement: >-
+      A recomputed result shall be validated before publication; queries shall not mix
+      inconsistent versions of the same slice.
+    verification: >-
+      Query during reprocessing and verify version consistency.
+    original:
+      statement: >-
+        Resultado recalculado deverá ser validado antes da publicação; consultas não deverão
+        misturar versões incoerentes do mesmo recorte.
+      verification: Consultar durante reprocessamento e verificar consistência da versão.
+
+  - id: RT26
+    category: preservation
+    phase: A
+    priority: false
+    rqs: ["14", "15"]
+    statement: >-
+      Data categories shall have a documented retention period and level of detail, with
+      verifiable disposal.
+    verification: >-
+      Simulate expiry and confirm deletion of what was planned, preserving the rest.
+    original:
+      statement: >-
+        Categorias de dados deverão ter prazo e nível de detalhe de retenção documentados, com
+        descarte verificável.
+      verification: Simular vencimento e confirmar exclusão do previsto, preservando o restante.
+
+  - id: RT27
+    category: preservation
+    phase: P
+    priority: false
+    rqs: ["15", "19", "24"]
+    statement: >-
+      The retention policy shall state how far back histories can be rebuilt and datasets
+      reproduced.
+    verification: >-
+      Request a reconstruction inside and outside the coverage; compare the answers.
+    original:
+      statement: >-
+        A política de retenção deverá explicitar até quando se pode reconstruir históricos e
+        reproduzir conjuntos.
+      verification: Pedir reconstrução dentro e fora da cobertura; comparar respostas.
+
+  # ---------------------------------------------------------------- 04 / Capacity, consumption, value
+  - id: RT28
+    category: capacity-value
+    phase: P
+    priority: true
+    rqs: ["07", "15"]
+    statement: >-
+      Sizing shall declare tags, frequencies, average size, history, concurrency and growth,
+      separating measurement from projection.
+    verification: >-
+      A capacity spreadsheet with traceable inputs and a matching test.
+    original:
+      statement: >-
+        Dimensionamento deverá declarar tags, frequências, tamanho médio, histórico, concorrência
+        e crescimento, separando medição de projeção.
+      verification: Planilha de capacidade com entradas rastreáveis e teste correspondente.
+
+  - id: RT29
+    category: capacity-value
+    phase: P
+    priority: true
+    rqs: ["05", "07", "21"]
+    statement: >-
+      The prototype shall measure sustained throughput, load duration, delay between
+      availability and publication, and resources used.
+    verification: >-
+      A trial on the chosen slice with the distribution and the p95, not only the mean.
+    original:
+      statement: >-
+        O protótipo deverá medir taxa sustentada, duração das cargas, atraso entre
+        disponibilidade e publicação e recursos usados.
+      verification: Ensaio no recorte escolhido com distribuição e p95, além da média.
+
+  - id: RT30
+    category: capacity-value
+    phase: A
+    priority: false
+    rqs: ["07"]
+    statement: >-
+      Scaling to the whole plant depends on a test at the required scale; the prototype does not
+      prove industrial capacity by extrapolation.
+    verification: >-
+      The report states the tested volume, the limits and the gap to the target.
+    original:
+      statement: >-
+        A ampliação para a planta dependerá de teste na escala requerida; o protótipo não comprova
+        capacidade industrial por extrapolação.
+      verification: Relatório declara volume ensaiado, limites e diferença para o alvo.
+
+  - id: RT31
+    category: capacity-value
+    phase: P
+    priority: false
+    rqs: ["22", "23"]
+    statement: >-
+      Queries shall declare period, resolution and return limits, with pagination or controlled
+      export for large datasets.
+    verification: >-
+      Query detail and aggregate; exceed the limit and observe a predictable response.
+    original:
+      statement: >-
+        Consultas deverão declarar período, resolução e limites de retorno, com paginação ou
+        exportação controlada para grandes conjuntos.
+      verification: >-
+        Consultar detalhe e agregado; ultrapassar limite e observar resposta previsível.
+
+  - id: RT32
+    category: capacity-value
+    phase: A
+    priority: false
+    rqs: ["23"]
+    statement: >-
+      Query interfaces shall have a documented and versioned contract, with filters, types,
+      errors and data quality.
+    verification: >-
+      Validate correct and incorrect calls against the contract.
+    original:
+      statement: >-
+        Interfaces de consulta deverão ter contrato documentado e versionado, com filtros, tipos,
+        erros e qualidade dos dados.
+      verification: Validar chamadas certas e erradas contra o contrato.
+
+  - id: RT33
+    category: capacity-value
+    phase: A
+    priority: false
+    rqs: ["10", "24"]
+    statement: >-
+      Datasets for ML shall state version, period, assets, filters, rules and the temporal
+      availability of each feature.
+    verification: >-
+      Demonstrate that a report released later does not appear as an earlier input.
+    original:
+      statement: >-
+        Conjuntos para ML deverão indicar versão, período, ativos, filtros, regras e
+        disponibilidade temporal dos atributos.
+      verification: Demonstrar que laudo liberado depois não aparece como entrada anterior.
+
+  - id: RT34
+    category: capacity-value
+    phase: P
+    priority: true
+    rqs: ["20", "21", "22", "23"]
+    statement: >-
+      The prototype shall measure the time to investigate comparable cases before and after,
+      including locating and reconciling the data.
+    verification: >-
+      A protocol with tasks, participants, times, dispersion and limitations.
+    original:
+      statement: >-
+        O protótipo deverá medir tempo para investigar casos comparáveis antes e depois,
+        incluindo localização e conciliação dos dados.
+      verification: Protocolo com tarefas, participantes, tempos, dispersão e limitações.
+
+  # ---------------------------------------------------------------- 05 / Security, operations
+  - id: RT35
+    category: security-operations
+    phase: P
+    priority: false
+    rqs: ["25"]
+    statement: >-
+      Technical and human identities shall receive only the permissions their function needs;
+      restricted data follows the agreed classification.
+    verification: >-
+      Test allowed and denied profiles for query, export and reprocessing.
+    original:
+      statement: >-
+        Identidades técnicas e humanas deverão receber permissões necessárias à função; dados
+        restritos seguirão classificação acordada.
+      verification: >-
+        Testar perfis permitidos e negados para consulta, exportação e reprocessamento.
+
+  - id: RT36
+    category: security-operations
+    phase: P
+    priority: false
+    rqs: ["04", "25"]
+    statement: >-
+      Credentials shall not appear in code or published files; their use, rotation and
+      revocation shall have a defined procedure.
+    verification: >-
+      Inspect the delivery and replace a test credential without changing code.
+    original:
+      statement: >-
+        Credenciais não deverão constar no código ou arquivos publicados; uso, troca e revogação
+        terão procedimento definido.
+      verification: Inspecionar entrega e substituir credencial de teste sem mudar código.
+
+  - id: RT37
+    category: security-operations
+    phase: A
+    priority: false
+    rqs: ["13", "25"]
+    statement: >-
+      Connections and stored data shall use protection compatible with the classification and
+      the policies of the environment.
+    verification: >-
+      Review the configuration and deny unauthorised access.
+    original:
+      statement: >-
+        Conexões e dados armazenados deverão usar proteção compatível com classificação e
+        políticas do ambiente.
+      verification: Revisar configuração e negar acesso não autorizado.
+
+  - id: RT38
+    category: security-operations
+    phase: P
+    priority: false
+    rqs: ["02", "16", "19", "25"]
+    statement: >-
+      Changes to mappings, rules, permissions and manual reprocessing shall record actor, time,
+      reason and before/after when applicable.
+    verification: >-
+      Make a change and reconstruct it from the audit log.
+    original:
+      statement: >-
+        Mudanças em correspondências, regras, permissões e reprocessamentos manuais deverão
+        registrar ator, tempo, motivo e antes/depois quando aplicável.
+      verification: Executar mudança e reconstruí-la pelo registro de auditoria.
+
+  - id: RT39
+    category: security-operations
+    phase: P
+    priority: true
+    rqs: ["21"]
+    statement: >-
+      Each load shall expose its run, state, times, volumes, period covered and cause of error.
+    verification: >-
+      Simulate an unexpectedly empty load, a failure and a partial success.
+    original:
+      statement: >-
+        Cada carga deverá expor execução, estado, horários, volumes, período coberto e causa de
+        erro.
+      verification: Simular carga vazia inesperada, falha e sucesso parcial.
+
+  - id: RT40
+    category: security-operations
+    phase: P
+    priority: false
+    rqs: ["18", "21"]
+    statement: >-
+      Operations shall track delay, backlog, failures, pending identity issues, quality and
+      duration per source.
+    verification: >-
+      Cause an interruption and locate the source, period and step.
+    original:
+      statement: >-
+        Operação deverá acompanhar atraso, acúmulo, falhas, pendências de identidade, qualidade e
+        duração por fonte.
+      verification: Provocar interrupção e localizar fonte, período e etapa.
+
+  - id: RT41
+    category: security-operations
+    phase: A
+    priority: false
+    rqs: ["14", "19", "20"]
+    statement: >-
+      Backups and restore tests of data and metadata shall exist; acceptable loss and maximum
+      recovery time are agreed before real operation.
+    verification: >-
+      Restore a test environment and measure loss and duration.
+    original:
+      statement: >-
+        Deverão existir cópias de segurança e teste de restauração dos dados e metadados; perdas e
+        tempo máximo de retorno serão acordados antes da operação real.
+      verification: Restaurar ambiente de teste e medir perda e duração.
+
+  - id: RT42
+    category: security-operations
+    phase: P
+    priority: false
+    rqs: ["12", "16", "17", "18", "19"]
+    statement: >-
+      Changes to integrations and rules shall pass automated validation of contracts, exceptions
+      and regression before publication.
+    verification: >-
+      Introduce an incompatibility, observe a controlled failure, then fix it.
+    original:
+      statement: >-
+        Mudanças de integração e regras deverão passar por validação automatizada de contratos,
+        exceções e regressão antes da publicação.
+      verification: Introduzir incompatibilidade, observar falha controlada e depois corrigir.
