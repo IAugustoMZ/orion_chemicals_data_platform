@@ -15,8 +15,10 @@ Role: [backlog planner](../../../harness/roles/backlog-planner.md). Phase refere
 2. Read `prd.md`, the cited RTs, and
    [acceptance criteria (EARS)](../../../docs/learn/primers/acceptance-criteria.md).
 3. Fill `backlog.md`: epics (each tied to a PRD goal), features, and work items
-   `PBI-<id>-NN` with feature, RTs served, size, and EARS acceptance criteria that a test can
-   check.
+   `PBI-<id>-NN` as self-contained cards: feature, RTs served, size, dependencies, context,
+   **what** (observable deliverables), **how** (layers, modules, classes, ports, steps, edge
+   cases, by name and path), out of scope, EARS acceptance criteria that a test can check, and
+   the verifying tests. Read the code you name; do not invent paths.
 4. Order the items risk-first and by dependency; draw a `flowchart LR` of dependencies when
    there are more than three items.
 5. Check coverage: every cited RT appears in at least one item (say so if one does not).
@@ -25,4 +27,6 @@ Role: [backlog planner](../../../harness/roles/backlog-planner.md). Phase refere
 
 ## Done when
 
-Every item is small, traceable to a goal and to RTs, and has testable criteria.
+Every item is small, traceable to a goal and to RTs, has testable criteria, and passes the
+cold-reader test: someone who has read only the card, `AGENTS.md` and `harness/principles.md`
+can build it without asking.

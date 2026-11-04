@@ -145,3 +145,20 @@ def all_artifacts() -> tuple[str, ...]:
     for gate in GATES:
         names.extend(name for name in gate.artifacts if name not in names)
     return tuple(names)
+
+
+def artifacts_after(gate_id: GateId) -> tuple[str, ...]:
+    """Return the artifacts that appear when `gate_id` passes (ADR-0018).
+
+    These are the artifacts of the next gate that has any: a gate that judges no file (G5, the
+    build) is skipped, so G4 hands over to G6's files. The same rule gives the files a dossier
+    starts with (``artifacts_after(G0)``) and nothing after the last gate.
+
+    Args:
+        gate_id: the gate that has just passed.
+
+    Returns:
+        The file names to create, in lifecycle order; empty after the last gate.
+    """
+    position = [gate.id for gate in GATES].index(gate_id)
+    return next((gate.artifacts for gate in GATES[position + 1 :] if gate.artifacts), ())

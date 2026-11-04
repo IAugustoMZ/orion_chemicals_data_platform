@@ -23,4 +23,110 @@ approvals:
     digest: sha256:dd4e9b2c30ed1eee92a1f81a4f8e4986e7c2833c75d2c39c11037ad7f1b5e98a
     git_identity: (git identity not configured)
     note: ''
-verification: null
+  - member: mentee
+    at: '2026-10-28T14:08:32+00:00'
+    digest: sha256:dd4e9b2c30ed1eee92a1f81a4f8e4986e7c2833c75d2c39c11037ad7f1b5e98a
+    git_identity: (git identity not configured)
+    note: ''
+  G2:
+  - member: mentor
+    at: '2026-10-28T20:27:03+00:00'
+    digest: sha256:4218efaba4b8cbcfb446c1ce2ac2d50ef5d94d0324f2d0c84665cf881b0faa23
+    git_identity: (git identity not configured)
+    note: ''
+  - member: mentee
+    at: '2026-10-28T20:27:19+00:00'
+    digest: sha256:4218efaba4b8cbcfb446c1ce2ac2d50ef5d94d0324f2d0c84665cf881b0faa23
+    git_identity: (git identity not configured)
+    note: ''
+  G3:
+  - member: mentor
+    at: '2026-10-28T17:02:17+00:00'
+    digest: sha256:8508f8cb3dfcb7897c9d94b533966134505e39a448ec56914f2b955ebd4e1dd0
+    git_identity: (git identity not configured)
+    note: ''
+  - member: mentee
+    at: '2026-10-28T17:04:35+00:00'
+    digest: sha256:8508f8cb3dfcb7897c9d94b533966134505e39a448ec56914f2b955ebd4e1dd0
+    git_identity: (git identity not configured)
+    note: ''
+  G4:
+  - member: mentor
+    at: '2026-10-28T20:28:19+00:00'
+    digest: sha256:77319ca409f5d500404d04bb29a19336a169ef52d72d12f5f527f943bb644db2
+    git_identity: (git identity not configured)
+    note: y/N prompt; files created when the gate passes, all-or-nothing; both files at G4; no cuts
+  - member: mentee
+    at: '2026-10-28T20:28:38+00:00'
+    digest: sha256:77319ca409f5d500404d04bb29a19336a169ef52d72d12f5f527f943bb644db2
+    git_identity: (git identity not configured)
+    note: y/N prompt; files created when the gate passes, all-or-nothing; both files at G4; no cuts
+  G6:
+  - member: mentor
+    at: '2026-11-04T13:41:08+00:00'
+    digest: sha256:aec21f8ac08b6c4d847c040082d457d673ff4be60d0b861147b07b78e85f5e6c
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  - member: mentee
+    at: '2026-11-04T13:41:20+00:00'
+    digest: sha256:aec21f8ac08b6c4d847c040082d457d673ff4be60d0b861147b07b78e85f5e6c
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+verification:
+  at: '2026-11-04T13:36:52+00:00'
+  digest: sha256:37c33d008cf41d6ce07361b6787587d6454ac2be4e82c28ed1b1080ac870e211
+  commit: 64e8362
+  results:
+  - check: format
+    passed: true
+    summary: 222 files already formatted
+  - check: lint
+    passed: true
+    summary: All checks passed!
+  - check: types
+    passed: true
+    summary: 'Success: no issues found in 60 source files'
+  - check: architecture
+    passed: true
+    summary: "domain KEPT\nInterfaces never touch infrastructure directly (only through the composition\
+      \ \nroot) KEPT\nDomain and application stay free of frameworks and I/O libraries KEPT\n\nContracts:\
+      \ 3 kept, 0 broken."
+  - check: tests
+    passed: true
+    summary: 'tools\sdd\interfaces\cli\app.py                         115     12     24      5    88%   81,
+      138-147, 176, 178, 180, 215, 224
+
+      tools\sdd\interfaces\cli\presenters.py                   36     11     10      1    61%   35, 60-66,
+      75-77
+
+      -------------------------------------------------------------------------------------------------
+
+      TOTAL                                                  1746     46    352     27    96%
+
+      Required test coverage of 85% reached. Total coverage: 96.23%
+
+      136 passed in 26.66s'
+  - check: security
+    passed: true
+    summary: (no output)
+  - check: secrets
+    passed: true
+    summary: (no output)
+  - check: dependencies
+    passed: true
+    summary: 'Name                          Skip Reason
+
+      ----------------------------- -------------------------------
+
+      orion-chemicals-data-platform distribution marked as editable
+
+      No known vulnerabilities found'
+  - check: harness
+    passed: true
+    summary: 'WARNING  gate-stale         specs/000-sdd-harness/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      sdd check: 1 finding(s)'
+  - check: docs-site
+    passed: true
+    summary: (no output)

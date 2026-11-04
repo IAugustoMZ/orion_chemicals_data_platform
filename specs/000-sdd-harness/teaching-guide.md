@@ -359,6 +359,7 @@ classDiagram
         +load(id) Dossier
         +save(dossier)
         +create(dossier, artifacts)
+        +add_artifacts(dossier, artifacts) tuple
         +read_artifact(dossier, name) str
     }
     class Workspace {
@@ -369,14 +370,18 @@ classDiagram
     }
     class HumanConfirmation {
         <<Protocol>>
-        +confirm(summary, expected) bool
+        +confirm(summary) bool
     }
     class EvaluateDossier {
         +one(id) DossierReport
         +all() tuple
     }
     class ApproveGate {
-        +execute(id, gate, member, note) GateStatus
+        +execute(id, gate, member, note) ApprovalResult
+    }
+    class ScaffoldArtifacts {
+        +for_creation(dossier) tuple
+        +after(dossier, gate_id) tuple
     }
     class VerifyQuality {
         +execute(id, progress) Verification
@@ -395,6 +400,8 @@ classDiagram
     }
     ApproveGate --> EvaluateDossier
     ApproveGate --> HumanConfirmation
+    ApproveGate --> ScaffoldArtifacts
+    ScaffoldArtifacts --> DossierRepository
     ApproveGate --> DossierRepository
     VerifyQuality --> EvaluateDossier
     GuardCommit --> Workspace
@@ -480,20 +487,39 @@ sequenceDiagram
     EV->>R: load + read artifacts
     EV-->>UC: DossierReport (G0 passed)
     UC->>R: read prd.md, headings from the template, any unresolved placeholder?
-    UC->>T: confirm(summary, "000 G1")
+    UC->>T: confirm(summary)
     T->>T: stdin.isatty()?
-    T->>M: summary + prompt
-    M->>T: 000 G1
+    T->>M: summary + "Approve? [y/N]"
+    M->>T: y
     T-->>UC: True
     UC->>R: save(dossier.with_approval(G1, approval))
     UC->>EV: one("000") again
     EV-->>UC: G1 partial (waiting for mentee)
-    UC-->>CLI: GateStatus
+    Note over UC,R: on the second approval the gate is passed and ScaffoldArtifacts.after adds backlog.md
+    UC-->>CLI: ApprovalResult (status, created)
     CLI->>CLI: sync: README status, specs index, traceability
 ```
 
 Step 4 is where order is enforced (every earlier gate must be passed); step 7 is readiness;
 step 9 is the TTY check that defeats agents. Only after all of them does step 13 write.
+
+Two things about this flow changed at the G3 and G4 reviews, and both are decisions with an ADR:
+
+- **The prompt is `y/N`** ([ADR-0016](../../docs/architecture/decisions/0016-approval-confirmation-is-a-yes-no-prompt.md)).
+  The `isatty()` test in step 9 is what keeps agents out; typing a phrase on top of it protected
+  against nothing the terminal test did not already stop. That is why the port is now
+  `confirm(summary)` with no `expected` text.
+- **Files appear as gates pass** ([ADR-0018](../../docs/architecture/decisions/0018-artifacts-are-created-as-gates-pass.md)).
+  When the save in step 13 turns the gate *passed*, a small application service copies the
+  templates of the next gate into the dossier (never over an existing file) and the command
+  prints their names (`ApproveGate` now returns an `ApprovalResult`: the gate's status and the
+  names created). The step is all-or-nothing: if a write fails, `add_artifacts` removes the
+  files already written, then `ApproveGate` saves the dossier as it was before the approval and
+  re-raises, so we never keep an approval whose files are missing. Running the approval again
+  is the repair.
+  `sdd new` uses the same service for `prd.md`, so the rule "which file is created when" lives
+  in one place, derived from the gate definitions. This also makes the
+  `written-ahead` warning rare: a file that does not exist cannot be written ahead.
 
 ### 6.2 Gate states
 

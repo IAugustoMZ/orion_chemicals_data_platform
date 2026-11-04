@@ -42,6 +42,9 @@ mapping the request to the requirements is your job. Phase reference:
    git switch -c spec/<id>-the-slug
    ```
 
+   `sdd new` creates only `dossier.yaml` and `prd.md`. Each later artifact is created by the
+   harness when the gate before it passes; never copy templates by hand.
+
 6. **Check G0:** `poetry run sdd status <id>` shows G0 passed. If not, fix `dossier.yaml`
    (an unknown RT, or a missing rationale).
 7. Continue with `sdd-discover`. The PRD's "Requirements digest" records the mapping of step 3,

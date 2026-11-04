@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+import re
+from pathlib import Path
+
 import pytest
 
 from sdd.domain.approval import Approval, CheckOutcome, Verification
@@ -13,11 +16,21 @@ from sdd.domain.errors import (
     InvalidTeamError,
     UnknownMemberError,
 )
-from sdd.domain.gates import GATES, GateId, GateKind, all_artifacts, gates_before, parse_gate_id
+from sdd.domain.gates import (
+    GATES,
+    GateId,
+    GateKind,
+    all_artifacts,
+    artifacts_after,
+    gates_before,
+    parse_gate_id,
+)
 from sdd.domain.governance import is_governed, spec_id_from_branch
 from sdd.domain.readiness import readiness_problems, required_headings
 from sdd.domain.team import ApprovalPolicy, Team, TeamMember
 from tests.sdd.fakes import NOW, TEAM, dossier
+
+REPO = Path(__file__).resolve().parents[2]
 
 
 class TestGates:
@@ -45,6 +58,22 @@ class TestGates:
         assert all_artifacts()[:2] == ("prd.md", "backlog.md")
         assert all_artifacts()[-1] == "release.md"
         assert len(all_artifacts()) == len(set(all_artifacts()))
+
+    @pytest.mark.parametrize(
+        ("gate", "expected"),
+        [
+            (GateId.G0, ("prd.md",)),
+            (GateId.G1, ("backlog.md",)),
+            (GateId.G2, ("ux-approach.md",)),
+            (GateId.G3, ("spec.md", "plan.md", "tasks.md")),
+            (GateId.G4, ("validation.md", "teaching-guide.md")),
+            (GateId.G5, ("validation.md", "teaching-guide.md")),
+            (GateId.G6, ("release.md",)),
+            (GateId.G7, ()),
+        ],
+    )
+    def test_artifacts_after_each_gate(self, gate, expected):
+        assert artifacts_after(gate) == expected
 
 
 class TestDigest:
@@ -135,6 +164,42 @@ class TestReadiness:
     def test_missing_file_and_ready(self):
         assert readiness_problems("prd.md", None, ()) == ("prd.md: file is missing",)
         assert readiness_problems("prd.md", "## Problem\nok\n", ("Problem",)) == ()
+
+
+class TestBacklogTemplate:
+    """The backlog card format of ADR-0017 is pinned by the template itself."""
+
+    FIELDS = (
+        "Feature",
+        "Serves",
+        "Size",
+        "Depends on",
+        "Context",
+        "What",
+        "How",
+        "Out of scope",
+        "Acceptance criteria (EARS)",
+        "Verification",
+    )
+    FILLED_BY_THE_AUTHOR = (
+        "Feature",
+        "Depends on",
+        "Context",
+        "What",
+        "How",
+        "Out of scope",
+        "Verification",
+    )
+
+    def test_every_card_field_is_a_required_placeholder(self):
+        template = (REPO / "harness/templates/backlog.md").read_text(encoding="utf-8")
+        card = template[template.index("### PBI-") :].split("\n## ")[0]
+        found = re.findall(r"^- \*\*(?P<field>[^*]+):\*\*(?P<rest>.*(?:\n  .*)*)", card, re.M)
+        assert tuple(field for field, _ in found) == self.FIELDS
+        for field, rest in found:
+            if field in self.FILLED_BY_THE_AUTHOR:
+                assert "TODO(sdd)" in rest, field
+        assert readiness_problems("backlog.md", template, required_headings(template))
 
 
 class TestDossier:

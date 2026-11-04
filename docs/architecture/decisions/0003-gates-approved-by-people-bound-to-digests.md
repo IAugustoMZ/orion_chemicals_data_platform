@@ -4,6 +4,7 @@
 - **Date:** 2026-10-21
 - **Dossier:** specs/000-sdd-harness
 - **Requirements:** RT38 (actor, time, reason, before/after), applied to our own process
+- **Refined by:** [ADR-0016](0016-approval-confirmation-is-a-yes-no-prompt.md) (the confirmation is `y/N`, not a typed phrase)
 
 ## Context
 
@@ -18,7 +19,8 @@ survive later edits of the approved text would make the gates meaningless.
 - **Who:** `harness/team.yaml` lists the members and the policy; the default `all` requires both
   of us for every human gate (G1, G2, G3, G4, G6, G7).
 - **How:** `poetry run sdd approve <id> <gate> --as <member>` refuses unless standard input is an
-  **interactive terminal** and the person types the confirmation `<id> <gate>`. Coding agents run
+  **interactive terminal** and the person confirms the summary shown with `y` (when this ADR
+  was written the person typed `<id> <gate>`; see ADR-0016). Coding agents run
   commands without a terminal attached, so they cannot approve, in any tool.
 - **What:** the approval stores the **SHA-256 digest** of the gate's artifacts (line endings and
   task boxes normalised). The gate state is computed, never stored: if the artifacts change, the

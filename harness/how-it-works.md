@@ -64,7 +64,7 @@ flowchart TD
     REQ[("docs/requirements<br/>RT01-RT42 catalogue")] -.->|"read first, always"| MAP
     MAP --> OK{"👥 We confirm<br/>the mapping"}
     OK -->|"adjust"| MAP
-    OK -->|"yes"| NEW["🤖 sdd new 'Title' --slug x --rt RTnn<br/>creates specs/NNN-x/ and branch spec/NNN-x"]
+    OK -->|"yes"| NEW["🤖 sdd new 'Title' --slug x --rt RTnn<br/>creates specs/NNN-x/ with dossier.yaml and prd.md,<br/>and branch spec/NNN-x"]
     NEW --> G0{"G0 · Context<br/>RTs exist? rationale<br/>when none is cited?"}
     G0 -->|"no: fix dossier.yaml"| NEW
     G0 -->|"yes (automatic)"| P1
@@ -150,9 +150,12 @@ specs/001-source-contracts/
 └── release.md          phase 7 · G7
 ```
 
-`sdd new` creates the folder from [the templates](templates/README.md), pre-filled with what is
-known: the title, the branch, and a table of the cited requirements with how each one is
-verified. Two conventions turn templates into a *definition of ready*:
+The folder is not created whole. `sdd new` creates `dossier.yaml` and `prd.md`; each later
+artifact is created from [its template](templates/README.md) when the gate before it passes
+([ADR-0018](../docs/architecture/decisions/0018-artifacts-are-created-as-gates-pass.md)), so
+the list above fills in as we go. Each file is pre-filled with what is known: the title, the
+branch, and, in the PRD, a table of the cited requirements with how each one is verified. Two
+conventions turn templates into a *definition of ready*:
 
 - every `##` heading of a template is a **required section** of the artifact;
 - every `TODO(sdd)` is text the author **must replace**; `sdd approve` refuses while one remains.
@@ -257,9 +260,10 @@ sequenceDiagram
     UC->>FS: read dossier.yaml + artifacts
     UC->>UC: G0-G3 passed? spec/plan/tasks have every section, no TODO(sdd)?
     UC->>P: summary: dossier, gate, artifacts, digest, approver
-    UC->>P: "Type '001 G4' to approve"
-    P->>UC: 001 G4
+    UC->>P: "Approve? [y/N]"
+    P->>UC: y
     UC->>FS: dossier.yaml += approval {member, at (UTC), digest, git identity, note}
+    UC->>FS: when the gate turns passed: create the next gate's artifacts from the templates (never overwrite)
     UC-->>CLI: G4 is "partial" (waiting for mentee) or "passed"
     CLI->>FS: sdd sync: README status board, specs index, traceability
 ```
@@ -287,7 +291,7 @@ sequenceDiagram
 
 The terminal check is what makes this work for **every** tool: agents execute commands with no
 terminal attached, so `isatty()` is false and the approval is refused before anything is asked.
-Piping the answer in (`echo "001 G4" | sdd approve ...`) fails for the same reason.
+Piping the answer in (`echo y | sdd approve ...`) fails for the same reason.
 
 ### …the agent builds
 
@@ -411,7 +415,8 @@ poetry run sdd rt
 poetry run sdd new "Source integration contracts" --slug source-contracts --rt RT01 --rt RT02
 git switch -c spec/001-source-contracts
 
-# 1-4. The agent drafts prd.md, backlog.md, ux-approach.md, spec.md/plan.md/tasks.md;
+# 1-4. The agent fills prd.md, then (as each gate passes and the harness creates the next file)
+#      backlog.md, ux-approach.md, spec.md/plan.md/tasks.md;
 #      after each one we review it together, then each of us approves at the terminal:
 poetry run sdd approve 001 G1 --as mentor
 poetry run sdd approve 001 G1 --as mentee

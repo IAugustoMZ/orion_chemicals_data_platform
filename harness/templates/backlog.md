@@ -18,15 +18,29 @@ TODO(sdd): The features of each epic, one line each: what a user can do when it 
 TODO(sdd): One card per product backlog item (PBI). Acceptance criteria use EARS notation
 (see [writing acceptance criteria](../../docs/learn/primers/acceptance-criteria.md)); every PBI
 names the RTs it contributes to. Keep items small enough to build and review in one sitting.
+Every card must be **self-contained**: a person or a coding agent who has read only the card,
+`AGENTS.md` and `harness/principles.md` can build it without hunting for context. That means it
+says *what* is delivered and *how* to build it, naming the layers, modules, classes, ports,
+commands, files and formats involved. If a reader would have to guess, the card is not done.
 
 ### PBI-{{id}}-01 · Title
 
 - **Feature:** TODO(sdd)
 - **Serves:** RT..
 - **Size:** S | M | L
+- **Depends on:** TODO(sdd): the PBIs that must exist first, or "none".
+- **Context:** TODO(sdd): Two to four sentences: the problem and why it exists, in words that
+  need neither the PRD nor the chat.
+- **What:** TODO(sdd): The deliverables, observable from outside: commands and their arguments,
+  endpoints, files and folders created, data formats and fields, exit codes and messages.
+- **How:** TODO(sdd): Numbered build steps: in which layer each piece lives (`domain`,
+  `application`, `infrastructure`, `interfaces`), the classes, functions and ports to create or
+  reuse (by name and path), the pattern or algorithm, libraries, and the edge cases to handle.
+- **Out of scope:** TODO(sdd): What a reader might assume is included but is not.
 - **Acceptance criteria (EARS):**
   - AC1: When `trigger`, the `system` shall `response`.
   - AC2: If `unwanted condition`, then the `system` shall `response`.
+- **Verification:** TODO(sdd): The test files and the commands that prove each criterion.
 
 ## Order and dependencies
 

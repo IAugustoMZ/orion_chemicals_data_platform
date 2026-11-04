@@ -63,10 +63,9 @@ class HumanConfirmationRequiredError(SddError):
     """An approval was attempted without an interactive terminal.
 
     Approvals are made by people (ADR-0003). Coding agents run commands without a terminal
-    attached, so the harness refuses to record an approval when it cannot ask a human to type
-    the confirmation.
+    attached, so the harness refuses to record an approval when it cannot ask a human to answer.
     """
 
 
 class ApprovalDeclinedError(SddError):
-    """The person at the terminal did not type the expected confirmation text."""
+    """The person at the terminal did not answer yes to the approval prompt."""

@@ -9,6 +9,8 @@ from pathlib import Path
 import pytest
 from typer.testing import CliRunner
 
+from sdd.bootstrap import build_harness
+from sdd.config import Settings
 from sdd.interfaces.cli.app import app
 
 REPO = Path(__file__).resolve().parents[2]
@@ -49,6 +51,10 @@ def test_new_status_rt_and_sync(repo):
     created = run("new", "Source contracts", "--slug", "source-contracts", "--rt", "rt02")
     assert created.exit_code == 0, created.output
     assert "spec/000-source-contracts" in created.output
+    assert sorted(p.name for p in (repo / "specs/000-source-contracts").iterdir()) == [
+        "dossier.yaml",
+        "prd.md",
+    ]
     prd = (repo / "specs/000-source-contracts/prd.md").read_text(encoding="utf-8")
     assert "Each source shall have an integration contract" in prd
     status = run("status")
@@ -75,3 +81,44 @@ def test_guard_and_check(repo):
     assert run("guard-commit", "docs/a.md").exit_code == 0
     checked = run("check")
     assert "sdd check:" in checked.output
+
+
+class _Yes:
+    """A confirmation that always answers yes (the real one needs a terminal)."""
+
+    def confirm(self, summary: str) -> bool:
+        return True
+
+
+def test_approval_that_passes_a_gate_prints_the_files_it_created(repo, monkeypatch):
+    run("new", "X", "--slug", "x", "--rt", "RT01")
+    prd = repo / "specs/000-x/prd.md"
+    prd.write_text(prd.read_text(encoding="utf-8").replace("TODO(sdd)", "done"), encoding="utf-8")
+    monkeypatch.setattr(
+        "sdd.interfaces.cli.app._harness",
+        lambda: build_harness(Settings(repo), confirmation=_Yes()),
+    )
+    first = run("approve", "000", "G1", "--as", "mentor")
+    assert first.exit_code == 0, first.output
+    assert "created:" not in first.output
+    assert not (repo / "specs/000-x/backlog.md").exists()
+    second = run("approve", "000", "G1", "--as", "mentee")
+    assert second.exit_code == 0, second.output
+    assert "created: backlog.md" in second.output
+    assert (repo / "specs/000-x/backlog.md").is_file()
+
+
+def test_failed_scaffolding_exits_with_2_and_an_error_line(repo, monkeypatch):
+    run("new", "X", "--slug", "x", "--rt", "RT01")
+    prd = repo / "specs/000-x/prd.md"
+    prd.write_text(prd.read_text(encoding="utf-8").replace("TODO(sdd)", "done"), encoding="utf-8")
+    monkeypatch.setattr(
+        "sdd.interfaces.cli.app._harness",
+        lambda: build_harness(Settings(repo), confirmation=_Yes()),
+    )
+    run("approve", "000", "G1", "--as", "mentor")
+    (repo / "specs/000-x/backlog.md").mkdir()  # a folder in the way: creating the file fails
+    failed = run("approve", "000", "G1", "--as", "mentee")
+    assert failed.exit_code == 2
+    assert "error:" in failed.output and "Traceback" not in failed.output
+    assert "mentee" not in (repo / "specs/000-x/dossier.yaml").read_text(encoding="utf-8")

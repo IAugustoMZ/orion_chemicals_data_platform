@@ -24,3 +24,6 @@ ADR is listed here and has a status and a date.
 | [0013](0013-mermaid-diagrams-with-official-logos.md) | Diagrams are Mermaid with official logos from a registry, checked by `sdd check` | Accepted |
 | [0014](0014-work-outside-the-requirements-catalogue.md) | Work outside the requirements catalogue is allowed, with a rationale | Accepted |
 | [0015](0015-one-gate-at-a-time-reviewed-in-chat.md) | One gate at a time, reviewed with us in the chat, approved at the terminal | Accepted |
+| [0016](0016-approval-confirmation-is-a-yes-no-prompt.md) | The approval confirmation is a y/N prompt at an interactive terminal | Accepted |
+| [0017](0017-backlog-items-are-self-contained-cards.md) | Backlog items are self-contained cards | Accepted |
+| [0018](0018-artifacts-are-created-as-gates-pass.md) | Artifacts are created as the gates pass, not all at once | Accepted |

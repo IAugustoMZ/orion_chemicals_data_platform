@@ -61,6 +61,47 @@ class TestDossierRepository:
         assert text.startswith("# Dossier metadata")
         assert "id: '001'" in text
 
+    def test_add_artifacts_never_overwrites(self, tmp_path):
+        repo = YamlDossierRepository(tmp_path, "specs")
+        value = dossier()
+        repo.create(value, {"prd.md": "mine"})
+        written = repo.add_artifacts(value, {"prd.md": "template", "backlog.md": "new"})
+        assert written == ("backlog.md",)
+        assert repo.read_artifact(value, "prd.md") == "mine"
+        assert repo.read_artifact(value, "backlog.md") == "new"
+
+    def test_add_artifacts_removes_what_it_wrote_when_one_write_fails(self, tmp_path):
+        repo = YamlDossierRepository(tmp_path, "specs")
+        value = dossier()
+        repo.create(value, {})
+        (tmp_path / "specs/001-demo/plan.md").mkdir()  # a folder in the way: writing fails
+        with pytest.raises(OSError, match="plan.md"):
+            repo.add_artifacts(value, {"spec.md": "a", "plan.md": "b", "tasks.md": "c"})
+        assert repo.read_artifact(value, "spec.md") is None
+        assert repo.read_artifact(value, "tasks.md") is None
+
+    def test_add_artifacts_removes_a_partially_written_file(self, tmp_path, monkeypatch):
+        repo = YamlDossierRepository(tmp_path, "specs")
+        value = dossier()
+        repo.create(value, {})
+        real_open = Path.open
+
+        class Failing(io.StringIO):
+            def write(self, text: str) -> int:
+                raise OSError("disk full")
+
+        def opener(self, mode="r", *args, **kwargs):
+            if self.name == "plan.md":
+                real_open(self, mode, *args, **kwargs).close()  # the file now exists, empty
+                return Failing()
+            return real_open(self, mode, *args, **kwargs)
+
+        monkeypatch.setattr(Path, "open", opener)
+        with pytest.raises(OSError, match="disk full"):
+            repo.add_artifacts(value, {"spec.md": "a", "plan.md": "b"})
+        assert not (tmp_path / "specs/001-demo/plan.md").exists()
+        assert not (tmp_path / "specs/001-demo/spec.md").exists()
+
     def test_errors(self, tmp_path):
         repo = YamlDossierRepository(tmp_path, "specs")
         with pytest.raises(DossierNotFoundError):
@@ -150,19 +191,35 @@ class TestGitWorkspace:
 class TestTerminalAndRunner:
     def test_terminal_requires_a_tty(self):
         with pytest.raises(HumanConfirmationRequiredError):
-            TerminalConfirmation(stdin=io.StringIO("001 G1\n")).confirm("summary", "001 G1")
+            TerminalConfirmation(stdin=io.StringIO("y\n")).confirm("summary")
 
-    def test_terminal_compares_the_answer(self):
+    def test_terminal_accepts_only_yes(self):
         class Tty(io.StringIO):
             def isatty(self) -> bool:
                 return True
 
         shown: list[str] = []
-        yes = TerminalConfirmation(Tty(), prompt=lambda _: "001 G1", echo=shown.append)
-        assert yes.confirm("summary", "001 G1")
+
+        def answered(text: str) -> bool:
+            return TerminalConfirmation(Tty(), prompt=lambda _: text, echo=shown.append).confirm(
+                "summary"
+            )
+
+        for accepted in ("y", "yes", "Y", " YES ", "Yes"):
+            assert answered(accepted), accepted
+        for refused in ("", "n", "no", "ye", "yep", "001 G1", "y y"):
+            assert not answered(refused), refused
         assert shown[0] == "summary"
-        no = TerminalConfirmation(Tty(), prompt=lambda _: "y", echo=shown.append)
-        assert not no.confirm("summary", "001 G1")
+
+    def test_closing_the_input_is_a_no(self):
+        class Tty(io.StringIO):
+            def isatty(self) -> bool:
+                return True
+
+        def closed(_: str) -> str:
+            raise EOFError
+
+        assert not TerminalConfirmation(Tty(), prompt=closed, echo=lambda _: None).confirm("s")
 
     def test_runner(self, tmp_path):
         runner = SubprocessCheckRunner(tmp_path, lambda root: ("f.txt",))

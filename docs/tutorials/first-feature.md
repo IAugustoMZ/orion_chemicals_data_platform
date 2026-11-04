@@ -54,8 +54,9 @@ git switch -c spec/001-source-contracts
 poetry run sdd status 001
 ```
 
-**Look at:** `specs/001-source-contracts/` now has `dossier.yaml` and nine artifacts copied from
-the templates. `prd.md` already contains a table of the cited RTs and how each one is verified.
+**Look at:** `specs/001-source-contracts/` now has only `dossier.yaml` and `prd.md`, copied from
+the template. The other artifacts do not exist yet: each one is created when the gate before it
+passes. `prd.md` already contains a table of the cited RTs and how each one is verified.
 In the status, **G0 is passed** and G1 is *pending*. The README status board shows the new
 dossier. If you just want to read a requirement yourself, `poetry run sdd rt RT02` prints it.
 
@@ -108,10 +109,10 @@ poetry run sdd approve 001 G1 --as mentor --note "chose time-to-reconcile; cut b
 poetry run sdd approve 001 G1 --as mentee
 ```
 
-Each command shows what you approve (artifacts and digest) and asks you to type `001 G1`.
+Each command shows what you approve (artifacts and digest) and asks `Approve? [y/N]`.
 
 **Look at:** after the first approval G1 is *partial* (waiting for the other); after the second,
-*passed*, and G2 becomes *pending*. Try this once: change a word in `prd.md` and run
+*passed*, G2 becomes *pending*, and the command prints that it created `backlog.md`. Try this once: change a word in `prd.md` and run
 `poetry run sdd status 001`. G1 is now **stale** and everything after it *blocked*: the approval
 was for the old text. Undo the change (or both re-approve).
 
@@ -132,11 +133,13 @@ Approve G3.
 
 ## 5. Phase 4 · Specify (G4)
 
-Agent: *"Use sdd-specify for 001."* This is the most important review. `spec.md` must have:
-numbered behaviours (`SPEC-001-B01 ...`), the architecture before/after with logos, the contract
-schema, the classes and patterns, a STRIDE table, a validation plan covering every cited RT, and
-ADR drafts (for example "source contracts are YAML validated by a schema"). `plan.md` and
-`tasks.md` break the build into small, test-first steps.
+Agent: *"Use sdd-specify for 001."* This is the most important review. `spec.md` is written as
+tables, so you can review it row by row. It must have: a behaviours table (`SPEC-001-B01 ...`,
+one EARS statement per row with its RTs and backlog criteria), the architecture before/after with
+logos plus tables of components and dependencies, a contracts table (and the schema), tables of
+classes, patterns and SOLID, a STRIDE table, a validation plan covering every cited RT, and a
+table of ADR drafts (for example "source contracts are YAML validated by a schema"). `plan.md`
+and `tasks.md` break the build into small, test-first steps.
 
 ```bash
 poetry run sdd check                # logos, links, ADR index must be clean
