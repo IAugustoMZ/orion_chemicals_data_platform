@@ -1,8 +1,9 @@
 """The `sdd` command line: one Typer command per use case.
 
 Interfaces layer. Each command builds the harness through the composition root, calls one use
-case and prints the result. Typed `SddError`s become a one-line message and exit code 2; error
-findings become exit code 1. Run ``poetry run sdd --help`` for the list.
+case and prints the result. Typed `SddError`s and file-system errors (`OSError`, for example a
+failed scaffolding that was undone) become a one-line message and exit code 2; error findings
+become exit code 1. Run ``poetry run sdd --help`` for the list.
 """
 
 from __future__ import annotations
@@ -49,6 +50,9 @@ def _run(action: Callable[[Harness], int | None]) -> None:
         raise typer.Exit(2) from error
     except SddError as error:
         typer.echo(f"error: {error}", err=True)
+        raise typer.Exit(2) from error
+    except OSError as error:
+        typer.echo(f"error: file system: {error}", err=True)
         raise typer.Exit(2) from error
     raise typer.Exit(code or 0)
 
@@ -118,7 +122,10 @@ def approve(
     def body(harness: Harness) -> None:
         """Record the approval and refresh the generated documents."""
         result = harness.approve.execute(dossier_id, parse_gate_id(gate), member, note)
-        typer.echo(f"{result.gate.id}: {result.state.value} ({result.detail})")
+        status = result.status
+        typer.echo(f"{status.gate.id}: {status.state.value} ({status.detail})")
+        for name in result.created:
+            typer.echo(f"  created: {name}")
         _sync_quietly(harness)
 
     _run(body)

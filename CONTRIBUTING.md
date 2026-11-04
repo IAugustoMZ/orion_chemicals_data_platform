@@ -21,7 +21,7 @@ git config user.email "you@example.com"
 |---|---|
 | `poetry run sdd status [id]` | gate states of every dossier and the next step |
 | `poetry run sdd rt [RTnn ...]` | print requirements from the catalogue (all of them without ids) |
-| `poetry run sdd new "Title" --slug x --rt RTnn` | start a dossier from the templates (usually run by the agent, after we agree on the RTs) |
+| `poetry run sdd new "Title" --slug x --rt RTnn` | start a dossier: creates `dossier.yaml` and `prd.md`; the next artifacts appear as each gate passes (usually run by the agent, after we agree on the RTs) |
 | `poetry run sdd new "Title" --slug x --rationale "why"` | start a dossier for work outside the catalogue (no RT applies) |
 | `poetry run sdd approve <id> <gate> --as <member>` | approve a human gate (people only, at a terminal) |
 | `poetry run sdd verify <id>` | run the full quality suite and record gate G5 |

@@ -41,6 +41,21 @@ class DossierRepository(Protocol):
         """
         ...
 
+    def add_artifacts(self, dossier: Dossier, artifacts: Mapping[str, str]) -> tuple[str, ...]:
+        """Write the artifacts that do not exist yet; never overwrite a file (ADR-0018).
+
+        All or nothing: when a write fails, the files this call wrote are removed before the
+        error is raised, so a failure leaves the folder as it was.
+
+        Args:
+            dossier: an existing dossier.
+            artifacts: file name -> initial content (rendered templates).
+
+        Returns:
+            The names of the files written, in the order of `artifacts`.
+        """
+        ...
+
     def read_artifact(self, dossier: Dossier, name: str) -> str | None:
         """Return the content of an artifact, or None when the file does not exist."""
         ...

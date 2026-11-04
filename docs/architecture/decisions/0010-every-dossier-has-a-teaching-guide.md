@@ -15,7 +15,8 @@ and easy to read as a course.
 ## Decision
 
 - The guide is **`specs/<id>-<slug>/teaching-guide.md`**, created from a fixed fourteen-section
-  template by `sdd new`.
+  template by the harness (by `sdd new` when this ADR was written; since
+  [ADR-0018](0018-artifacts-are-created-as-gates-pass.md), when G4 passes).
 - It is an artifact of **gate G6** together with `validation.md`: the merge cannot be approved
   until every section is present and no `TODO(sdd)` remains, and editing it after approval makes
   G6 stale.

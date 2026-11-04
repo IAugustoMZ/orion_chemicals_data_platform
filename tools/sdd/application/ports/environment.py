@@ -37,8 +37,8 @@ class Workspace(Protocol):
 class HumanConfirmation(Protocol):
     """Ask the person at the terminal to confirm an approval."""
 
-    def confirm(self, summary: str, expected: str) -> bool:
-        """Show `summary` and return true only if the person types `expected`.
+    def confirm(self, summary: str) -> bool:
+        """Show `summary` and return true only if the person answers yes (``y`` or ``yes``).
 
         Raises:
             HumanConfirmationRequiredError: when no interactive terminal is attached

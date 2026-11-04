@@ -98,6 +98,40 @@ class YamlDossierRepository:
         for name, content in artifacts.items():
             (folder / name).write_text(content, encoding="utf-8", newline="\n")
 
+    def add_artifacts(self, dossier: Dossier, artifacts: Mapping[str, str]) -> tuple[str, ...]:
+        """Write the artifacts whose file does not exist; remove them again if a write fails.
+
+        Args:
+            dossier: an existing dossier.
+            artifacts: file name -> initial content.
+
+        Returns:
+            The names of the files written.
+
+        Raises:
+            OSError: when a file cannot be written (the files already written are removed).
+        """
+        folder = self._root / self._specs_dir / dossier.folder_name
+        written: list[Path] = []
+        try:
+            for name, content in artifacts.items():
+                target = folder / name
+                try:
+                    # Mode "x" creates exclusively: an existing file is never overwritten, even
+                    # if it appeared after a check. The file is registered before the write so a
+                    # failure midway removes the partial file too.
+                    with target.open("x", encoding="utf-8", newline="\n") as handle:
+                        written.append(target)
+                        handle.write(content)
+                except FileExistsError:
+                    if not target.is_file():
+                        raise  # a folder in the way is an error, not "already there"
+        except OSError:
+            for target in written:
+                target.unlink(missing_ok=True)
+            raise
+        return tuple(target.name for target in written)
+
     def read_artifact(self, dossier: Dossier, name: str) -> str | None:
         """Return an artifact's text, or None when the file does not exist.
 

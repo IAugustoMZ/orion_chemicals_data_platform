@@ -1,25 +1,22 @@
 """Use case: start a new spec dossier from the templates (`sdd new`).
 
 Application layer. Creating a dossier is the first act of every piece of work: it assigns the
-next id, records the requirements the work serves, and copies one template per lifecycle
-artifact into `specs/<id>-<slug>/`, pre-filled with what is already known (title, branch, the
-cited RTs with their verification method).
+next id, records the requirements the work serves, and creates
+`specs/<id>-<slug>/` with `dossier.yaml` and the PRD, pre-filled with what is already known
+(title, branch, the cited RTs with their verification method). The later artifacts appear as
+the gates pass (ADR-0018).
 """
 
 from __future__ import annotations
 
-from collections.abc import Mapping
 from dataclasses import dataclass
-from datetime import date
 
-from sdd.application.ports.documents import TemplateLibrary
 from sdd.application.ports.dossiers import DossierRepository
 from sdd.application.ports.environment import Clock
 from sdd.application.ports.reference_data import RequirementCatalog
+from sdd.application.scaffold_artifacts import ScaffoldArtifacts
 from sdd.domain.dossier import Dossier, DossierKind
 from sdd.domain.errors import UnknownRequirementError
-from sdd.domain.gates import all_artifacts
-from sdd.domain.requirement import Requirement
 
 
 @dataclass(frozen=True)
@@ -43,12 +40,12 @@ class NewDossier:
 
 
 class CreateDossier:
-    """Create `specs/<id>-<slug>/` with `dossier.yaml` and one artifact per phase."""
+    """Create `specs/<id>-<slug>/` with `dossier.yaml` and `prd.md`."""
 
     def __init__(
         self,
         dossiers: DossierRepository,
-        templates: TemplateLibrary,
+        scaffold: ScaffoldArtifacts,
         requirements: RequirementCatalog,
         clock: Clock,
     ) -> None:
@@ -56,12 +53,12 @@ class CreateDossier:
 
         Args:
             dossiers: where the dossier is created.
-            templates: the artifact templates.
-            requirements: the RT catalogue, to validate citations and pre-fill the PRD.
+            scaffold: renders and adds the PRD.
+            requirements: the RT catalogue, to validate citations.
             clock: today's date for the metadata.
         """
         self._dossiers = dossiers
-        self._templates = templates
+        self._scaffold = scaffold
         self._requirements = requirements
         self._clock = clock
 
@@ -88,64 +85,11 @@ class CreateDossier:
             rationale=request.rationale,
             created=self._clock.now().date(),
         )
-        values = _template_values(dossier, catalog, dossier.created)
-        artifacts = {name: self._templates.render(name, values) for name in all_artifacts()}
-        self._dossiers.create(dossier, artifacts)
+        self._dossiers.create(dossier, {})
+        self._scaffold.for_creation(dossier)
         return dossier
 
     def _next_id(self) -> str:
         """Return the id after the highest existing one ("000" for the first dossier)."""
         existing = [int(dossier_id) for dossier_id in self._dossiers.ids()]
         return f"{max(existing, default=-1) + 1:03d}"
-
-
-def _template_values(
-    dossier: Dossier, catalog: Mapping[str, Requirement], today: date
-) -> dict[str, str]:
-    """Return the ``{{key}}`` values every template may use.
-
-    Args:
-        dossier: the new dossier.
-        catalog: the RT catalogue by id.
-        today: the creation date.
-    """
-    return {
-        "id": dossier.id,
-        "slug": dossier.slug,
-        "title": dossier.title,
-        "kind": dossier.kind.value,
-        "date": today.isoformat(),
-        "branch": dossier.branch_name,
-        "requirements": ", ".join(dossier.requirements) or "none",
-        "requirements_table": _requirements_table(dossier, catalog),
-    }
-
-
-_NO_RT: Mapping[DossierKind, str] = {
-    DossierKind.ENABLER: "_No RT cited: this is an enabler; see the rationale in `dossier.yaml`._",
-    DossierKind.FEATURE: (
-        "_No RT cited: this feature is **outside the requirements catalogue** (ADR-0014). The "
-        "rationale in `dossier.yaml` says why it is worth doing; the text below lists the RTs "
-        "that were considered and why none of them applies._"
-    ),
-}
-"""What the PRD says in place of the requirements table when no RT is cited, per kind."""
-
-
-def _requirements_table(dossier: Dossier, catalog: Mapping[str, Requirement]) -> str:
-    """Render the cited RTs as a Markdown table: statement and how we verify it.
-
-    Args:
-        dossier: the new dossier (its RT ids are all known).
-        catalog: the RT catalogue by id.
-    """
-    if not dossier.requirements:
-        return _NO_RT[dossier.kind]
-    rows = ["| RT | Phase | What must hold | How we verify it |", "|---|---|---|---|"]
-    for rt in dossier.requirements:
-        requirement = catalog[rt]
-        rows.append(
-            f"| {rt} | {requirement.phase.value} | {requirement.statement} "
-            f"| {requirement.verification} |"
-        )
-    return "\n".join(rows)

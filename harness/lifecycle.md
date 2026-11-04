@@ -11,8 +11,8 @@ gate criteria are in [gates.md](gates.md).
 **One gate at a time.** The agent drafts a phase's artifact only after the previous human gate
 passed. At the end of each human phase it runs the skill `sdd-review-gate`: it briefs us in the
 chat, asks specific questions we cannot answer without reading, applies our changes, and stops.
-We then approve, each at our own terminal, and the agent confirms with `sdd status` before it
-starts the next phase ([ADR-0015](../docs/architecture/decisions/0015-one-gate-at-a-time-reviewed-in-chat.md)).
+We then approve, each at our own terminal (the harness creates the next phase's files when the
+gate passes), and the agent confirms with `sdd status` before it starts the next phase ([ADR-0015](../docs/architecture/decisions/0015-one-gate-at-a-time-reviewed-in-chat.md)).
 
 ## Phase 0: Context
 
@@ -25,7 +25,10 @@ starts the next phase ([ADR-0015](../docs/architecture/decisions/0015-one-gate-a
   the catalogue* and propose why it is worth doing anyway; propose the title and slug; once we
   agree, run `sdd new` and create the branch.
 - **We:** confirm the mapping (or the rationale) and the scope in one sentence.
-- **Output:** `specs/<id>-<slug>/` created by `poetry run sdd new`, branch `spec/<id>-<slug>`.
+- **Output:** `specs/<id>-<slug>/` with `dossier.yaml` and `prd.md`, created by
+  `poetry run sdd new`, and the branch `spec/<id>-<slug>`. Later artifacts do not exist yet: the
+  harness creates each one when the gate before it passes
+  ([ADR-0018](../docs/architecture/decisions/0018-artifacts-are-created-as-gates-pass.md)).
 - **Gate:** **G0 · Context** (automatic): every cited RT exists; an enabler, and a feature that
   cites no RT, state their rationale
   ([ADR-0014](../docs/architecture/decisions/0014-work-outside-the-requirements-catalogue.md)).
@@ -49,8 +52,10 @@ starts the next phase ([ADR-0015](../docs/architecture/decisions/0015-one-gate-a
 *From product intent to a prioritised backlog.*
 
 - **Inputs:** the approved PRD.
-- **Agents:** propose epics, features and work items (PBIs), each with acceptance criteria in
-  EARS notation and the RTs it contributes to; propose an order with its reasons. Skill:
+- **Agents:** propose epics, features and work items (PBIs), each a self-contained card (context,
+  what to deliver, how to build it, out of scope, tests) with acceptance criteria in EARS
+  notation and the RTs it contributes to, so that someone without context can implement it;
+  propose an order with its reasons. Skill:
   `sdd-plan`; role: [backlog planner](roles/backlog-planner.md).
 - **We:** review, adjust and prioritise; split items that are too big.
 - **Output:** an approved backlog in `backlog.md` (the backlog lives in the repository, ADR-0012).
@@ -74,9 +79,10 @@ starts the next phase ([ADR-0015](../docs/architecture/decisions/0015-one-gate-a
 
 - **Inputs:** PRD, backlog and approach (approved); the ADRs; the codebase.
 - **Agents:** collect the context (requirements, ADRs, modules, contracts) and write the
-  execution spec: numbered EARS behaviours, architecture impact before/after with logos,
-  contracts and data, design (classes, patterns, SOLID), STRIDE threat model, validation plan,
-  ADR drafts, documentation impact; then `plan.md` and `tasks.md`. Skill: `sdd-specify`; role:
+  execution spec, organised as tables so it can be reviewed row by row: numbered EARS
+  behaviours, architecture impact before/after with logos, contracts and data, design (classes,
+  patterns, SOLID), STRIDE threat model, validation plan, ADR drafts, documentation impact;
+  then `plan.md` and `tasks.md`. Skill: `sdd-specify`; role:
   [spec architect](roles/spec-architect.md).
 - **We:** review and adjust the architecture decisions; make sure the validation plan proves
   every RT's "how we verify it".

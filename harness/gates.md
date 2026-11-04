@@ -23,10 +23,26 @@ Human gates are closed when **both of us** approved the current content (policy 
 1. **every earlier gate passed** (no skipping, no stale predecessor);
 2. **the artifacts are ready:** every `##` section of the template is present and no
    `TODO(sdd)` placeholder remains;
-3. **you are at an interactive terminal** and type the confirmation shown (`<id> <gate>`).
+3. **you are at an interactive terminal** and answer `y` to the summary shown (`Approve? [y/N]`;
+   anything else cancels and records nothing,
+   [ADR-0016](../docs/architecture/decisions/0016-approval-confirmation-is-a-yes-no-prompt.md)).
 
 What it records: your member id, the UTC time, the digest of the artifacts, your git identity and
 an optional `--note`. The second approval of the same gate turns it *passed*.
+
+**Files appear as gates pass.** When an approval turns a gate *passed*, the harness creates the
+artifacts of the next gate from their templates and tells you which ones. A file that already
+exists is never overwritten. So the artifact of a phase does not exist before the gate in front of
+it is closed ([ADR-0018](../docs/architecture/decisions/0018-artifacts-are-created-as-gates-pass.md)):
+
+| When this happens | the harness creates |
+|---|---|
+| `sdd new` | `dossier.yaml`, `prd.md` |
+| G1 passes | `backlog.md` |
+| G2 passes | `ux-approach.md` |
+| G3 passes | `spec.md`, `plan.md`, `tasks.md` |
+| G4 passes | `validation.md`, `teaching-guide.md` (the build writes them; G5 is automatic) |
+| G6 passes | `release.md` |
 
 ## What we check before approving (judgement, not machine)
 

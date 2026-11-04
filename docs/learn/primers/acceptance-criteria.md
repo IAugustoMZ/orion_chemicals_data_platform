@@ -28,6 +28,14 @@ criteria) and specs (behaviours).
   reviews can cite it.
 - **Start from the RT's "how we verify it".** It is usually the test, already half-written.
 
+## Criteria are not the whole card
+
+Acceptance criteria say *when the work is done*; they do not say *what to build* or *how*. A
+backlog card therefore also carries a context, the deliverables (**what**: commands, files,
+formats, exit codes), the build approach (**how**: layers, classes, ports, steps) and the tests
+that verify it, so that a person or an agent with no prior context can implement it. The
+template is `harness/templates/backlog.md`.
+
 ## From criterion to test
 
 ```text

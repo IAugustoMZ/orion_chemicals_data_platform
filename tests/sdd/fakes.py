@@ -42,6 +42,8 @@ SOLO_TEAM = Team((TeamMember("mentor", "Ana", "mentor"),), ApprovalPolicy.ANY)
 class FakeDossiers:
     dossiers: dict[str, Dossier] = field(default_factory=dict)
     artifacts: dict[tuple[str, str], str] = field(default_factory=dict)
+    fail_on: str | None = None
+    """When set, writing this artifact in `add_artifacts` fails (to test the undo)."""
 
     def ids(self) -> tuple[str, ...]:
         return tuple(sorted(self.dossiers))
@@ -58,6 +60,22 @@ class FakeDossiers:
         self.dossiers[value.id] = value
         for name, text in artifacts.items():
             self.artifacts[(value.id, name)] = text
+
+    def add_artifacts(self, value: Dossier, artifacts: Mapping[str, str]) -> tuple[str, ...]:
+        written: list[str] = []
+        try:
+            for name, text in artifacts.items():
+                if (value.id, name) in self.artifacts:
+                    continue
+                if name == self.fail_on:
+                    raise OSError(f"cannot write {name}")
+                self.artifacts[(value.id, name)] = text
+                written.append(name)
+        except OSError:
+            for name in written:
+                del self.artifacts[(value.id, name)]
+            raise
+        return tuple(written)
 
     def read_artifact(self, value: Dossier, name: str) -> str | None:
         return self.artifacts.get((value.id, name))
@@ -111,15 +129,15 @@ class FakeWorkspace:
 
 @dataclass
 class FakeConfirmation:
-    answer: str | None = None
+    approves: bool = True
     interactive: bool = True
     shown: list[str] = field(default_factory=list)
 
-    def confirm(self, summary: str, expected: str) -> bool:
+    def confirm(self, summary: str) -> bool:
         if not self.interactive:
             raise HumanConfirmationRequiredError("no terminal")
         self.shown.append(summary)
-        return (self.answer if self.answer is not None else expected) == expected
+        return self.approves
 
 
 class FixedClock:

@@ -15,8 +15,10 @@ Role: [spec architect](../../../harness/roles/spec-architect.md). Phase referenc
    ADRs, the architecture pages, [principles](../../../harness/principles.md),
    [security](../../../harness/security.md), the modules to be touched, external references
    (with URL and date).
-3. Write `spec.md`:
-   - **Behaviour:** numbered EARS statements `SPEC-<id>-Bnn`, each citing RTs and acceptance
+3. Write `spec.md`, **as tables** (one row per source, behaviour, component, dependency,
+   contract, class, pattern, ADR, document, exclusion; one fact per cell; prose and diagrams
+   only where a table cannot carry the content):
+   - **Behaviour:** a table of EARS statements `SPEC-<id>-Bnn`, each citing RTs and acceptance
      criteria;
    - **Architecture impact:** before/after flowcharts, every tool node with its official logo
      (skill `diagrams-with-logos`);

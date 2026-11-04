@@ -17,6 +17,7 @@ from sdd.application.generators.status import StatusGenerator
 from sdd.application.generators.traceability import TraceabilityGenerator
 from sdd.application.ports.environment import HumanConfirmation
 from sdd.application.ports.reference_data import RequirementCatalog
+from sdd.application.scaffold_artifacts import ScaffoldArtifacts
 from sdd.application.use_cases.approve_gate import ApproveGate
 from sdd.application.use_cases.check_harness import CheckHarness
 from sdd.application.use_cases.create_dossier import CreateDossier
@@ -96,6 +97,7 @@ def build_harness(settings: Settings, confirmation: HumanConfirmation | None = N
         LocalLinkRule(store),
         AdrRule(store, settings.decisions_dir),
     )
+    scaffold = ScaffoldArtifacts(templates, requirements, dossiers)
     sync = SyncGenerated(
         store,
         (
@@ -108,12 +110,13 @@ def build_harness(settings: Settings, confirmation: HumanConfirmation | None = N
         settings=settings,
         requirements=requirements,
         evaluate=evaluate,
-        create=CreateDossier(dossiers, templates, requirements, clock),
+        create=CreateDossier(dossiers, scaffold, requirements, clock),
         approve=ApproveGate(
             dossiers,
             evaluate,
             team,
             templates,
+            scaffold,
             workspace,
             confirmation or TerminalConfirmation(),
             clock,

@@ -79,6 +79,7 @@ flowchart TB
         end
         subgraph app["application"]
             UC["use_cases<br/>create · evaluate · approve · verify<br/>guard_commit · check_harness · lint_docs · sync_generated"]
+            SC["scaffold_artifacts.py<br/>ScaffoldArtifacts: renders and adds a gate's files (ADR-0018)"]
             PT["ports (Protocols)<br/>dossiers · reference_data · environment · documents"]
             DR["doc_rules (strategies)<br/>diagram types · logos · links · ADRs"]
             GN["generators (strategies)<br/>status · traceability · adapters"]

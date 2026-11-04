@@ -6,6 +6,7 @@ from dataclasses import replace
 
 import pytest
 
+from sdd.application.scaffold_artifacts import ScaffoldArtifacts
 from sdd.application.use_cases.approve_gate import ApproveGate
 from sdd.application.use_cases.create_dossier import CreateDossier, NewDossier
 from sdd.application.use_cases.evaluate_dossier import EvaluateDossier
@@ -42,18 +43,20 @@ from tests.sdd.fakes import (
 class World:
     """A wired set of fakes and use cases for one test."""
 
-    def __init__(self, answer: str | None = None, interactive: bool = True) -> None:
+    def __init__(self, approves: bool = True, interactive: bool = True) -> None:
         self.dossiers = FakeDossiers()
         self.workspace = FakeWorkspace()
-        self.confirmation = FakeConfirmation(answer, interactive)
+        self.confirmation = FakeConfirmation(approves, interactive)
         self.runner = FakeRunner()
         self.evaluate = EvaluateDossier(self.dossiers, FakeCatalog(), FakeTeam(), self.workspace)
-        self.create = CreateDossier(self.dossiers, DictTemplates(), FakeCatalog(), FixedClock())
+        self.scaffold = ScaffoldArtifacts(DictTemplates(), FakeCatalog(), self.dossiers)
+        self.create = CreateDossier(self.dossiers, self.scaffold, FakeCatalog(), FixedClock())
         self.approve = ApproveGate(
             self.dossiers,
             self.evaluate,
             FakeTeam(),
             DictTemplates(),
+            self.scaffold,
             self.workspace,
             self.confirmation,
             FixedClock(),
@@ -70,6 +73,11 @@ class World:
         for name in ("validation.md", "teaching-guide.md", "release.md"):
             self.dossiers.write("001", name, READY)
 
+    def start_dossier(self) -> None:
+        """A dossier as `sdd new` leaves it: only the PRD exists, and it is complete."""
+        self.dossiers.save(dossier())
+        self.dossiers.write("001", "prd.md", READY)
+
     def approve_through(self, last: GateId) -> None:
         for gate in (GateId.G1, GateId.G2, GateId.G3, GateId.G4, GateId.G6, GateId.G7):
             for member in ("mentor", "mentee"):
@@ -84,8 +92,7 @@ class TestCreate:
         first = world.create.execute(NewDossier("One", "one", DossierKind.FEATURE, ("RT01",)))
         second = world.create.execute(NewDossier("Two", "two", DossierKind.FEATURE, ("RT02",)))
         assert (first.id, second.id) == ("000", "001")
-        assert ("000", "spec.md") in world.dossiers.artifacts
-        assert len([k for k in world.dossiers.artifacts if k[0] == "000"]) == 9
+        assert [k[1] for k in world.dossiers.artifacts if k[0] == "000"] == ["prd.md"]
 
     def test_rejects_unknown_requirement(self):
         with pytest.raises(UnknownRequirementError):
@@ -95,7 +102,11 @@ class TestCreate:
         world = World()
         world.create = CreateDossier(
             world.dossiers,
-            DictTemplates({"prd.md": "{{requirements_table}} {{branch}}"}),
+            ScaffoldArtifacts(
+                DictTemplates({"prd.md": "{{requirements_table}} {{branch}}"}),
+                FakeCatalog(),
+                world.dossiers,
+            ),
             FakeCatalog(),
             FixedClock(),
         )
@@ -108,7 +119,11 @@ class TestCreate:
         world = World()
         world.create = CreateDossier(
             world.dossiers,
-            DictTemplates({"prd.md": "{{requirements_table}} ({{requirements}})"}),
+            ScaffoldArtifacts(
+                DictTemplates({"prd.md": "{{requirements_table}} ({{requirements}})"}),
+                FakeCatalog(),
+                world.dossiers,
+            ),
             FakeCatalog(),
             FixedClock(),
         )
@@ -156,9 +171,10 @@ class TestApprove:
     def test_both_approvals_pass_the_gate(self):
         world = World()
         world.ready_dossier()
-        assert world.approve.execute("001", GateId.G1, "mentor", "").state is GateState.PARTIAL
-        status = world.approve.execute("001", GateId.G1, "mentee", "looks right")
-        assert status.state is GateState.PASSED
+        first = world.approve.execute("001", GateId.G1, "mentor", "")
+        assert first.status.state is GateState.PARTIAL
+        second = world.approve.execute("001", GateId.G1, "mentee", "looks right")
+        assert second.status.state is GateState.PASSED
         recorded = world.dossiers.load("001").approvals_for(GateId.G1)
         assert {a.member for a in recorded} == {"mentor", "mentee"}
         assert recorded[-1].note == "looks right"
@@ -185,12 +201,59 @@ class TestApprove:
             world.approve.execute("001", GateId.G1, "mentor", "")
         assert world.dossiers.load("001").approvals_for(GateId.G1) == ()
 
-    def test_wrong_confirmation_saves_nothing(self):
-        world = World(answer="yes")
+    def test_answer_other_than_yes_saves_nothing(self):
+        world = World(approves=False)
         world.ready_dossier()
         with pytest.raises(ApprovalDeclinedError):
             world.approve.execute("001", GateId.G1, "mentor", "")
         assert world.dossiers.load("001").approvals_for(GateId.G1) == ()
+
+    def test_missing_artifacts_read_as_not_complete(self):
+        world = World()
+        world.start_dossier()
+        report = world.evaluate.one("001")
+        assert report.status(GateId.G1).state is GateState.PENDING
+        assert report.status(GateId.G2).state is GateState.BLOCKED
+
+    def test_first_approval_creates_nothing(self):
+        world = World()
+        world.start_dossier()
+        result = world.approve.execute("001", GateId.G1, "mentor", "")
+        assert result.status.state is GateState.PARTIAL
+        assert result.created == ()
+        assert ("001", "backlog.md") not in world.dossiers.artifacts
+
+    def test_second_approval_creates_the_next_gates_files(self):
+        world = World()
+        world.start_dossier()
+        world.approve.execute("001", GateId.G1, "mentor", "")
+        result = world.approve.execute("001", GateId.G1, "mentee", "")
+        assert result.created == ("backlog.md",)
+        assert "TODO(sdd)" in world.dossiers.artifacts[("001", "backlog.md")]
+
+    def test_existing_artifacts_are_never_overwritten(self):
+        world = World()
+        world.start_dossier()
+        world.dossiers.write("001", "backlog.md", "my own work")
+        world.approve.execute("001", GateId.G1, "mentor", "")
+        result = world.approve.execute("001", GateId.G1, "mentee", "")
+        assert result.created == ()
+        assert world.dossiers.artifacts[("001", "backlog.md")] == "my own work"
+
+    def test_failed_scaffolding_undoes_the_approval(self):
+        world = World()
+        world.start_dossier()
+        world.approve.execute("001", GateId.G1, "mentor", "")
+        before = world.dossiers.load("001")
+        world.dossiers.fail_on = "backlog.md"
+        with pytest.raises(OSError, match="backlog.md"):
+            world.approve.execute("001", GateId.G1, "mentee", "")
+        assert world.dossiers.load("001") == before
+        assert ("001", "backlog.md") not in world.dossiers.artifacts
+        world.dossiers.fail_on = None
+        retried = world.approve.execute("001", GateId.G1, "mentee", "")
+        assert retried.status.state is GateState.PASSED
+        assert retried.created == ("backlog.md",)
 
     def test_automated_gate_and_unknown_member(self):
         world = World()

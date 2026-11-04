@@ -94,7 +94,7 @@ The full picture, with every rule and how it is enforced: **[how the harness wor
 <!-- sdd:status:start -->
 | Spec | Kind | Where it is | G0 | G1 | G2 | G3 | G4 | G5 | G6 | G7 | Guide |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| [000 · The SDD harness](specs/000-sdd-harness/prd.md) | enabler | Discover (G1) | ✅ | 🟡 | ⏸️ | ⏸️ | ⏸️ | ⏸️ | ⏸️ | ⏸️ | [📘](specs/000-sdd-harness/teaching-guide.md) |
+| [000 · The SDD harness](specs/000-sdd-harness/prd.md) | enabler | Release & Learn (G7) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | [📘](specs/000-sdd-harness/teaching-guide.md) |
 
 ✅ passed · 🟡 partly approved · ⚪ pending · 🟠 stale (changed after approval) · ❌ failed · ⏸️ blocked by an earlier gate
 <!-- sdd:status:end -->
@@ -121,7 +121,8 @@ Before approving anything, put your names in [harness/team.yaml](harness/team.ya
 
 The agent reads all 42 requirements, tells you which ones the work serves (or that it is
 outside the catalogue, which is allowed with a reason), and once you agree creates the dossier
-and its branch. Then it guides you phase by phase. Walk-through:
+and its branch. Then it guides you phase by phase; each phase's file is created when the gate
+before it passes. Walk-through:
 [your first feature](docs/tutorials/first-feature.md).
 
 ## What's inside
