@@ -4,34 +4,34 @@
 
 Each technical requirement of the [catalogue](README.md), the dossiers that cite it and how far it got: *in discovery* (cited), *specified* (G4 passed), *delivered* (G6 passed), *validated* (G7 passed). Enablers support requirements but never deliver them.
 
-Requirements RT01-RT42: in discovery **0** · specified **0** · delivered **0** · validated **0** · not started **42**.
+Requirements RT01-RT42: in discovery **12** · specified **0** · delivered **0** · validated **0** · not started **30**.
 
 ## 01 / Data integration and ingestion
 
 | RT | Phase | First | Requirement | Specs | Status |
 |---|---|---|---|---|---|
 | RT01 | P | ★ | Each integration shall use an authorised read interface, with no credentials that allow commands or changes in the industrial system. | — | not started |
-| RT02 | P |  | Each source shall have an integration contract with an owner, interface, fields, identifier, time reference, extraction limits, frequency and available history. | — | not started |
+| RT02 | P |  | Each source shall have an integration contract with an owner, interface, fields, identifier, time reference, extraction limits, frequency and available history. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT03 | P |  | Historical and incremental loads shall record the requested interval and the interval actually received. | — | not started |
 | RT04 | P |  | The resume point (checkpoint) shall advance only after the source data has been preserved and the load completed successfully. | — | not started |
 | RT05 | P |  | Transient failures shall have bounded retries, progressive back-off and logging; permanent failures shall require visible intervention. | — | not started |
 | RT06 | P |  | Extractions shall respect the agreed volume and concurrency limits per source. | — | not started |
-| RT07 | P |  | When available, the occurrence time, the update time at the source and the reception time shall be stored separately. | — | not started |
+| RT07 | P |  | When available, the occurrence time, the update time at the source and the reception time shall be stored separately. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT08 | P |  | The ingestion mechanism shall support batch, continuous arrival or trigger, without imposing one pattern on every source. | — | not started |
 
 ## 02 / Identity, model and quality
 
 | RT | Phase | First | Requirement | Specs | Status |
 |---|---|---|---|---|---|
-| RT09 | P | ★ | Original identifiers shall be stored with their source; the combination source + code shall never point to two pieces of equipment at the same time. | — | not started |
+| RT09 | P | ★ | Original identifiers shall be stored with their source; the combination source + code shall never point to two pieces of equipment at the same time. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT10 | P |  | Records with an unknown equipment or tag shall remain retrievable and pending, with a reason, without any presumed association. | — | not started |
 | RT11 | P |  | Every published dataset shall declare its grain and its relationship keys. | — | not started |
-| RT12 | P | ★ | Interpretable timestamps shall be standardised in UTC, preserving the original representation and time zone/offset when known; ambiguities shall be flagged. | — | not started |
+| RT12 | P | ★ | Interpretable timestamps shall be standardised in UTC, preserving the original representation and time zone/offset when known; ambiguities shall be flagged. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT13 | P |  | The original value, unit and quality shall be preserved; a conversion is published only with a sufficient rule and context. | — | not started |
 | RT14 | P |  | Quality rules shall have a version, scope, severity and a defined destination: publish, alert or keep pending. | — | not started |
 | RT15 | P |  | Compatible schema extensions shall be accepted; incompatible changes shall block only the affected publication and produce a diagnosis. | — | not started |
 | RT16 | A |  | Documents shall preserve content, ID, origin, revision and known links to equipment, system or area. | — | not started |
-| RT17 | P |  | Completeness shall only be computed when the expected frequency or quantity is defined. | — | not started |
+| RT17 | P |  | Completeness shall only be computed when the expected frequency or quantity is defined. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT18 | A |  | Observed values shall be distinguishable from estimated ones, with the estimation method and parameters. | — | not started |
 | RT19 | P |  | Common rules of identity, unit, time and quality shall produce the same result for every consumer. | — | not started |
 
@@ -42,7 +42,7 @@ Requirements RT01-RT42: in discovery **0** · specified **0** · delivered **0**
 | RT20 | P | ★ | Received content shall be kept separate from transformed results, with source, load, reception and a means of checking integrity. | — | not started |
 | RT21 | P | ★ | Reprocessing an identical input shall produce the same logical published dataset, without new duplicated facts. | — | not started |
 | RT22 | P | ★ | Corrections shall follow a documented precedence; conflicts without a reliable rule shall not be resolved by arrival order alone. | — | not started |
-| RT23 | P | ★ | Late data shall be placed in its occurrence period and identify the derived results that must be updated. | — | not started |
+| RT23 | P | ★ | Late data shall be placed in its occurrence period and identify the derived results that must be updated. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT24 | P | ★ | Reprocessing runs shall record inputs, slice, parameters and versions of code and rules. | — | not started |
 | RT25 | P | ★ | A recomputed result shall be validated before publication; queries shall not mix inconsistent versions of the same slice. | — | not started |
 | RT26 | A |  | Data categories shall have a documented retention period and level of detail, with verifiable disposal. | — | not started |
@@ -52,8 +52,8 @@ Requirements RT01-RT42: in discovery **0** · specified **0** · delivered **0**
 
 | RT | Phase | First | Requirement | Specs | Status |
 |---|---|---|---|---|---|
-| RT28 | P | ★ | Sizing shall declare tags, frequencies, average size, history, concurrency and growth, separating measurement from projection. | — | not started |
-| RT29 | P | ★ | The prototype shall measure sustained throughput, load duration, delay between availability and publication, and resources used. | — | not started |
+| RT28 | P | ★ | Sizing shall declare tags, frequencies, average size, history, concurrency and growth, separating measurement from projection. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
+| RT29 | P | ★ | The prototype shall measure sustained throughput, load duration, delay between availability and publication, and resources used. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT30 | A |  | Scaling to the whole plant depends on a test at the required scale; the prototype does not prove industrial capacity by extrapolation. | — | not started |
 | RT31 | P |  | Queries shall declare period, resolution and return limits, with pagination or controlled export for large datasets. | — | not started |
 | RT32 | A |  | Query interfaces shall have a documented and versioned contract, with filters, types, errors and data quality. | — | not started |
@@ -67,11 +67,11 @@ Requirements RT01-RT42: in discovery **0** · specified **0** · delivered **0**
 | RT35 | P |  | Technical and human identities shall receive only the permissions their function needs; restricted data follows the agreed classification. | — | not started |
 | RT36 | P |  | Credentials shall not appear in code or published files; their use, rotation and revocation shall have a defined procedure. | [000](../../specs/000-sdd-harness/prd.md) (enabler) | not started |
 | RT37 | A |  | Connections and stored data shall use protection compatible with the classification and the policies of the environment. | — | not started |
-| RT38 | P |  | Changes to mappings, rules, permissions and manual reprocessing shall record actor, time, reason and before/after when applicable. | [000](../../specs/000-sdd-harness/prd.md) (enabler) | not started |
-| RT39 | P | ★ | Each load shall expose its run, state, times, volumes, period covered and cause of error. | — | not started |
-| RT40 | P |  | Operations shall track delay, backlog, failures, pending identity issues, quality and duration per source. | — | not started |
+| RT38 | P |  | Changes to mappings, rules, permissions and manual reprocessing shall record actor, time, reason and before/after when applicable. | [000](../../specs/000-sdd-harness/prd.md) (enabler), [001](../../specs/001-timeseries-source/prd.md) | in discovery |
+| RT39 | P | ★ | Each load shall expose its run, state, times, volumes, period covered and cause of error. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
+| RT40 | P |  | Operations shall track delay, backlog, failures, pending identity issues, quality and duration per source. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT41 | A |  | Backups and restore tests of data and metadata shall exist; acceptable loss and maximum recovery time are agreed before real operation. | — | not started |
-| RT42 | P |  | Changes to integrations and rules shall pass automated validation of contracts, exceptions and regression before publication. | [000](../../specs/000-sdd-harness/prd.md) (enabler) | not started |
+| RT42 | P |  | Changes to integrations and rules shall pass automated validation of contracts, exceptions and regression before publication. | [000](../../specs/000-sdd-harness/prd.md) (enabler), [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 
 ★ = the catalogue asks to tackle this RT first (risk discovery).
 
