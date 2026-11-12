@@ -4,7 +4,7 @@
 
 Each technical requirement of the [catalogue](README.md), the dossiers that cite it and how far it got: *in discovery* (cited), *specified* (G4 passed), *delivered* (G6 passed), *validated* (G7 passed). Enablers support requirements but never deliver them.
 
-Requirements RT01-RT42: in discovery **12** · specified **0** · delivered **0** · validated **0** · not started **30**.
+Requirements RT01-RT42: in discovery **10** · specified **2** · delivered **0** · validated **0** · not started **30**.
 
 ## 01 / Data integration and ingestion
 
@@ -67,11 +67,11 @@ Requirements RT01-RT42: in discovery **12** · specified **0** · delivered **0*
 | RT35 | P |  | Technical and human identities shall receive only the permissions their function needs; restricted data follows the agreed classification. | — | not started |
 | RT36 | P |  | Credentials shall not appear in code or published files; their use, rotation and revocation shall have a defined procedure. | [000](../../specs/000-sdd-harness/prd.md) (enabler) | not started |
 | RT37 | A |  | Connections and stored data shall use protection compatible with the classification and the policies of the environment. | — | not started |
-| RT38 | P |  | Changes to mappings, rules, permissions and manual reprocessing shall record actor, time, reason and before/after when applicable. | [000](../../specs/000-sdd-harness/prd.md) (enabler), [001](../../specs/001-timeseries-source/prd.md) | in discovery |
+| RT38 | P |  | Changes to mappings, rules, permissions and manual reprocessing shall record actor, time, reason and before/after when applicable. | [000](../../specs/000-sdd-harness/prd.md) (enabler), [001](../../specs/001-timeseries-source/prd.md), [002](../../specs/002-harness-item-flow/prd.md) | specified |
 | RT39 | P | ★ | Each load shall expose its run, state, times, volumes, period covered and cause of error. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT40 | P |  | Operations shall track delay, backlog, failures, pending identity issues, quality and duration per source. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT41 | A |  | Backups and restore tests of data and metadata shall exist; acceptable loss and maximum recovery time are agreed before real operation. | — | not started |
-| RT42 | P |  | Changes to integrations and rules shall pass automated validation of contracts, exceptions and regression before publication. | [000](../../specs/000-sdd-harness/prd.md) (enabler), [001](../../specs/001-timeseries-source/prd.md) | in discovery |
+| RT42 | P |  | Changes to integrations and rules shall pass automated validation of contracts, exceptions and regression before publication. | [000](../../specs/000-sdd-harness/prd.md) (enabler), [001](../../specs/001-timeseries-source/prd.md), [002](../../specs/002-harness-item-flow/prd.md) | specified |
 
 ★ = the catalogue asks to tackle this RT first (risk discovery).
 

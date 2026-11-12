@@ -95,13 +95,14 @@ The full picture, with every rule and how it is enforced: **[how the harness wor
 | Spec | Kind | Where it is | G0 | G1 | G2 | G3 | G4 | G5 | G6 | G7 | Guide |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | [000 · The SDD harness](specs/000-sdd-harness/prd.md) | enabler | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/000-sdd-harness/teaching-guide.md) |
-| [001 · Time-series source: global plant data generator](specs/001-timeseries-source/prd.md) | feature | Structure (G3) | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | ⏸️ | ⏸️ | [📘](specs/001-timeseries-source/teaching-guide.md) |
+| [001 · Time-series source: global plant data generator](specs/001-timeseries-source/prd.md) | feature | Specify (G4) | ✅ | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | ⏸️ | not yet |
+| [002 · Harness: item-by-item flow and CI](specs/002-harness-item-flow/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | [📘](specs/002-harness-item-flow/teaching-guide.md) |
 
 ✅ passed · 🟡 partly approved · ⚪ pending · 🟠 stale (changed after approval) · ❌ failed · ⏸️ blocked by an earlier gate
 <!-- sdd:status:end -->
 
 <!-- sdd:coverage:start -->
-Requirements RT01-RT42: in discovery **12** · specified **0** · delivered **0** · validated **0** · not started **30**. [Full traceability matrix](docs/requirements/traceability.md).
+Requirements RT01-RT42: in discovery **10** · specified **2** · delivered **0** · validated **0** · not started **30**. [Full traceability matrix](docs/requirements/traceability.md).
 <!-- sdd:coverage:end -->
 
 ## Quick start

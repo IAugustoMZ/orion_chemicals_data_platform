@@ -51,4 +51,15 @@ approvals:
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
     note: 'Partial G2: skeleton + PBI-001-01 only; others are outlines refined and approved one at a
       time; placeholder ''not yet''; boolean kept; step-zero PR in two commits'
+  G3:
+  - member: mentor
+    at: '2026-11-12T20:34:35+00:00'
+    digest: sha256:7cd85103b189a8cc09387aff5298201d13dbe640695eeb55cfc8413aeb86fedc
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  - member: mentee
+    at: '2026-11-12T20:34:48+00:00'
+    digest: sha256:7cd85103b189a8cc09387aff5298201d13dbe640695eeb55cfc8413aeb86fedc
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
 verification: null

@@ -7,6 +7,7 @@ Every piece of work is a *dossier*: one folder with one artifact per phase of th
 | Spec | Kind | Where it is | G0 | G1 | G2 | G3 | G4 | G5 | G6 | G7 | Guide |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | [000 · The SDD harness](000-sdd-harness/prd.md) | enabler | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](000-sdd-harness/teaching-guide.md) |
-| [001 · Time-series source: global plant data generator](001-timeseries-source/prd.md) | feature | Structure (G3) | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | ⏸️ | ⏸️ | [📘](001-timeseries-source/teaching-guide.md) |
+| [001 · Time-series source: global plant data generator](001-timeseries-source/prd.md) | feature | Specify (G4) | ✅ | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | ⏸️ | not yet |
+| [002 · Harness: item-by-item flow and CI](002-harness-item-flow/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | [📘](002-harness-item-flow/teaching-guide.md) |
 
 ✅ passed · 🟡 partly approved · ⚪ pending · 🟠 stale (changed after approval) · ❌ failed · ⏸️ blocked by an earlier gate
