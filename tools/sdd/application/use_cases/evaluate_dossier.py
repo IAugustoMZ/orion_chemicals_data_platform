@@ -34,11 +34,13 @@ class DossierReport:
         dossier: the dossier as stored.
         statuses: one status per gate, G0 first.
         evidence: the digests and G0 problems the statuses were computed from.
+        has_teaching_guide: whether `teaching-guide.md` exists yet (ADR-0018 creates it at G4).
     """
 
     dossier: Dossier
     statuses: tuple[GateStatus, ...]
     evidence: GateEvidence
+    has_teaching_guide: bool = False
 
     def status(self, gate_id: GateId) -> GateStatus:
         """Return the status of one gate.
@@ -111,4 +113,5 @@ class EvaluateDossier:
             governed: the current governed digest.
         """
         evidence = collect_evidence(dossier, self._dossiers, catalog, governed)
-        return DossierReport(dossier, evaluate_gates(dossier, team, evidence), evidence)
+        guide = self._dossiers.read_artifact(dossier, "teaching-guide.md") is not None
+        return DossierReport(dossier, evaluate_gates(dossier, team, evidence), evidence, guide)

@@ -27,3 +27,15 @@ ADR is listed here and has a status and a date.
 | [0016](0016-approval-confirmation-is-a-yes-no-prompt.md) | The approval confirmation is a y/N prompt at an interactive terminal | Accepted |
 | [0017](0017-backlog-items-are-self-contained-cards.md) | Backlog items are self-contained cards | Accepted |
 | [0018](0018-artifacts-are-created-as-gates-pass.md) | Artifacts are created as the gates pass, not all at once | Accepted |
+
+## Time-series source (dossier 001)
+
+| ADR | Decision | Status |
+|---|---|---|
+| [0019](0019-tssource-package-and-dependencies.md) | The generator is a second clean-architecture package with its own dependency group | Proposed |
+| [0020](0020-deterministic-generation-and-simulated-reception-time.md) | Generation is deterministic, and the reception time is simulated | Proposed |
+| [0021](0021-output-as-immutable-files-and-segments.md) | The output is a folder of immutable files, with small stream segments | Proposed |
+| [0022](0022-hidden-plant-and-site-local-time.md) | The plant stays hidden in `truth/`, and events carry site-local time | Proposed |
+| [0023](0023-item-by-item-build-flow.md) | A backlog is approved and built one card at a time | Proposed |
+| [0024](0024-ci-with-github-actions-blocks-merge.md) | CI with GitHub Actions blocks the merge (supersedes ADR-0004 when accepted) | Proposed |
+| [0025](0025-pi-like-acquisition-and-quality-codes.md) | The output has the shape of a historian: exception, snapshot, compression, quality codes | Proposed |

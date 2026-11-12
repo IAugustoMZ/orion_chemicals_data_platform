@@ -1,0 +1,61 @@
+# Dossier metadata (harness/how-it-works.md, "The dossier").
+# Edit freely: title, requirements (RT ids from docs/requirements/rt-catalog.yaml), rationale.
+# Never edit by hand: `approvals` (written by `sdd approve`, humans only) and `verification`
+# (written by `sdd verify`). Both are bound to content digests; a hand edit is detected.
+id: '002'
+slug: harness-item-flow
+title: 'Harness: item-by-item flow and CI'
+kind: feature
+created: 2026-11-12
+requirements:
+- RT42
+- RT38
+rationale: A large backlog must be built and approved one card at a time, and every merge must be blocked
+  unless the automated checks pass, so what we learn from one card shapes the next and no change reaches
+  main unchecked.
+approvals:
+  G1:
+  - member: mentor
+    at: '2026-11-12T21:03:24+00:00'
+    digest: sha256:affd0cb9f7b0e504a7cd802d186ef59474a47b25cb1fe23ace76fc97d656f00b
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  - member: mentee
+    at: '2026-11-12T21:03:55+00:00'
+    digest: sha256:affd0cb9f7b0e504a7cd802d186ef59474a47b25cb1fe23ace76fc97d656f00b
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  G2:
+  - member: mentor
+    at: '2026-11-12T21:11:14+00:00'
+    digest: sha256:da63e0f7db5806563df4eacb64674d141611a38288cb1925bb6af7b03be68bbb
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  - member: mentee
+    at: '2026-11-12T21:11:29+00:00'
+    digest: sha256:da63e0f7db5806563df4eacb64674d141611a38288cb1925bb6af7b03be68bbb
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  G3:
+  - member: mentor
+    at: '2026-11-12T21:32:46+00:00'
+    digest: sha256:50d2c9fd987d49b2650ea5d1876628dea915a4c20cfa13d900435f7e759e5f70
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  - member: mentee
+    at: '2026-11-12T21:35:48+00:00'
+    digest: sha256:50d2c9fd987d49b2650ea5d1876628dea915a4c20cfa13d900435f7e759e5f70
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  G4:
+  - member: mentor
+    at: '2026-11-12T23:40:44+00:00'
+    digest: sha256:7cfc1cc5d527bc0d73c0d91cecda6167727ac8904b148ad2e02eb8ff463c3e93
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  - member: mentee
+    at: '2026-11-12T23:41:42+00:00'
+    digest: sha256:7cfc1cc5d527bc0d73c0d91cecda6167727ac8904b148ad2e02eb8ff463c3e93
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+verification: null

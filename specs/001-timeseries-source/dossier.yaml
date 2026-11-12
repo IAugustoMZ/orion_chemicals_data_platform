@@ -1,0 +1,65 @@
+# Dossier metadata (harness/how-it-works.md, "The dossier").
+# Edit freely: title, requirements (RT ids from docs/requirements/rt-catalog.yaml), rationale.
+# Never edit by hand: `approvals` (written by `sdd approve`, humans only) and `verification`
+# (written by `sdd verify`). Both are bound to content digests; a hand edit is detected.
+id: '001'
+slug: timeseries-source
+title: 'Time-series source: global plant data generator'
+kind: feature
+created: 2026-11-04
+requirements:
+- RT02
+- RT07
+- RT09
+- RT12
+- RT17
+- RT23
+- RT28
+- RT29
+- RT38
+- RT39
+- RT40
+- RT42
+rationale: The platform team has no plant to connect to. This continuous source gives it simulated, labelled
+  and deliberately messy plant time-series from five sites in different time zones, so identity, time,
+  late-data and scale requirements can be built and tested before any ingestion exists, and so a future
+  contextualisation model has training data while the plant structure stays hidden in an answer key.
+approvals:
+  G1:
+  - member: mentor
+    at: '2026-11-05T13:32:15+00:00'
+    digest: sha256:a1e979860f27335095714cf54454b9341f87cee53cf235bda4a2bc049911da96
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: 'Amended: RT42 cited; four harness changes (status link, rationale, item-by-item flow, CI);
+      GitHub only hosts the repo and checks; G2 partial'
+  - member: mentee
+    at: '2026-11-05T13:32:38+00:00'
+    digest: sha256:a1e979860f27335095714cf54454b9341f87cee53cf235bda4a2bc049911da96
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: 'Amended: RT42 cited; four harness changes (status link, rationale, item-by-item flow, CI);
+      GitHub only hosts the repo and checks; G2 partial'
+  G2:
+  - member: mentor
+    at: '2026-11-05T13:41:22+00:00'
+    digest: sha256:c9b9bbaf87a32b0217c707757228bec7019ffaf9b0b16d184ba5d71cd97edb0f
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: 'Partial G2: skeleton + PBI-001-01 only; others are outlines refined and approved one at a
+      time; placeholder ''not yet''; boolean kept; step-zero PR in two commits'
+  - member: mentee
+    at: '2026-11-05T13:42:09+00:00'
+    digest: sha256:c9b9bbaf87a32b0217c707757228bec7019ffaf9b0b16d184ba5d71cd97edb0f
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: 'Partial G2: skeleton + PBI-001-01 only; others are outlines refined and approved one at a
+      time; placeholder ''not yet''; boolean kept; step-zero PR in two commits'
+  G3:
+  - member: mentor
+    at: '2026-11-12T20:34:35+00:00'
+    digest: sha256:7cd85103b189a8cc09387aff5298201d13dbe640695eeb55cfc8413aeb86fedc
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  - member: mentee
+    at: '2026-11-12T20:34:48+00:00'
+    digest: sha256:7cd85103b189a8cc09387aff5298201d13dbe640695eeb55cfc8413aeb86fedc
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+verification: null

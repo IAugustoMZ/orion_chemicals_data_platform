@@ -68,9 +68,10 @@ def render_board(reports: tuple[DossierReport, ...], link_prefix: str) -> str:
     for report in reports:
         dossier, folder = report.dossier, f"{link_prefix}{report.dossier.folder_name}"
         chips = " | ".join(SYMBOLS[status.state] for status in report.statuses)
+        guide = f"[📘]({folder}/teaching-guide.md)" if report.has_teaching_guide else "not yet"
         rows.append(
             f"| [{dossier.id} · {dossier.title}]({folder}/prd.md) | {kind_label(dossier)} "
-            f"| {where_it_is(report)} | {chips} | [📘]({folder}/teaching-guide.md) |"
+            f"| {where_it_is(report)} | {chips} | {guide} |"
         )
     return "\n".join(rows) + f"\n\n{LEGEND}"
 

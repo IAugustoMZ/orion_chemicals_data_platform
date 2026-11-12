@@ -84,3 +84,11 @@ logos:
     url: https://cdn.simpleicons.org/prefect/024DFD
   - name: Redis
     url: https://cdn.simpleicons.org/redis/FF4438
+
+  # Added by dossier 001 (time-series source and CI)
+  - name: NumPy
+    url: https://cdn.simpleicons.org/numpy/013243
+  - name: GitHub
+    url: https://cdn.simpleicons.org/github/181717
+  - name: GitHub Actions
+    url: https://cdn.simpleicons.org/githubactions/2088FF
