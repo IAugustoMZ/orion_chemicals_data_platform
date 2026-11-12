@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+import pytest
+
 from sdd.application.doc_rules.adr import AdrRule
 from sdd.application.doc_rules.links import LocalLinkRule
 from sdd.application.doc_rules.markdown import fenced_blocks, prose_lines
@@ -174,6 +176,22 @@ class TestSync:
         assert "Plan it" in store.files[".github/prompts/sdd-plan.prompt.md"]
         assert "RT01" in store.files["docs/requirements/traceability.md"]
         assert sync.execute(write=False).findings() == ()
+
+    @pytest.mark.ac("PBI-002-01:AC1")
+    def test_status_links_the_teaching_guide_when_it_exists(self):
+        dossiers, _, store, sync = world()
+        dossiers.write("001", "teaching-guide.md", "guide")
+        sync.execute(write=True)
+        assert "[📘](specs/001-demo/teaching-guide.md)" in store.files["README.md"]
+
+    @pytest.mark.ac("PBI-002-01:AC2")
+    @pytest.mark.ac("PBI-002-01:AC3")
+    def test_status_shows_not_yet_without_a_teaching_guide(self):
+        _, _, store, sync = world()
+        sync.execute(write=True)
+        readme = store.files["README.md"]
+        assert "| not yet |" in readme
+        assert "teaching-guide.md" not in readme
 
     def test_work_outside_the_catalogue_is_listed_with_its_rationale(self):
         dossiers, _, store, sync = world()
