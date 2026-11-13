@@ -22,7 +22,6 @@ every RT cited here exists):
 | RT38 | P | Changes to mappings, rules, permissions and manual reprocessing shall record actor, time, reason and before/after when applicable. | Make a change and reconstruct it from the audit log. |
 | RT39 | P | Each load shall expose its run, state, times, volumes, period covered and cause of error. | Simulate an unexpectedly empty load, a failure and a partial success. |
 | RT40 | P | Operations shall track delay, backlog, failures, pending identity issues, quality and duration per source. | Cause an interruption and locate the source, period and step. |
-| RT42 | P | Changes to integrations and rules shall pass automated validation of contracts, exceptions and regression before publication. | Introduce an incompatibility, observe a controlled failure, then fix it. |
 
 **What this means in plain words.** The platform cannot prove it handles identity, time, late
 data and scale until something produces data that behaves like a global, imperfect industrial
@@ -38,12 +37,7 @@ naming convention records who, when, why and before/after), RT39 (each run expos
 times, volumes, period covered and cause of error) and RT40 (delay, backlog, failures and
 duration per site are tracked, so an interruption can be located by site, period and step). The
 "pending identity issues" part of RT40 does not apply: the source has no identity mapping to
-resolve. RT42 applies to the changes we make to the generator and its rules: a continuous
-integration pipeline runs every automated check on each pull request, and the merge into `main`
-is blocked unless it passes (we introduce a failing change on purpose, see it blocked, then fix
-it). The same dossier also changes how a large backlog is built: one item at a time, each on its
-own branch, approved on its own and merged by a person before the next one is refined, so that
-what we learn from one item shapes the next.
+resolve. RT42 (validation before publication) and the way we build a large backlog moved to dossier 002.
 
 **Related RTs left out, and why.**
 - RT08 (the ingestion mechanism supports batch, continuous arrival or trigger): it is about the
@@ -175,21 +169,7 @@ use computer-monitoring data, not industrial data, so we do not use them as targ
   backlog, failures and duration per site (RT40).
 - A **sizing and measurement report** (RT28, RT29).
 - A **documented tag naming convention** and the answer key that follows it.
-- **Four harness changes** carried by this dossier, built only after G4 because they touch
-  governed code:
-  - the generated status table links a teaching guide only when the file exists, so that
-    `sdd check` passes for a new dossier;
-  - `sdd new` asks for the rationale of every dossier and G0 refuses an empty one (today only
-    enablers and work outside the catalogue need it, which let this dossier start without one);
-  - an **item-by-item build flow**: each backlog item is refined with the context of the earlier
-    ones, approved on its own, built on its own branch from an up-to-date `main` until all its
-    acceptance criteria are met, committed, pushed and offered as a pull request; the agent then
-    waits for a person to merge it, syncs with `main`, deletes the other local branches and
-    starts the next item. The backlog approval (G2) is therefore partial: the skeleton and the
-    first item;
-  - a **continuous integration pipeline** (GitHub Actions) that runs every quality check on each
-    pull request, and, with the branch protection settings applied by a person, blocks the merge
-    unless it passes (RT42).
+- The four harness changes of the first PRD moved to dossier 002 (merged, 2026-11-13).
 
 ### Out of scope
 
@@ -222,8 +202,8 @@ use computer-monitoring data, not industrial data, so we do not use them as targ
   invented.
 - Decision (mentor, 2026-11-04): the plant model is hidden. A later model will try to rebuild it
   from the data, so it exists only in `truth/`.
-- Decision (mentor, 2026-11-04): the four harness changes above are part of this dossier, not a
-  separate one.
+- Decision (mentor, 2026-11-13): the four harness changes became dossier 002 (merged); this
+  dossier keeps only the generator.
 - Decision (mentor, 2026-11-04): the backlog is approved one item at a time. G2 is a partial
   approval; only the first item is reviewed in full, the others are outlines that are refined and
   approved before each is built.
@@ -254,7 +234,6 @@ use computer-monitoring data, not industrial data, so we do not use them as targ
 | Daylight saving and zone rules reproduced wrongly | the platform is tested against a false reality | take rules from the time zone database, test the gap and overlap hours of each rule (owner: mentee) |
 | Generated data grows without limit on the local disk | the machine fills up | rotation by date, a declared size per simulated day, a retention setting (owner: mentee) |
 | Generated files could be mistaken for data from a real plant | a decision taken on invented data | every file states that it is synthetic; the catalogue carries a generator marker in its metadata (owner: mentor) |
-| The pipeline exists but the GitHub branch protection is not applied, so a merge is not really blocked | RT42 is claimed but not true | the pipeline card ends with a checklist of the settings; we apply them and prove them with a deliberately failing change (owner: mentor) |
 | Refining an item after earlier ones are built shows that the approved specification (G4) is wrong or incomplete | the specification must change, on purpose: editing it makes G4 stale, and no code is written until it is refined and approved again (by our rule, 2026-11-05) | the build of that item stops until we re-approve; the cost is a review, not rework of wrong code | the agent stops, proposes the change to the specification in the chat, edits `spec.md`, `plan.md` or `tasks.md` (which makes G4 stale), and waits for our new approvals; a change of approach or of order goes back to G3 or G2 the same way (owner: mentee) |
 
 ## Review notes (optional)
