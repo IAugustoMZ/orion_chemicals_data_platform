@@ -99,6 +99,12 @@ gate passes), and the agent confirms with `sdd status` before it starts the next
   diagrams, then `poetry run sdd verify <id>`; on failure fix and verify again, up to the loop
   limit; keep the build log in `validation.md`. Skill: `sdd-build`; roles:
   [implementer](roles/implementer.md), [verifier](roles/verifier.md).
+- **Card by card** (dossiers with `progress.yaml`, [ADR-0023](../docs/architecture/decisions/0023-item-by-item-build-flow.md)):
+  each backlog card is refined with us, approved by both of us for its own text
+  (`sdd item approve`), built on `feat/<id>-<nn>-<slug>` (`sdd item next`), proven with
+  `sdd item verify` (every acceptance criterion has a passing test marked
+  `@pytest.mark.ac(...)`), and delivered by pull request. A person merges; `sdd item merged`
+  records it only when git shows the commit in `origin/main`. Skill: `sdd-next-item`.
 - **We:** monitor progress and resolve issues when the agent escalates.
 - **Output:** candidate code with tests and evidence on the branch.
 - **Gate:** **G5 · Deterministic checks passed** (automatic, bound to the governed code).

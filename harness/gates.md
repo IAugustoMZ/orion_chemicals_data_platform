@@ -68,6 +68,7 @@ changes, any partial approval becomes stale automatically; nothing has to be "un
 | An approved artifact is edited | the gate turns *stale*, later gates *blocked* | review the change (`git diff`), then both re-approve |
 | A task box is ticked in `tasks.md` | nothing: the digest ignores box state | — |
 | A governed file changes after `sdd verify` | G5 turns *stale*, G6/G7 *blocked* | run `poetry run sdd verify <id>` again |
+| A card's text is edited (dossier with `progress.yaml`) | only that card's approvals go stale; the commit guard refuses governed files on its branch | both re-approve the card (`sdd item approve`) |
 | Someone leaves or joins the team | approvals by unknown members are reported by `sdd check` | update `team.yaml` (a guardrail file, people only) |
 
 ## Commands
@@ -76,5 +77,10 @@ changes, any partial approval becomes stale automatically; nothing has to be "un
 poetry run sdd status [<id>]                      # states and next step
 poetry run sdd approve <id> <G1|G2|G3|G4|G6|G7> --as <mentor|mentee> [--note "..."]
 poetry run sdd verify <id>                        # closes G5
+poetry run sdd item status <id> [<nn>]            # per-card state and approvals
+poetry run sdd item approve <id> <nn> --as <mentor|mentee>
+poetry run sdd item verify <id> <nn>              # AC tests + suite for one card
+poetry run sdd item next <id>                     # open the next card's branch
+poetry run sdd item merged <id> <nn>              # record a merge confirmed by git
 poetry run sdd check                              # reports stale gates as warnings
 ```

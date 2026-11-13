@@ -16,7 +16,9 @@ canonical source; tool-specific files only point here. The full picture for peop
 2. **The constitution.** [harness/constitution.md](harness/constitution.md): the articles that
    are never negotiable.
 3. **Where the work is.** `poetry run sdd status` shows every dossier (spec folder) and its next
-   gate. Work only on the dossier of the current branch (`spec/<id>-<slug>`).
+   gate. Work only on the dossier of the current branch: `spec/<id>-<slug>` for the documents,
+   `feat/<id>-<nn>-<slug>` for the build of one backlog card
+   ([ADR-0023](docs/architecture/decisions/0023-item-by-item-build-flow.md)).
 4. **The phase you are in.** [harness/lifecycle.md](harness/lifecycle.md) for what the phase
    needs, and the matching skill in `.agents/skills/` (`sdd-discover` ... `sdd-release`).
 
@@ -60,6 +62,12 @@ replacing every `TODO(sdd)` and keeping every `##` section of its template.
   no keys. Credentials never appear in code or documents (RT36).
 - **Stay in scope.** Build what `spec.md` says. If the spec is wrong or incomplete, stop, propose
   the change to the spec and wait: editing an approved spec makes G4 stale, on purpose.
+- **One card at a time.** In a dossier with `progress.yaml`, build one backlog card per
+  `feat/<id>-<nn>-<slug>` branch (skill `sdd-next-item`): the card must be approved by both of
+  us for its current text, every acceptance criterion needs a test marked
+  `@pytest.mark.ac("PBI-<id>-<nn>:ACn")`, `sdd item verify` must pass, then you commit, push,
+  open the pull request and **stop**. A person merges. Never run `gh pr merge`,
+  `git branch -D` or a force push.
 - **Loop limit.** In the build loop, after **3** consecutive failing `sdd verify` runs on the
   same task, stop and ask us ([AI control plane](harness/ai-control-plane.md)).
 
@@ -100,6 +108,10 @@ poetry run sdd rt                   # every requirement (read them all before pr
 poetry run sdd new "Title" --slug x --rt RT01
 poetry run sdd new "Title" --slug x --rationale "why"   # outside the catalogue
 poetry run sdd verify <id>          # gate G5: the deterministic suite
+poetry run sdd item status <id> [nn]    # cards: state and who must approve
+poetry run sdd item verify <id> <nn>    # one card: approved, AC tests, suite
+poetry run sdd item next <id>           # sync main, tidy, open the next card's branch
+poetry run sdd item merged <id> <nn>    # record a merge (only if git shows it)
 poetry run sdd check                # consistency of dossiers, docs, logos, links, ADRs
 poetry run sdd sync                 # regenerate README status, traceability, tool adapters
 poetry run pre-commit run --all-files

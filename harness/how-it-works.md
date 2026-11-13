@@ -194,7 +194,8 @@ The two automated gates have their own rules:
   It is checked continuously; no action closes it.
 - **G5 · Checks passed** passes when the last `sdd verify` ran every check of
   [checks.yaml](checks.yaml) successfully **on the current governed code**. Change one governed
-  file afterwards and G5 is *stale*.
+  file afterwards and G5 is *stale*. In a dossier with `progress.yaml`, G5 also waits until
+  every backlog card is *merged* ([ADR-0023](../docs/architecture/decisions/0023-item-by-item-build-flow.md)).
 
 ```mermaid
 stateDiagram-v2
@@ -424,6 +425,7 @@ poetry run sdd approve 001 G1 --as mentee
 
 # 5. The agent builds, task by task, looping on the suite:
 poetry run sdd verify 001
+#    (card by card, dossiers with progress.yaml: sdd item next / approve / verify / merged 001 nn)
 
 # 6. Review, validation.md and teaching-guide.md complete; then we approve the merge:
 poetry run sdd approve 001 G6 --as mentor
