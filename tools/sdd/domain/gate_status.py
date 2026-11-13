@@ -45,11 +45,14 @@ class GateEvidence:
         artifact_digests: current digest of each human gate's artifacts.
         governed_digest: current digest of the governed code (compared with G5's verification).
         context_problems: problems with the requirement citations (G0); empty means G0 passes.
+        unmerged_cards: cards not yet merged when the dossier uses the per-card flow, else None
+            (a dossier without `progress.yaml` keeps the old G5 rule).
     """
 
     artifact_digests: Mapping[GateId, str]
     governed_digest: str
     context_problems: tuple[str, ...]
+    unmerged_cards: tuple[str, ...] | None = None
 
 
 @dataclass(frozen=True)
@@ -149,6 +152,9 @@ def _verification_status(
     if not verification.passed:
         failing = ", ".join(verification.failed_checks) or "no check ran"
         return GateStatus(gate, GateState.FAILED, f"failing: {failing}")
+    if evidence.unmerged_cards:
+        cards = ", ".join(evidence.unmerged_cards)
+        return GateStatus(gate, GateState.PENDING, f"cards not merged yet: {cards}")
     return GateStatus(gate, GateState.PASSED, f"verified at {short(verification.digest)}")
 
 

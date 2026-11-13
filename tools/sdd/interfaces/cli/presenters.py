@@ -9,6 +9,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 
 from sdd.application.use_cases.evaluate_dossier import DossierReport
+from sdd.application.use_cases.items import ItemView
 from sdd.domain.approval import CheckOutcome, Verification
 from sdd.domain.findings import Finding
 from sdd.domain.quality import QualityCheck
@@ -89,3 +90,19 @@ def requirement_lines(requirement: Requirement) -> list[str]:
         f"  must hold: {requirement.statement}",
         f"  verify:    {requirement.verification}",
     ]
+
+
+def item_line(view: ItemView) -> str:
+    """Render one card on a line: state, then who approved, who is missing, whose is stale.
+
+    Args:
+        view: the card.
+    """
+    parts = [f"{view.state.value:<9}", view.title.replace("·", "-")]
+    if view.approved_by:
+        parts.append(f"approved: {', '.join(view.approved_by)}")
+    if view.missing:
+        parts.append(f"waiting: {', '.join(view.missing)}")
+    if view.stale:
+        parts.append(f"stale: {', '.join(view.stale)}")
+    return "  ".join(parts)

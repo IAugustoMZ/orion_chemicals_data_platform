@@ -13,6 +13,7 @@ from dataclasses import dataclass
 from sdd.application.evidence import collect_evidence
 from sdd.application.ports.dossiers import DossierRepository
 from sdd.application.ports.environment import Workspace
+from sdd.application.ports.progress import ProgressRepository
 from sdd.application.ports.reference_data import RequirementCatalog, TeamDirectory
 from sdd.domain.dossier import Dossier
 from sdd.domain.gate_status import (
@@ -65,6 +66,7 @@ class EvaluateDossier:
         requirements: RequirementCatalog,
         team: TeamDirectory,
         workspace: Workspace,
+        progress: ProgressRepository | None = None,
     ) -> None:
         """Receive the ports the evaluation reads from.
 
@@ -73,11 +75,13 @@ class EvaluateDossier:
             requirements: the RT catalogue (for gate G0).
             team: the approvers and policy (for the human gates).
             workspace: git facts, here the governed digest (for gate G5).
+            progress: per-card progress (for G2 and G5); None keeps the old rules everywhere.
         """
         self._dossiers = dossiers
         self._requirements = requirements
         self._team = team
         self._workspace = workspace
+        self._progress = progress
 
     def one(self, dossier_id: str) -> DossierReport:
         """Evaluate one dossier.
@@ -112,6 +116,6 @@ class EvaluateDossier:
             team: the approvers and policy.
             governed: the current governed digest.
         """
-        evidence = collect_evidence(dossier, self._dossiers, catalog, governed)
+        evidence = collect_evidence(dossier, self._dossiers, catalog, governed, self._progress)
         guide = self._dossiers.read_artifact(dossier, "teaching-guide.md") is not None
         return DossierReport(dossier, evaluate_gates(dossier, team, evidence), evidence, guide)

@@ -228,7 +228,7 @@ class TestApprove:
         world.start_dossier()
         world.approve.execute("001", GateId.G1, "mentor", "")
         result = world.approve.execute("001", GateId.G1, "mentee", "")
-        assert result.created == ("backlog.md",)
+        assert result.created == ("backlog.md", "progress.yaml")
         assert "TODO(sdd)" in world.dossiers.artifacts[("001", "backlog.md")]
 
     def test_existing_artifacts_are_never_overwritten(self):
@@ -237,7 +237,7 @@ class TestApprove:
         world.dossiers.write("001", "backlog.md", "my own work")
         world.approve.execute("001", GateId.G1, "mentor", "")
         result = world.approve.execute("001", GateId.G1, "mentee", "")
-        assert result.created == ()
+        assert result.created == ("progress.yaml",)
         assert world.dossiers.artifacts[("001", "backlog.md")] == "my own work"
 
     def test_failed_scaffolding_undoes_the_approval(self):
@@ -253,7 +253,7 @@ class TestApprove:
         world.dossiers.fail_on = None
         retried = world.approve.execute("001", GateId.G1, "mentee", "")
         assert retried.status.state is GateState.PASSED
-        assert retried.created == ("backlog.md",)
+        assert retried.created == ("backlog.md", "progress.yaml")
 
     def test_automated_gate_and_unknown_member(self):
         world = World()

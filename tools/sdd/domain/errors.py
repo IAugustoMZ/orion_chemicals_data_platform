@@ -69,3 +69,28 @@ class HumanConfirmationRequiredError(SddError):
 
 class ApprovalDeclinedError(SddError):
     """The person at the terminal did not answer yes to the approval prompt."""
+
+
+class UnknownItemError(SddError):
+    """The backlog of the dossier has no card with this number."""
+
+
+class IllegalTransitionError(SddError):
+    """A card was asked to move to a state it cannot reach from its current one."""
+
+
+class ItemRefusedError(SddError):
+    """A card cannot be worked on or verified yet.
+
+    Attributes:
+        problems: one human-readable line per reason, naming the next command when there is one.
+    """
+
+    def __init__(self, problems: tuple[str, ...]) -> None:
+        """Keep the individual reasons so the caller can print them as a list.
+
+        Args:
+            problems: the reasons; must not be empty.
+        """
+        super().__init__("; ".join(problems))
+        self.problems = problems

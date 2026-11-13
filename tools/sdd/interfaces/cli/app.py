@@ -18,7 +18,12 @@ from sdd.application.use_cases.create_dossier import NewDossier
 from sdd.bootstrap import Harness, build_harness
 from sdd.config import Settings, discover_root
 from sdd.domain.dossier import DossierKind
-from sdd.domain.errors import GateNotReadyError, SddError, UnknownRequirementError
+from sdd.domain.errors import (
+    GateNotReadyError,
+    ItemRefusedError,
+    SddError,
+    UnknownRequirementError,
+)
 from sdd.domain.findings import has_errors
 from sdd.domain.gates import parse_gate_id
 from sdd.interfaces.cli import presenters
@@ -28,6 +33,12 @@ app = typer.Typer(
     no_args_is_help=True,
     add_completion=False,
 )
+
+
+item_app = typer.Typer(
+    help="One backlog card at a time: status, approve, verify.", no_args_is_help=True
+)
+app.add_typer(item_app, name="item")
 
 
 def _harness() -> Harness:
@@ -48,6 +59,11 @@ def _run(action: Callable[[Harness], int | None]) -> None:
         for problem in error.problems:
             typer.echo(f"  - {problem}", err=True)
         raise typer.Exit(2) from error
+    except ItemRefusedError as error:
+        typer.echo("Refused:", err=True)
+        for problem in error.problems:
+            typer.echo(f"  - {problem}", err=True)
+        raise typer.Exit(1) from error
     except SddError as error:
         typer.echo(f"error: {error}", err=True)
         raise typer.Exit(2) from error
@@ -143,6 +159,64 @@ def verify(dossier_id: Annotated[str, typer.Argument(help="Dossier id, e.g. 001.
         typer.echo(presenters.verification_line(verification))
         _sync_quietly(harness)
         return 0 if verification.passed else 1
+
+    _run(body)
+
+
+@item_app.command("status")
+def item_status(
+    dossier_id: Annotated[str, typer.Argument(help="Dossier id, e.g. 002.")],
+    number: Annotated[str | None, typer.Argument(help="Card number; all when omitted.")] = None,
+) -> None:
+    """Show each card's state and who still has to approve its current text."""
+
+    def body(harness: Harness) -> None:
+        """Print one or every card."""
+        views = (
+            (harness.cards.one(dossier_id, number.zfill(2)),)
+            if number
+            else harness.cards.all(dossier_id)
+        )
+        for view in views:
+            typer.echo(presenters.item_line(view))
+
+    _run(body)
+
+
+@item_app.command("approve")
+def item_approve(
+    dossier_id: Annotated[str, typer.Argument(help="Dossier id, e.g. 002.")],
+    number: Annotated[str, typer.Argument(help="Card number, e.g. 02.")],
+    member: Annotated[str, typer.Option("--as", help="Your id in harness/team.yaml.")],
+    note: Annotated[str, typer.Option(help="Optional remark kept with the approval.")] = "",
+) -> None:
+    """Approve one card for its current text (people only: asks at the terminal)."""
+
+    def body(harness: Harness) -> None:
+        """Record the approval and print the card."""
+        view = harness.approve_item.execute(dossier_id, number.zfill(2), member, note)
+        typer.echo(presenters.item_line(view))
+
+    _run(body)
+
+
+@item_app.command("verify")
+def item_verify(
+    dossier_id: Annotated[str, typer.Argument(help="Dossier id, e.g. 002.")],
+    number: Annotated[str, typer.Argument(help="Card number, e.g. 02.")],
+) -> None:
+    """Prove one card: approved text, a passing test per criterion, then the quality suite."""
+
+    def body(harness: Harness) -> int:
+        """Run the proof and return 1 when a check failed."""
+        outcomes = harness.verify_item.execute(
+            dossier_id, number.zfill(2), lambda c, o: typer.echo(presenters.check_progress(c, o))
+        )
+        failed = [o.check_id for o in outcomes if not o.passed]
+        typer.echo(
+            f"card {number.zfill(2)}: " + ("verified" if not failed else f"failed: {failed}")
+        )
+        return 1 if failed else 0
 
     _run(body)
 

@@ -18,6 +18,9 @@ from sdd.domain.dossier import Dossier, DossierKind
 from sdd.domain.gates import GateId, artifacts_after
 from sdd.domain.requirement import Requirement
 
+PROGRESS_FILE = "progress.yaml"
+"""Per-card record of ADR-0023, created with the backlog so G2 never changes meaning later."""
+
 
 class ScaffoldArtifacts:
     """Render the templates of the next artifacts and add the ones that do not exist yet."""
@@ -65,6 +68,8 @@ class ScaffoldArtifacts:
                 first, so the caller can undo what led here.
         """
         names = artifacts_after(gate_id)
+        if gate_id is GateId.G1:
+            names = (*names, PROGRESS_FILE)  # the backlog is born with its per-card record
         values = _template_values(dossier, self._requirements.all())
         rendered = {name: self._templates.render(name, values) for name in names}
         return self._dossiers.add_artifacts(dossier, rendered)
