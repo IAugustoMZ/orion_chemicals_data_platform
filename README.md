@@ -167,7 +167,7 @@ flowchart LR
 Spec-driven development with our own harness ([ADR-0001](docs/architecture/decisions/0001-spec-driven-development-with-our-own-harness.md)) ·
 tool-agnostic sources ([ADR-0002](docs/architecture/decisions/0002-agents-md-and-agent-skills-are-canonical.md)) ·
 approvals by people bound to content ([ADR-0003](docs/architecture/decisions/0003-gates-approved-by-people-bound-to-digests.md)) ·
-local enforcement, no CI ([ADR-0004](docs/architecture/decisions/0004-local-enforcement-without-ci.md)) ·
+local enforcement, then CI that blocks the merge ([ADR-0024](docs/architecture/decisions/0024-ci-with-github-actions-blocks-merge.md), supersedes [ADR-0004](docs/architecture/decisions/0004-local-enforcement-without-ci.md)) ·
 Poetry ([ADR-0005](docs/architecture/decisions/0005-poetry-for-every-python-environment.md)) ·
 Docker Compose ([ADR-0006](docs/architecture/decisions/0006-docker-compose-as-the-runtime.md)) ·
 clean architecture ([ADR-0007](docs/architecture/decisions/0007-clean-architecture-for-all-python-code.md)) ·

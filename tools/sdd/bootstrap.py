@@ -23,7 +23,7 @@ from sdd.application.use_cases.check_harness import CheckHarness
 from sdd.application.use_cases.create_dossier import CreateDossier
 from sdd.application.use_cases.evaluate_dossier import EvaluateDossier
 from sdd.application.use_cases.guard_commit import GuardCommit
-from sdd.application.use_cases.item_flow import MarkItemMerged, NextItem
+from sdd.application.use_cases.item_flow import CurrentItem, MarkItemMerged, NextItem
 from sdd.application.use_cases.items import ApproveItem, ItemCards, VerifyItem
 from sdd.application.use_cases.lint_docs import LintDocs
 from sdd.application.use_cases.sync_generated import SyncGenerated
@@ -67,6 +67,7 @@ class Harness:
         verify_item: `sdd item verify`.
         next_item: `sdd item next`.
         merged_item: `sdd item merged`.
+        current_item: `sdd item current`.
     """
 
     settings: Settings
@@ -83,6 +84,7 @@ class Harness:
     verify_item: VerifyItem
     next_item: NextItem
     merged_item: MarkItemMerged
+    current_item: CurrentItem
 
 
 def build_harness(settings: Settings, confirmation: HumanConfirmation | None = None) -> Harness:
@@ -162,4 +164,5 @@ def build_harness(settings: Settings, confirmation: HumanConfirmation | None = N
         ),
         next_item=NextItem(cards, progress, evaluate, git),
         merged_item=MarkItemMerged(cards, progress, git, clock),
+        current_item=CurrentItem(workspace),
     )

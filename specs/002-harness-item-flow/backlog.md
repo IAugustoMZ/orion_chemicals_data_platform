@@ -70,7 +70,7 @@ Order: 01, 02, 03, 04, 05 (01 unblocks commits; 02 and 03 install the flow; 04 t
 - **Feature:** F3 · **Serves:** RT42, RT36 · **Size:** M · **Depends on:** 03
 - **Context:** ADR-0004 chose local enforcement; there is now a remote and an agent opens pull requests, so a skippable local check is not a control.
 - **What:** `.github/workflows/ci.yml`: one required job `quality` on pull requests into `main` and pushes to `main`, one step per command of `harness/checks.yaml`, plus the item verification read-only. `permissions: contents: read`, no secret, timeout, Poetry cache, concurrency cancel, actions pinned to full SHAs. The card prints a branch-protection checklist for a person to apply.
-- **How:** (1) workflow as above (Python 3.11, pinned Poetry). (2) a test reads `checks.yaml` and fails if a command is missing. (3) `sdd verify --no-record` (use case `verify_quality.py`); `sdd item current` derives the id from the branch. (4) add `.github/` to governed paths (`domain/governance.py`). (5) ADR-0024 accepted, ADR-0004 superseded; update quality.md, security.md, deployment.md, README.
+- **How:** (1) workflow as above (Python 3.11, pinned Poetry). (2) a test reads `checks.yaml` and fails if a command is missing. (3) `sdd verify --no-record` (use case `verify_quality.py`); `sdd item current` prints `<id> <nn>` from a card branch name and fails on any other branch; CI runs the item verification only when it succeeds. (4) add `.github/` to governed paths (`domain/governance.py`). (5) ADR-0024 accepted, ADR-0004 superseded; update quality.md, security.md, deployment.md, README.
 - **Out of scope:** deployment, self-hosted runners; applying protection settings.
 - **Acceptance criteria (EARS):**
   - AC1: When a pull request opens into `main`, the workflow shall run the job `quality`.
@@ -79,7 +79,8 @@ Order: 01, 02, 03, 04, 05 (01 unblocks commits; 02 and 03 install the flow; 04 t
   - AC4: The workflow shall declare `permissions: contents: read`, use no secret and pin third-party actions to SHAs.
   - AC5: When a rule-breaking change is pushed, the check shall turn red and, with protection applied, block the merge; after the fix it shall turn green.
   - AC6: When `sdd verify --no-record` runs, it shall not modify `dossier.yaml`.
-- **Verification:** `tests/sdd/test_ci_workflow.py` (AC1 to AC4), `test_cli.py` (AC6); AC5 is a manual proof by us on the first pull request, recorded in `validation.md`.
+  - AC7: When the branch is not a card branch, the item verification step shall be skipped, not failed.
+- **Verification:** `tests/sdd/test_ci_workflow.py` (AC1 to AC4), `test_cli.py` (AC6, AC7); AC5 is a manual proof by us on the first pull request, recorded in `validation.md`.
 
 ### PBI-002-05 · A rationale is required for every dossier
 

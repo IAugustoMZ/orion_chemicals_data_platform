@@ -116,6 +116,7 @@ nav:
       - Engineering principles: harness/principles.md
       - Security: harness/security.md
       - Quality: harness/quality.md
+      - Branch protection: harness/ci-protection.md
       - Documentation standard: harness/documentation-standard.md
       - Architecture upkeep: harness/architecture-upkeep.md
       - Context plane: harness/context-plane.md

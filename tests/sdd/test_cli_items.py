@@ -169,3 +169,44 @@ class TestFlowCommands:
 
         self._stub(monkeypatch, merged_item=Merged())
         assert run("item", "merged", "002", "3").exit_code == 2
+
+
+class TestCurrentCard:
+    @pytest.mark.ac("PBI-002-04:AC7")
+    def test_a_card_branch_prints_the_dossier_and_the_card(self, repo):
+        shown = run("item", "current", "--branch", "feat/002-04-ci-with-github-actions")
+        assert shown.exit_code == 0 and shown.output.strip() == "002 04"
+
+    @pytest.mark.ac("PBI-002-04:AC7")
+    @pytest.mark.parametrize("branch", ["main", "spec/002-harness-item-flow", "feat/bad"])
+    def test_any_other_branch_exits_with_1_and_prints_nothing_on_stdout(self, repo, branch):
+        refused = run("item", "current", "--branch", branch)
+        assert refused.exit_code == 1 and refused.stdout.strip() == ""
+
+    def test_without_the_option_the_checked_out_branch_is_used(self, repo):
+        refused = run("item", "current")
+        assert refused.exit_code == 1
+
+
+class TestVerifyWithoutRecording:
+    @pytest.mark.ac("PBI-002-04:AC6")
+    def test_the_flag_reaches_the_use_case(self, monkeypatch):
+        seen = []
+
+        class Verify:
+            def execute(self, dossier_id, progress=None, record=True):
+                seen.append(record)
+                return type("V", (), {"passed": True})()
+
+        class Sync:
+            def execute(self, write):
+                return type("R", (), {"changed": ()})()
+
+        monkeypatch.setattr(
+            "sdd.interfaces.cli.app._harness",
+            lambda: type("S", (), {"verify": Verify(), "sync": Sync()})(),
+        )
+        monkeypatch.setattr("sdd.interfaces.cli.presenters.verification_line", lambda v: "ok")
+        assert run("verify", "002", "--no-record").exit_code == 0
+        assert run("verify", "002").exit_code == 0
+        assert seen == [False, True]

@@ -9,7 +9,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from sdd.application.ports.environment import Clock
+from sdd.application.ports.environment import Clock, Workspace
 from sdd.application.ports.git import GitRepository
 from sdd.application.ports.progress import ProgressRepository
 from sdd.application.use_cases.evaluate_dossier import EvaluateDossier
@@ -17,7 +17,7 @@ from sdd.application.use_cases.items import ItemCards
 from sdd.domain.errors import GateOrderError, ItemRefusedError
 from sdd.domain.gate_status import GateState
 from sdd.domain.gates import GateId
-from sdd.domain.governance import item_branch_name
+from sdd.domain.governance import item_branch_name, item_from_branch
 from sdd.domain.item_progress import ItemRecord, ItemState
 
 MAIN = "main"
@@ -38,6 +38,33 @@ class NextItemResult:
     number: str
     branch: str
     deleted: tuple[str, ...]
+
+
+class CurrentItem:
+    """Tell which card a branch builds, so CI and people need not parse branch names."""
+
+    def __init__(self, workspace: Workspace) -> None:
+        """Receive the workspace that knows the checked-out branch.
+
+        Args:
+            workspace: the working tree.
+        """
+        self._workspace = workspace
+
+    def execute(self, branch: str | None = None) -> tuple[str, str]:
+        """Return the dossier id and card number of a card branch.
+
+        Args:
+            branch: the branch to read; the checked-out one when omitted.
+
+        Raises:
+            ItemRefusedError: when the branch is not a ``feat/<id>-<nn>-<slug>`` card branch.
+        """
+        name = branch if branch is not None else self._workspace.current_branch()
+        found = item_from_branch(name)
+        if found is None:
+            raise ItemRefusedError((f"{name or 'a detached HEAD'} is not a card branch",))
+        return found
 
 
 class NextItem:

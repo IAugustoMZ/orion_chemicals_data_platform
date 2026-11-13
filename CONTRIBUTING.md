@@ -7,7 +7,7 @@ The engineering entry point. The product page is the [README](README.md); the ru
 
 ```bash
 poetry install --with docs        # .venv/ with the sdd tool, the quality suite and MkDocs
-poetry run pre-commit install     # local gates on every commit (ADR-0004)
+poetry run pre-commit install     # local gates on every commit (ADR-0004, ADR-0024)
 git config user.name "Your Name"  # approvals record your git identity
 git config user.email "you@example.com"
 ```

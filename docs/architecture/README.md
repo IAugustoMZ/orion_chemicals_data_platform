@@ -29,7 +29,7 @@ flowchart LR
         SP[("Dossiers<br/>specs/NNN-slug/")]
         AD[("ADRs + architecture<br/>docs/architecture/")]
     end
-    subgraph sensors["Enforcement (local, ADR-0004)"]
+    subgraph sensors["Enforcement (local + CI, ADR-0024)"]
         SDD["<img src='https://cdn.simpleicons.org/python/3776AB' width='28' height='28'/><br/>sdd CLI (Python, Typer)<br/>gates · approvals · verify · check · sync"]
         PC["<img src='https://cdn.simpleicons.org/precommit/FAB040' width='28' height='28'/><br/>pre-commit<br/>guard · ruff · mypy · pytest · sdd check"]
         HK["Agent guard<br/>PreToolUse hook"]

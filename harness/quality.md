@@ -84,3 +84,12 @@ poetry run pytest
 poetry run pre-commit run --all-files
 poetry run sdd verify <id>     # the recorded run that closes G5
 ```
+
+## Continuous integration
+
+`.github/workflows/ci.yml` runs the job `quality` on every pull request into `main` and every push
+to `main`: one step per command of `harness/checks.yaml` (a test fails if one is missing), then
+`sdd item verify` when the branch is a card branch (`sdd item current`). `sdd verify <id>
+--no-record` is the read-only G5 run. It is a merge control only once a person applied
+[the branch protection](ci-protection.md)
+([ADR-0024](../docs/architecture/decisions/0024-ci-with-github-actions-blocks-merge.md)).

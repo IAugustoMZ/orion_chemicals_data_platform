@@ -12,7 +12,7 @@ ADR is listed here and has a status and a date.
 | [0001](0001-spec-driven-development-with-our-own-harness.md) | We practise spec-driven development with our own lightweight harness | Accepted |
 | [0002](0002-agents-md-and-agent-skills-are-canonical.md) | AGENTS.md and Agent Skills are the canonical sources; tool files are generated pointers | Accepted |
 | [0003](0003-gates-approved-by-people-bound-to-digests.md) | Human gates are approved by both of us, at a terminal, bound to content digests | Accepted |
-| [0004](0004-local-enforcement-without-ci.md) | Gates are enforced locally (pre-commit, `sdd`, agent hooks); no CI | Accepted |
+| [0004](0004-local-enforcement-without-ci.md) | Gates are enforced locally (pre-commit, `sdd`, agent hooks); no CI | Superseded by ADR-0024 |
 | [0005](0005-poetry-for-every-python-environment.md) | Poetry manages every Python environment, one project with dependency groups | Accepted |
 | [0006](0006-docker-compose-as-the-runtime.md) | Docker Compose is the runtime, instead of Kubernetes | Accepted |
 | [0007](0007-clean-architecture-for-all-python-code.md) | All Python code follows clean architecture, enforced by import-linter | Accepted |
@@ -37,5 +37,5 @@ ADR is listed here and has a status and a date.
 | [0021](0021-output-as-immutable-files-and-segments.md) | The output is a folder of immutable files, with small stream segments | Proposed |
 | [0022](0022-hidden-plant-and-site-local-time.md) | The plant stays hidden in `truth/`, and events carry site-local time | Proposed |
 | [0023](0023-item-by-item-build-flow.md) | A backlog is approved and built one card at a time | Accepted |
-| [0024](0024-ci-with-github-actions-blocks-merge.md) | CI with GitHub Actions blocks the merge (supersedes ADR-0004 when accepted) | Proposed |
+| [0024](0024-ci-with-github-actions-blocks-merge.md) | CI with GitHub Actions blocks the merge (supersedes ADR-0004) | Accepted |
 | [0025](0025-pi-like-acquisition-and-quality-codes.md) | The output has the shape of a historian: exception, snapshot, compression, quality codes | Proposed |

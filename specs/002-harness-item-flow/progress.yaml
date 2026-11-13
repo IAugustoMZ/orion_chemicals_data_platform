@@ -1,0 +1,72 @@
+# Progress of the backlog, one entry per card (ADR-0023). Written only by `sdd`:
+# never edit by hand. Approvals are bound to the digest of the card's section of backlog.md.
+version: 1
+items:
+  '01':
+    state: merged
+    approvals:
+    - member: mentor
+      at: '2026-11-13T02:11:12+00:00'
+      digest: sha256:e921d1feb7a27ff1f5d29553e01f452eb42ac489837c6c41937ce6090ea6d71b
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-13T02:11:27+00:00'
+      digest: sha256:e921d1feb7a27ff1f5d29553e01f452eb42ac489837c6c41937ce6090ea6d71b
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: feat/002-01-status-table-links-the-teaching-guide
+    commit: e91648dc7a5285c313fd26ab7f4417b262c567c4
+    pull_request: ''
+    merged_at: '2026-11-13T02:18:28+00:00'
+  '02':
+    state: merged
+    approvals:
+    - member: mentor
+      at: '2026-11-13T02:11:43+00:00'
+      digest: sha256:6f2563c829edd758744a40f1f1be7692c63daabf06db8296838c8a2ce4777035
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-13T02:12:00+00:00'
+      digest: sha256:6f2563c829edd758744a40f1f1be7692c63daabf06db8296838c8a2ce4777035
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: spec/002-harness-item-flow-card-02
+    commit: c70695eba55894696072bdbb8b1c744da9d43e39
+    pull_request: ''
+    merged_at: '2026-11-13T02:19:32+00:00'
+  '03':
+    state: merged
+    approvals:
+    - member: mentor
+      at: '2026-11-13T02:12:14+00:00'
+      digest: sha256:93ca872a7a04cc68bde12f69a714f084763115b375208796d2e866238063006a
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-13T02:12:30+00:00'
+      digest: sha256:93ca872a7a04cc68bde12f69a714f084763115b375208796d2e866238063006a
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: spec/002-harness-item-flow-card-03
+    commit: 892469b21e6f80c8884bdc7aa85f03deab187568
+    pull_request: ''
+    merged_at: '2026-11-13T02:19:42+00:00'
+  '04':
+    state: verified
+    approvals:
+    - member: mentor
+      at: '2026-11-13T02:28:20+00:00'
+      digest: sha256:16293be47a32943ea8a7c8954a604e1fcf2383f5c160a9e731fac3b07389baf0
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-13T02:28:33+00:00'
+      digest: sha256:16293be47a32943ea8a7c8954a604e1fcf2383f5c160a9e731fac3b07389baf0
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: feat/002-04-ci-with-github-actions-that-blocks
+    commit: ''
+    pull_request: ''
+    merged_at: null

@@ -1,6 +1,6 @@
 # ADR-0004: Gates are enforced locally (pre-commit, `sdd`, agent hooks); no CI
 
-- **Status:** Accepted
+- **Status:** Superseded by [ADR-0024](0024-ci-with-github-actions-blocks-merge.md)
 - **Date:** 2026-10-21
 - **Dossier:** specs/000-sdd-harness
 - **Requirements:** RT42

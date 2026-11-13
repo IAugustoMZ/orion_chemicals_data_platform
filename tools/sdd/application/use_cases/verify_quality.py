@@ -54,12 +54,18 @@ class VerifyQuality:
         self._workspace = workspace
         self._clock = clock
 
-    def execute(self, dossier_id: str, progress: ProgressCallback | None = None) -> Verification:
+    def execute(
+        self,
+        dossier_id: str,
+        progress: ProgressCallback | None = None,
+        record: bool = True,
+    ) -> Verification:
         """Run the suite for a dossier whose specification was approved.
 
         Args:
             dossier_id: three-digit dossier id.
             progress: optional observer of each check (before and after it runs).
+            record: false for a read-only run (CI): the dossier file is left untouched.
 
         Returns:
             The saved verification; check `passed` for the verdict.
@@ -86,5 +92,6 @@ class VerifyQuality:
             commit=self._workspace.head_commit(),
             results=tuple(outcomes),
         )
-        self._dossiers.save(report.dossier.with_verification(verification))
+        if record:
+            self._dossiers.save(report.dossier.with_verification(verification))
         return verification

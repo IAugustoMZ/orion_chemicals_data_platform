@@ -49,3 +49,9 @@ A dossier that adds a service to `compose.yaml` follows the baseline of
 - named volumes for state, with the backup and restore procedure (RT41) in the service's README;
 - a `healthcheck`, and `depends_on: condition: service_healthy` for its dependencies;
 - a Compose `profile` when the service is optional, so `docker compose up` stays light.
+
+## Continuous integration is not deployment
+
+GitHub Actions only runs the quality checks of [ADR-0024](decisions/0024-ci-with-github-actions-blocks-merge.md)
+on a hosted runner: it never deploys, receives no secret and sees no generated data. The runtime
+stays Docker Compose on our machines.

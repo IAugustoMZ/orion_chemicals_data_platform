@@ -9,8 +9,9 @@ enforced. It is the page to read first, and the one to come back to when somethi
 > mentor and the mentee) decide. Eight gates, G0 to G7, close the phases: six are closed by our
 > approvals, two by machines. Approvals are bound to the content they approved, so editing an
 > approved artifact silently invalidates the approval until we look again. Code can only change
-> after we approved the specification. Everything runs locally: the `sdd` command, `pre-commit`
-> and the agents' hooks are the enforcement; there is no CI.
+> after we approved the specification. The `sdd` command, `pre-commit`
+> and the agents' hooks are the fast local loop, and the GitHub Actions job `quality`
+> ([ADR-0024](../docs/architecture/decisions/0024-ci-with-github-actions-blocks-merge.md)) is the control that blocks a merge.
 
 The model comes from the target operating model *"AI-native software execution: driven by
 specifications, governed by people, AI executes at scale"*. In this repository every human role
@@ -446,7 +447,8 @@ The long version, with what to look at in each step, is the tutorial
 | Our own lightweight harness instead of adopting one framework as is | [ADR-0001](../docs/architecture/decisions/0001-spec-driven-development-with-our-own-harness.md) |
 | AGENTS.md and Agent Skills as the canonical, tool-agnostic sources | [ADR-0002](../docs/architecture/decisions/0002-agents-md-and-agent-skills-are-canonical.md) |
 | Gates approved by both of us, bound to digests, at a terminal | [ADR-0003](../docs/architecture/decisions/0003-gates-approved-by-people-bound-to-digests.md) |
-| Local enforcement only (pre-commit, `sdd`), no CI | [ADR-0004](../docs/architecture/decisions/0004-local-enforcement-without-ci.md) |
+| Local enforcement without CI (superseded) | [ADR-0004](../docs/architecture/decisions/0004-local-enforcement-without-ci.md) |
+| CI with GitHub Actions blocks the merge | [ADR-0024](../docs/architecture/decisions/0024-ci-with-github-actions-blocks-merge.md) |
 | Every feature has a teaching guide inside its dossier | [ADR-0010](../docs/architecture/decisions/0010-every-dossier-has-a-teaching-guide.md) |
 
 All decisions: [docs/architecture/decisions/](../docs/architecture/decisions/README.md). The
