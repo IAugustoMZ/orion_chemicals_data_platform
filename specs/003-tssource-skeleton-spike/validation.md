@@ -7,7 +7,7 @@
 
 ## Verification (G5)
 
-`poetry run sdd verify 003` passed at commit `676b3c6` (main after PR #13, 2026-11-13). Ten of
+`poetry run sdd verify 003` passed at commit `fe44586` (main after PR #15, 2026-11-13). Ten of
 ten checks PASS: format, lint, types, architecture (import-linter), tests (coverage above the
 85% threshold), security (bandit), secrets (detect-secrets), dependencies (pip-audit), harness
 (`sdd check`) and docs-site (mkdocs strict). Both cards were also verified with
@@ -21,7 +21,7 @@ blockers. Findings and their handling:
 | # | Where | Finding | Severity | Handling |
 |---|---|---|---|---|
 | 1 | ADR-0027 line 19 | "The stage that waited longer is the bottleneck" reads backwards; the code (full queue = WRITING) is right | major (document) | Resolved: ADR-0027 sentence amended (wording only, code unchanged) |
-| 2 | `bench --seconds` | Spec DoS row claims a bound, but only `min=1` exists | major (spec vs code) | Follow-up PR adds `max=3600` on its own `feat/` branch |
+| 2 | `bench --seconds` | Spec DoS row claims a bound, but only `min=1` exists | major (spec vs code) | Resolved: PR #15 adds `max=3600` and a test (AC3) |
 | 3 | `RunBenchmark.run` `finally` | `sink.close()` failure is not wrapped in `TssourceError` and can mask an earlier error | minor | Accepted for the spike; candidate for card 15 of 001 |
 | 4 | `run_bench`, `bench` | Unwritable output folder gives a traceback, not a one-line error | minor | Accepted for the spike; candidate for card 15 of 001 |
 | 5 | `_write_loop` | Blocks written after the deadline are not counted, so `events` slightly understates | minor | Accepted; limitation noted in ADR-0028 context |
@@ -54,7 +54,7 @@ RT01 holds: the `docs` service is untouched and `tssource` is a separate service
 | Tampering | OK: read-only root filesystem, one writable bind, tmpfs `/tmp` (compose test) |
 | Elevation | OK: user 10001, `cap_drop ALL`, `no-new-privileges`, no ports |
 | Information disclosure | OK: no credential read or logged; base image pinned by digest |
-| Denial of service | PARTIAL: queue bound and scratch cleanup are real; the `--seconds` upper bound is missing (finding 2) |
+| Denial of service | OK: queue bound, scratch cleanup and `--seconds` capped at 3600 (PR #15) |
 | Input validation | OK: `Settings` validates env, `--format` is a closed enum, errors are one line |
 | Secrets (RT36) | OK: detect-secrets test passes, nothing under `deploy/secrets/` touched |
 
@@ -96,4 +96,4 @@ as PR #13. A leftover local git stash from card 01 is harmless and was left unto
 ## Review notes (optional)
 
 Decided by us (recommendations accepted): ADR-0027 wording amended; `--seconds` gets an upper
-bound of 3600 in a small follow-up PR, which must be merged before G6.
+bound of 3600 in a small follow-up PR, merged as PR #15.
