@@ -16,8 +16,9 @@ repeated by anyone with the same seed.
 
 `tssource bench` counts the events written in every second of wall time and reports mean, p50,
 p95, p99 and minimum of those per-second rates, plus CPU seconds and peak memory. One generation
-thread feeds one writer thread through a bounded `queue.Queue`; the stage that waited longer is the
-bottleneck. The minimum and p99 are reported but do not fail the run (decided at G4). If the **mean** rate over the run is below 25,000 events/s the command exits
+thread feeds one writer thread through a bounded `queue.Queue`; the stage that made the other one wait
+more often is the bottleneck (a full queue hit by the producer means writing is the limit, an empty
+queue hit by the writer means generation is; counts, not seconds, so the label is deterministic). The minimum and p99 are reported but do not fail the run (decided at G4). If the **mean** rate over the run is below 25,000 events/s the command exits
 with code 3 and names the stage. The spike has its own use case and ports (`EventSource`,
 `EventSink`, `ResourceProbe`, `Clock`); card 15 of 001 adopts or replaces them explicitly.
 
