@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "seed": 42,
+  "format": "parquet",
+  "seconds": 60,
+  "events": 83588750,
+  "events_per_second": {
+    "mean": 1393145.8333333333,
+    "p50": 1383750.0,
+    "p95": 1640000.0,
+    "p99": 1682024.9999999995,
+    "min": 973750.0
+  },
+  "cpu_seconds": 25.237787867,
+  "peak_memory_mb": 116.70703125,
+  "floor": 25000,
+  "floor_held": true,
+  "bottleneck": "writing"
+}

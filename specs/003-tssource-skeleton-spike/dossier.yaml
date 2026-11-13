@@ -58,4 +58,64 @@ approvals:
     digest: sha256:2d8a022bc81ffa8105220c430bd06aecb63b4a331f7981d780b06932b8661f7a
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
     note: ''
-verification: null
+verification:
+  at: '2026-11-13T15:16:39+00:00'
+  digest: sha256:616e9bec408693f535cc54f45e7c3959230f69b62bcdb74b0ff1c722e5d9d711
+  commit: fc73087
+  results:
+  - check: format
+    passed: true
+    summary: 297 files already formatted
+  - check: lint
+    passed: true
+    summary: All checks passed!
+  - check: types
+    passed: true
+    summary: 'Success: no issues found in 85 source files'
+  - check: architecture
+    passed: true
+    summary: "tssource interfaces never touch infrastructure directly (only through the \ncomposition\
+      \ root) KEPT\ntssource domain and application stay free of numpy, pyarrow, typer and \nsubprocess\
+      \ KEPT\n\nContracts: 6 kept, 0 broken."
+  - check: tests
+    passed: true
+    summary: 'tools\sdd\interfaces\cli\app.py                          164     10     32      5    92%   98,
+      207, 224-228, 306, 308, 310, 345, 354
+
+      tools\sdd\interfaces\cli\presenters.py                    46     13     16      4    63%   36,
+      61-67, 76-78, 103, 104->106, 107
+
+      --------------------------------------------------------------------------------------------------
+
+      TOTAL                                                   2701     64    518     38    97%
+
+      Required test coverage of 85% reached. Total coverage: 96.64%
+
+      273 passed in 87.43s (0:01:27)'
+  - check: security
+    passed: true
+    summary: (no output)
+  - check: secrets
+    passed: true
+    summary: (no output)
+  - check: dependencies
+    passed: true
+    summary: 'Name                          Skip Reason
+
+      ----------------------------- -------------------------------
+
+      orion-chemicals-data-platform distribution marked as editable
+
+      No known vulnerabilities found'
+  - check: harness
+    passed: true
+    summary: 'WARNING  gate-stale         specs/000-sdd-harness/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      WARNING  gate-stale         specs/002-harness-item-flow/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      sdd check: 2 finding(s)'
+  - check: docs-site
+    passed: true
+    summary: (no output)

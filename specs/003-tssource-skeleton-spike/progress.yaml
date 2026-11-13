@@ -3,7 +3,7 @@
 version: 1
 items:
   '01':
-    state: verified
+    state: merged
     approvals:
     - member: mentor
       at: '2026-11-13T14:00:08+00:00'
@@ -16,6 +16,23 @@ items:
       git_identity: Icaro Zelioli <i.augustomz@gmail.com>
       note: ''
     branch: feat/003-01-skeleton-package-cli-container-quality
+    commit: af87ff22edce90887c9754f468205f254f6114be
+    pull_request: ''
+    merged_at: '2026-11-13T14:54:21+00:00'
+  '02':
+    state: verified
+    approvals:
+    - member: mentor
+      at: '2026-11-13T15:02:15+00:00'
+      digest: sha256:b2ef3f5fb6050f113e90189fd22006ed218393af2ed1cf53442698f6468e7fd7
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-13T15:02:34+00:00'
+      digest: sha256:b2ef3f5fb6050f113e90189fd22006ed218393af2ed1cf53442698f6468e7fd7
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: feat/003-02-throughput-spike-can-python-meet-the
     commit: ''
     pull_request: ''
     merged_at: null

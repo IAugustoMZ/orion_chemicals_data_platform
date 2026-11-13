@@ -13,7 +13,7 @@ flowchart LR
         REPO[("Repository working tree<br/>README · docs · harness · specs · tools")]
         subgraph compose["<img src='https://cdn.simpleicons.org/docker/2496ED' width='24' height='24'/> Docker Compose project orion"]
             DOCS["<img src='https://cdn.simpleicons.org/materialformkdocs/526CFE' width='28' height='28'/><br/>service docs<br/>MkDocs + Material · mkdocs serve<br/>user 10001 · read-only rootfs · no capabilities"]
-            TSS["<img src='https://cdn.simpleicons.org/python/3776AB' width='28' height='28'/><br/>service tssource<br/>idles healthy · no port · one bind data/ts_source"]
+            TSS["<img src='https://cdn.simpleicons.org/python/3776AB' width='28' height='28'/><br/>service tssource<br/>idles healthy · runs bench · no port · one bind data/ts_source"]
         end
         IMG["<img src='https://cdn.simpleicons.org/docker/2496ED' width='28' height='28'/><br/>image orion/docs:local<br/>docker/docs.Dockerfile, 2 stages<br/>Poetry group docs only"]
     end
