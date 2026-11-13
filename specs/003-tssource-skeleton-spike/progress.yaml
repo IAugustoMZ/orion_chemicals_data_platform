@@ -20,7 +20,7 @@ items:
     pull_request: ''
     merged_at: '2026-11-13T14:54:21+00:00'
   '02':
-    state: verified
+    state: merged
     approvals:
     - member: mentor
       at: '2026-11-13T15:02:15+00:00'
@@ -33,6 +33,6 @@ items:
       git_identity: Icaro Zelioli <i.augustomz@gmail.com>
       note: ''
     branch: feat/003-02-throughput-spike-can-python-meet-the
-    commit: ''
+    commit: e37e5c355d12a6c501573452619f32eb23f9248f
     pull_request: ''
-    merged_at: null
+    merged_at: '2026-11-13T16:52:10+00:00'

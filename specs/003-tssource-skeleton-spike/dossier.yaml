@@ -59,13 +59,13 @@ approvals:
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
     note: ''
 verification:
-  at: '2026-11-13T15:16:39+00:00'
-  digest: sha256:616e9bec408693f535cc54f45e7c3959230f69b62bcdb74b0ff1c722e5d9d711
-  commit: fc73087
+  at: '2026-11-13T16:56:09+00:00'
+  digest: sha256:c401fe0b88a2a12b1fa73aa1018dc4142802f5c693a33fd16e74482044af0ca6
+  commit: 676b3c6
   results:
   - check: format
     passed: true
-    summary: 297 files already formatted
+    summary: 298 files already formatted
   - check: lint
     passed: true
     summary: All checks passed!
@@ -91,7 +91,7 @@ verification:
 
       Required test coverage of 85% reached. Total coverage: 96.64%
 
-      273 passed in 87.43s (0:01:27)'
+      273 passed in 128.12s (0:02:08)'
   - check: security
     passed: true
     summary: (no output)
@@ -115,7 +115,10 @@ verification:
       WARNING  gate-stale         specs/002-harness-item-flow/dossier.yaml  G5 is stale: code changed
       since the last `sdd verify`
 
-      sdd check: 2 finding(s)'
+      WARNING  gate-stale         specs/003-tssource-skeleton-spike/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      sdd check: 3 finding(s)'
   - check: docs-site
     passed: true
     summary: (no output)
