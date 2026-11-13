@@ -6,7 +6,7 @@
 - [x] T03 · Card 03: tests, then git port and adapter, `item next|merged`, guard rules *(B03, B04, step 3)*
 - [x] T04 · Card 03: update AGENTS.md, lifecycle, gates, how-it-works, skill `sdd-next-item`, ADR-0023 *(B03, step 3)*
 - [x] T05 · Card 04: tests, then `ci.yml`, `verify --no-record`, governed `.github/` *(B05, step 4)*
-- [ ] T06 · Card 04: ADR-0024 accepted, ADR-0004 superseded, docs, branch-protection checklist, manual proof *(B05, step 4)*
+- [x] T06 · Card 04: ADR-0024 accepted, ADR-0004 superseded, docs, branch-protection checklist, manual proof *(B05, step 4)*
 - [x] T07 · Card 05: tests, then rationale required, CLI help, docs *(B06, step 5)*
 ## Loop limits
 Default: after **3** consecutive failing `sdd verify 002` runs on the same task, stop and ask us.

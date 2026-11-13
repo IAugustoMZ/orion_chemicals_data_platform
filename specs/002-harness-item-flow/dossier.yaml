@@ -58,4 +58,61 @@ approvals:
     digest: sha256:7cfc1cc5d527bc0d73c0d91cecda6167727ac8904b148ad2e02eb8ff463c3e93
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
     note: ''
-verification: null
+verification:
+  at: '2026-11-13T04:10:20+00:00'
+  digest: sha256:2ec96c5a3fa5fc625509f9ce11e12101f0079208868fdc2c4b563199a6eea663
+  commit: efa83c3
+  results:
+  - check: format
+    passed: true
+    summary: 264 files already formatted
+  - check: lint
+    passed: true
+    summary: All checks passed!
+  - check: types
+    passed: true
+    summary: 'Success: no issues found in 69 source files'
+  - check: architecture
+    passed: true
+    summary: "domain KEPT\nInterfaces never touch infrastructure directly (only through the composition\
+      \ \nroot) KEPT\nDomain and application stay free of frameworks and I/O libraries KEPT\n\nContracts:\
+      \ 3 kept, 0 broken."
+  - check: tests
+    passed: true
+    summary: 'tools\sdd\interfaces\cli\app.py                          164     10     32      5    92%   98,
+      207, 224-228, 306, 308, 310, 345, 354
+
+      tools\sdd\interfaces\cli\presenters.py                    46     13     16      4    63%   36,
+      61-67, 76-78, 103, 104->106, 107
+
+      --------------------------------------------------------------------------------------------------
+
+      TOTAL                                                   2365     50    492     35    97%
+
+      Required test coverage of 85% reached. Total coverage: 96.81%
+
+      233 passed in 69.78s (0:01:09)'
+  - check: security
+    passed: true
+    summary: (no output)
+  - check: secrets
+    passed: true
+    summary: (no output)
+  - check: dependencies
+    passed: true
+    summary: 'Name                          Skip Reason
+
+      ----------------------------- -------------------------------
+
+      orion-chemicals-data-platform distribution marked as editable
+
+      No known vulnerabilities found'
+  - check: harness
+    passed: true
+    summary: 'WARNING  gate-stale         specs/000-sdd-harness/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      sdd check: 1 finding(s)'
+  - check: docs-site
+    passed: true
+    summary: (no output)

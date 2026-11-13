@@ -41,3 +41,5 @@ generator or receives its data.
 - − The pipeline needs network (`pip-audit`, action downloads); pinned SHAs must be refreshed on purpose.
 - − If branch protection is not applied, the control is not real; [the checklist](../../../harness/ci-protection.md) is
   for a person to apply, and the manual proof is recorded in `validation.md`.
+- − Branch protection is unavailable on the free plan of a private repository (2026-11-13), so today CI
+  reports but does not block: we merge only on a green `quality`. Revisit with a paid plan or a public repository.
