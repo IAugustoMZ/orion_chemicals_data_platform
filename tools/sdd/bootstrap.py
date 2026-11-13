@@ -23,6 +23,7 @@ from sdd.application.use_cases.check_harness import CheckHarness
 from sdd.application.use_cases.create_dossier import CreateDossier
 from sdd.application.use_cases.evaluate_dossier import EvaluateDossier
 from sdd.application.use_cases.guard_commit import GuardCommit
+from sdd.application.use_cases.items import ApproveItem, ItemCards, VerifyItem
 from sdd.application.use_cases.lint_docs import LintDocs
 from sdd.application.use_cases.sync_generated import SyncGenerated
 from sdd.application.use_cases.verify_quality import VerifyQuality
@@ -31,10 +32,12 @@ from sdd.infrastructure.file_document_store import FileDocumentStore
 from sdd.infrastructure.file_template_library import FileTemplateLibrary
 from sdd.infrastructure.git import listed_files
 from sdd.infrastructure.git_workspace import GitWorkspace
+from sdd.infrastructure.pytest_ac_reader import PytestAcStatusReader
 from sdd.infrastructure.subprocess_check_runner import SubprocessCheckRunner
 from sdd.infrastructure.system_clock import SystemClock
 from sdd.infrastructure.terminal_confirmation import TerminalConfirmation
 from sdd.infrastructure.yaml_dossier_repository import YamlDossierRepository
+from sdd.infrastructure.yaml_progress_repository import YamlProgressRepository
 from sdd.infrastructure.yaml_reference_data import (
     YamlLogoRegistry,
     YamlQualityCheckCatalog,
@@ -57,6 +60,9 @@ class Harness:
         guard: `sdd guard-commit`.
         check: `sdd check`.
         sync: `sdd sync`.
+        cards: the cards of a dossier with their progress (`sdd item status`).
+        approve_item: `sdd item approve`.
+        verify_item: `sdd item verify`.
     """
 
     settings: Settings
@@ -68,6 +74,9 @@ class Harness:
     guard: GuardCommit
     check: CheckHarness
     sync: SyncGenerated
+    cards: ItemCards
+    approve_item: ApproveItem
+    verify_item: VerifyItem
 
 
 def build_harness(settings: Settings, confirmation: HumanConfirmation | None = None) -> Harness:
@@ -87,7 +96,12 @@ def build_harness(settings: Settings, confirmation: HumanConfirmation | None = N
     templates = FileTemplateLibrary(settings.path(settings.templates_dir))
     workspace, clock = GitWorkspace(root), SystemClock()
     store = FileDocumentStore(root, listed_files)
-    evaluate = EvaluateDossier(dossiers, requirements, team, workspace)
+    progress = YamlProgressRepository(root, settings.specs_dir)
+    evaluate = EvaluateDossier(dossiers, requirements, team, workspace, progress)
+    cards = ItemCards(dossiers, progress, team)
+    checks = YamlQualityCheckCatalog(settings.path(settings.checks_file))
+    runner = SubprocessCheckRunner(root, listed_files)
+    confirm = confirmation or TerminalConfirmation()
     rules = (
         MermaidDiagramTypeRule(),
         MermaidLogoRule(
@@ -118,14 +132,14 @@ def build_harness(settings: Settings, confirmation: HumanConfirmation | None = N
             templates,
             scaffold,
             workspace,
-            confirmation or TerminalConfirmation(),
+            confirm,
             clock,
         ),
         verify=VerifyQuality(
             dossiers,
             evaluate,
-            YamlQualityCheckCatalog(settings.path(settings.checks_file)),
-            SubprocessCheckRunner(root, listed_files),
+            checks,
+            runner,
             workspace,
             clock,
         ),
@@ -134,4 +148,9 @@ def build_harness(settings: Settings, confirmation: HumanConfirmation | None = N
             evaluate, dossiers, team, LintDocs(store, rules, settings.lint_excluded), sync
         ),
         sync=sync,
+        cards=cards,
+        approve_item=ApproveItem(cards, progress, evaluate, team, workspace, confirm, clock),
+        verify_item=VerifyItem(
+            cards, progress, evaluate, PytestAcStatusReader(root), checks, runner
+        ),
     )

@@ -20,7 +20,6 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from sdd.application.evidence import artifact_digest
 from sdd.application.ports.documents import TemplateLibrary
 from sdd.application.ports.dossiers import DossierRepository
 from sdd.application.ports.environment import Clock, HumanConfirmation, Workspace
@@ -116,7 +115,7 @@ class ApproveGate:
         report = self._evaluator.one(dossier_id)
         _require_earlier_gates(report, gate)
         self._require_ready(report, gate)
-        digest = artifact_digest(report.dossier, gate, self._dossiers)
+        digest = report.evidence.artifact_digests[gate.id]
         self._confirm(report, gate, member, digest)
         approval = Approval(
             member.id, self._clock.now(), digest, self._workspace.git_identity(), note.strip()

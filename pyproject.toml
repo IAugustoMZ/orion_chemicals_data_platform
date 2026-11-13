@@ -82,6 +82,7 @@ packages = ["sdd", "agent_hooks"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["tools"]
+markers = ["ac(id): proves one acceptance criterion, e.g. PBI-002-02:AC1 (ADR-0023)"]
 addopts = "--cov=sdd --cov=agent_hooks --cov-report=term-missing --cov-fail-under=85"
 
 [tool.coverage.run]

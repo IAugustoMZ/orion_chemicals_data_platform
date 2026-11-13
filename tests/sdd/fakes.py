@@ -15,6 +15,7 @@ from sdd.application.ports.reference_data import Logo
 from sdd.domain.approval import CheckOutcome
 from sdd.domain.dossier import Dossier, DossierKind
 from sdd.domain.errors import DossierNotFoundError, HumanConfirmationRequiredError
+from sdd.domain.item_progress import ItemProgress
 from sdd.domain.quality import QualityCheck
 from sdd.domain.requirement import Requirement, RequirementPhase
 from sdd.domain.team import ApprovalPolicy, Team, TeamMember
@@ -207,6 +208,29 @@ class StaticLogos:
 
     def logos(self) -> tuple[Logo, ...]:
         return self.entries
+
+
+@dataclass
+class FakeProgress:
+    """In-memory `ProgressRepository`; `stored` has no entry until the first save."""
+
+    stored: dict[str, ItemProgress] = field(default_factory=dict)
+
+    def load(self, dossier_id: str) -> ItemProgress | None:
+        return self.stored.get(dossier_id)
+
+    def save(self, dossier_id: str, progress: ItemProgress) -> None:
+        self.stored[dossier_id] = progress
+
+
+@dataclass
+class FakeAcReader:
+    """`AcStatusReader` returning a fixed verdict per marker id."""
+
+    verdict: dict[str, bool] = field(default_factory=dict)
+
+    def read(self) -> dict[str, bool]:
+        return dict(self.verdict)
 
 
 READY = "# Artifact\n\n## Section\n\nDone and reviewed.\n"
