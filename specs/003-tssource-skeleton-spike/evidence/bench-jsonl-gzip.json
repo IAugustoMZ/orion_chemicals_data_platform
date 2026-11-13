@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "seed": 42,
+  "format": "jsonl-gzip",
+  "seconds": 60,
+  "events": 7738750,
+  "events_per_second": {
+    "mean": 128979.16666666667,
+    "p50": 153750.0,
+    "p95": 153750.0,
+    "p99": 153750.0,
+    "min": 102500.0
+  },
+  "cpu_seconds": 62.391988869,
+  "peak_memory_mb": 95.390625,
+  "floor": 25000,
+  "floor_held": true,
+  "bottleneck": "writing"
+}

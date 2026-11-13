@@ -20,7 +20,7 @@ def test_help_lists_the_five_commands_and_exits_zero() -> None:
 
 
 @pytest.mark.ac("PBI-003-01:AC4")
-@pytest.mark.parametrize("command", ["run", "bench", "config", "report"])
+@pytest.mark.parametrize("command", ["run", "config", "report"])
 def test_unbuilt_commands_say_not_implemented_and_exit_one(command: str) -> None:
     """Every command that is not built yet prints one line and exits 1."""
     result = runner.invoke(app, [command])

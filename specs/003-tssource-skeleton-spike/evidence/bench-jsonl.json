@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "seed": 42,
+  "format": "jsonl",
+  "seconds": 60,
+  "events": 25368750,
+  "events_per_second": {
+    "mean": 422812.5,
+    "p50": 410000.0,
+    "p95": 512500.0,
+    "p99": 512500.0,
+    "min": 307500.0
+  },
+  "cpu_seconds": 40.139630497999995,
+  "peak_memory_mb": 95.71875,
+  "floor": 25000,
+  "floor_held": true,
+  "bottleneck": "writing"
+}
