@@ -73,39 +73,39 @@ approvals:
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
     note: ''
 verification:
-  at: '2026-11-04T13:36:52+00:00'
-  digest: sha256:37c33d008cf41d6ce07361b6787587d6454ac2be4e82c28ed1b1080ac870e211
-  commit: 64e8362
+  at: '2026-11-13T19:07:00+00:00'
+  digest: sha256:3fe82b2eeb45b2314a448dacf65e7cfdff0b61b0f6edbe60a532b873a6b65f31
+  commit: aa96a5e
   results:
   - check: format
     passed: true
-    summary: 222 files already formatted
+    summary: 299 files already formatted
   - check: lint
     passed: true
     summary: All checks passed!
   - check: types
     passed: true
-    summary: 'Success: no issues found in 60 source files'
+    summary: 'Success: no issues found in 85 source files'
   - check: architecture
     passed: true
-    summary: "domain KEPT\nInterfaces never touch infrastructure directly (only through the composition\
-      \ \nroot) KEPT\nDomain and application stay free of frameworks and I/O libraries KEPT\n\nContracts:\
-      \ 3 kept, 0 broken."
+    summary: "tssource interfaces never touch infrastructure directly (only through the \ncomposition\
+      \ root) KEPT\ntssource domain and application stay free of numpy, pyarrow, typer and \nsubprocess\
+      \ KEPT\n\nContracts: 6 kept, 0 broken."
   - check: tests
     passed: true
-    summary: 'tools\sdd\interfaces\cli\app.py                         115     12     24      5    88%   81,
-      138-147, 176, 178, 180, 215, 224
+    summary: 'tools\sdd\interfaces\cli\app.py                          164     10     32      5    92%   98,
+      207, 224-228, 306, 308, 310, 345, 354
 
-      tools\sdd\interfaces\cli\presenters.py                   36     11     10      1    61%   35, 60-66,
-      75-77
+      tools\sdd\interfaces\cli\presenters.py                    46     13     16      4    63%   36,
+      61-67, 76-78, 103, 104->106, 107
 
-      -------------------------------------------------------------------------------------------------
+      --------------------------------------------------------------------------------------------------
 
-      TOTAL                                                  1746     46    352     27    96%
+      TOTAL                                                   2701     64    518     38    97%
 
-      Required test coverage of 85% reached. Total coverage: 96.23%
+      Required test coverage of 85% reached. Total coverage: 96.64%
 
-      136 passed in 26.66s'
+      274 passed in 96.51s (0:01:36)'
   - check: security
     passed: true
     summary: (no output)

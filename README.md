@@ -94,9 +94,9 @@ The full picture, with every rule and how it is enforced: **[how the harness wor
 <!-- sdd:status:start -->
 | Spec | Kind | Where it is | G0 | G1 | G2 | G3 | G4 | G5 | G6 | G7 | Guide |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| [000 · The SDD harness](specs/000-sdd-harness/prd.md) | enabler | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/000-sdd-harness/teaching-guide.md) |
+| [000 · The SDD harness](specs/000-sdd-harness/prd.md) | enabler | Release & Learn (G7) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | [📘](specs/000-sdd-harness/teaching-guide.md) |
 | [001 · Time-series source: global plant data generator](specs/001-timeseries-source/prd.md) | feature | Specify (G4) | ✅ | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | ⏸️ | not yet |
-| [002 · Harness: item-by-item flow and CI](specs/002-harness-item-flow/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/002-harness-item-flow/teaching-guide.md) |
+| [002 · Harness: item-by-item flow and CI](specs/002-harness-item-flow/prd.md) | feature | Validate (G6) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | ⏸️ | [📘](specs/002-harness-item-flow/teaching-guide.md) |
 | [003 · Generator skeleton and throughput spike](specs/003-tssource-skeleton-spike/prd.md) | feature | done: released | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [📘](specs/003-tssource-skeleton-spike/teaching-guide.md) |
 
 ✅ passed · 🟡 partly approved · ⚪ pending · 🟠 stale (changed after approval) · ❌ failed · ⏸️ blocked by an earlier gate
