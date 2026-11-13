@@ -15,9 +15,13 @@ dependencies = [
 
 [project.scripts]
 sdd = "sdd.interfaces.cli.app:main"
+tssource = "tssource.interfaces.cli.app:main"
 
 [tool.poetry]
-packages = [{ include = "sdd", from = "tools" }]
+packages = [
+    { include = "sdd", from = "tools" },
+    { include = "tssource", from = "src" },
+]
 
 [tool.poetry.group.dev.dependencies]
 pytest = ">=8.3,<10"
@@ -39,6 +43,14 @@ mkdocs = "^1.6.1"
 mkdocs-material = "^9.7"
 mkdocs-same-dir = "^0.1.3"
 
+[tool.poetry.group.tssource]
+optional = true
+
+[tool.poetry.group.tssource.dependencies]
+numpy = "^2.1"
+pyarrow = ">=23.0.1,<25"
+tzdata = ">=2024.2"
+
 [build-system]
 requires = ["poetry-core>=2.0.0,<3.0.0"]
 build-backend = "poetry.core.masonry.api"
@@ -51,7 +63,7 @@ build-backend = "poetry.core.masonry.api"
 [tool.ruff]
 line-length = 99
 target-version = "py311"
-src = ["tools", "tests"]
+src = ["tools", "src", "tests"]
 
 [tool.ruff.lint]
 # E/W/F pycodestyle+pyflakes, I isort, B bugbear, UP pyupgrade, S bandit-style security,
@@ -76,14 +88,14 @@ max-complexity = 8
 [tool.mypy]
 strict = true
 python_version = "3.11"
-mypy_path = "tools"
-packages = ["sdd", "agent_hooks"]
+mypy_path = "tools:src"
+packages = ["sdd", "agent_hooks", "tssource"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
-pythonpath = ["tools"]
+pythonpath = ["tools", "src"]
 markers = ["ac(id): proves one acceptance criterion, e.g. PBI-002-02:AC1 (ADR-0023)"]
-addopts = "--cov=sdd --cov=agent_hooks --cov-report=term-missing --cov-fail-under=85"
+addopts = "--cov=sdd --cov=agent_hooks --cov=tssource --cov-report=term-missing --cov-fail-under=85"
 
 [tool.coverage.run]
 branch = true
@@ -94,7 +106,7 @@ exclude_dirs = ["tests", ".venv"]
 # Clean-architecture contracts (ADR-0007). `lint-imports` fails the build when a layer reaches
 # outwards, so the rule in harness/principles.md is enforced by a machine, not by memory.
 [tool.importlinter]
-root_packages = ["sdd"]
+root_packages = ["sdd", "tssource"]
 include_external_packages = true
 
 [[tool.importlinter.contracts]]
@@ -120,3 +132,27 @@ name = "Domain and application stay free of frameworks and I/O libraries"
 type = "forbidden"
 source_modules = ["sdd.domain", "sdd.application"]
 forbidden_modules = ["yaml", "typer", "subprocess"]
+
+[[tool.importlinter.contracts]]
+name = "tssource layers point inwards: interfaces > bootstrap > infrastructure > application > domain"
+type = "layers"
+layers = [
+    "tssource.interfaces",
+    "tssource.bootstrap",
+    "tssource.infrastructure",
+    "tssource.application",
+    "tssource.domain",
+]
+
+[[tool.importlinter.contracts]]
+name = "tssource interfaces never touch infrastructure directly (only through the composition root)"
+type = "forbidden"
+source_modules = ["tssource.interfaces"]
+forbidden_modules = ["tssource.infrastructure"]
+allow_indirect_imports = true
+
+[[tool.importlinter.contracts]]
+name = "tssource domain and application stay free of numpy, pyarrow, typer and subprocess"
+type = "forbidden"
+source_modules = ["tssource.domain", "tssource.application"]
+forbidden_modules = ["numpy", "pyarrow", "typer", "subprocess"]

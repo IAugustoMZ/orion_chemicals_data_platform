@@ -47,3 +47,29 @@ services:
       retries: 3
       start_period: 30s
     restart: unless-stopped
+
+  # The plant data generator (dossier 003, ADR-0019). No port: it only writes files. With no
+  # arguments it idles, healthy; run a command with
+  #   docker compose run --rm tssource bench --format parquet --seconds 60
+  # The host folder data/ts_source must exist and be writable by user 10001 (the only bind).
+  tssource:
+    build:
+      context: .
+      dockerfile: docker/tssource.Dockerfile
+    image: orion/tssource:local
+    volumes:
+      - ./data/ts_source:/data/ts_source
+    read_only: true
+    tmpfs:
+      - /tmp
+    user: "10001:10001"
+    cap_drop: [ALL]
+    security_opt:
+      - no-new-privileges:true
+    healthcheck:
+      test: ["CMD", "tssource", "health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    restart: unless-stopped

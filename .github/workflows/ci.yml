@@ -32,7 +32,7 @@ jobs:
           python-version: "3.11"
           cache: poetry
       - name: Install dependencies
-        run: poetry install --with docs
+        run: poetry install --with docs,tssource
 
       - name: format
         run: poetry run ruff format --check .
@@ -45,7 +45,7 @@ jobs:
       - name: tests
         run: poetry run pytest -q
       - name: security
-        run: poetry run bandit -q -c pyproject.toml -r tools
+        run: poetry run bandit -q -c pyproject.toml -r tools src
       - name: secrets
         run: poetry run detect-secrets-hook --baseline .secrets.baseline $(git ls-files)
       - name: dependencies
