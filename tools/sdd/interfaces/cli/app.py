@@ -36,7 +36,8 @@ app = typer.Typer(
 
 
 item_app = typer.Typer(
-    help="One backlog card at a time: status, approve, verify, next, merged.", no_args_is_help=True
+    help="One backlog card at a time: status, approve, verify, current, next, merged.",
+    no_args_is_help=True,
 )
 app.add_typer(item_app, name="item")
 
@@ -148,16 +149,24 @@ def approve(
 
 
 @app.command()
-def verify(dossier_id: Annotated[str, typer.Argument(help="Dossier id, e.g. 001.")]) -> None:
+def verify(
+    dossier_id: Annotated[str, typer.Argument(help="Dossier id, e.g. 001.")],
+    no_record: Annotated[
+        bool, typer.Option("--no-record", help="Run read-only: leave dossier.yaml untouched (CI).")
+    ] = False,
+) -> None:
     """Run the deterministic quality suite (gate G5) and record the result."""
 
     def body(harness: Harness) -> int:
         """Run the suite, print progress, and return 1 when it failed."""
         verification = harness.verify.execute(
-            dossier_id, lambda c, o: typer.echo(presenters.check_progress(c, o))
+            dossier_id,
+            lambda c, o: typer.echo(presenters.check_progress(c, o)),
+            record=not no_record,
         )
         typer.echo(presenters.verification_line(verification))
-        _sync_quietly(harness)
+        if not no_record:
+            _sync_quietly(harness)
         return 0 if verification.passed else 1
 
     _run(body)
@@ -217,6 +226,22 @@ def item_verify(
             f"card {number.zfill(2)}: " + ("verified" if not failed else f"failed: {failed}")
         )
         return 1 if failed else 0
+
+    _run(body)
+
+
+@item_app.command("current")
+def item_current(
+    branch: Annotated[
+        str | None, typer.Option(help="Branch to read; the checked-out one when omitted.")
+    ] = None,
+) -> None:
+    """Print `<dossier> <card>` of a card branch; exit 1, printing nothing, on any other."""
+
+    def body(harness: Harness) -> None:
+        """Print the dossier id and the card number separated by a space."""
+        dossier_id, number = harness.current_item.execute(branch)
+        typer.echo(f"{dossier_id} {number}")
 
     _run(body)
 

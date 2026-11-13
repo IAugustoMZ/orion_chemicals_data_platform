@@ -1,0 +1,66 @@
+# The merge control (ADR-0024). One required job, `quality`, runs every command of
+# harness/checks.yaml, then proves the card when the branch is a card branch.
+# A person applies the branch protection that makes `quality` required (harness/ci-protection.md).
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # Pinned to full commit SHAs (a person must confirm them against the releases noted here).
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install Poetry
+        run: pipx install poetry==2.3.4
+      - uses: actions/setup-python@0b93645e9fea7318ecaed2b359559ac225c90a2b # v5.3.0
+        with:
+          python-version: "3.11"
+          cache: poetry
+      - name: Install dependencies
+        run: poetry install --with docs
+
+      - name: format
+        run: poetry run ruff format --check .
+      - name: lint
+        run: poetry run ruff check .
+      - name: types
+        run: poetry run mypy
+      - name: architecture
+        run: poetry run lint-imports
+      - name: tests
+        run: poetry run pytest -q
+      - name: security
+        run: poetry run bandit -q -c pyproject.toml -r tools
+      - name: secrets
+        run: poetry run detect-secrets-hook --baseline .secrets.baseline $(git ls-files)
+      - name: dependencies
+        run: poetry run pip-audit --skip-editable --progress-spinner off
+      - name: harness
+        run: poetry run sdd check
+      - name: docs-site
+        run: poetry run mkdocs build --strict --quiet --site-dir .cache/site
+
+      - name: Card proof (only on a card branch)
+        env:
+          HEAD_REF: ${{ github.head_ref || github.ref_name }}
+        run: |
+          if card=$(poetry run sdd item current --branch "$HEAD_REF"); then
+            poetry run sdd item verify $card
+          else
+            echo "Not a card branch ($HEAD_REF): card proof skipped."
+          fi

@@ -278,6 +278,16 @@ class TestVerify:
         with pytest.raises(GateOrderError):
             world.verify.execute("001")
 
+    @pytest.mark.ac("PBI-002-04:AC6")
+    def test_without_recording_the_dossier_is_not_modified(self):
+        world = World()
+        world.ready_dossier()
+        world.approve_through(GateId.G4)
+        before = world.dossiers.load("001")
+        result = world.verify.execute("001", record=False)
+        assert result.passed and world.dossiers.load("001") == before
+        assert world.evaluate.one("001").status(GateId.G5).state is GateState.PENDING
+
     def test_records_passing_and_failing_runs(self):
         world = World()
         world.ready_dossier()

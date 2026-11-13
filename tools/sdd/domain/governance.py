@@ -19,6 +19,7 @@ GOVERNED_DIRECTORIES: tuple[str, ...] = (
     "harness/",
     ".agents/",
     ".claude/",
+    ".github/",
 )
 """Directory prefixes whose files are governed (repository-relative, forward slashes)."""
 
