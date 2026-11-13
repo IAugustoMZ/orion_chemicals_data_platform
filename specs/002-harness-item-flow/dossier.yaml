@@ -59,24 +59,24 @@ approvals:
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
     note: ''
 verification:
-  at: '2026-11-13T11:59:13+00:00'
-  digest: sha256:e25c6e5ae709cd44f6e10eca4d037de5430d65a5074a5994365b1c3d7468dadf
-  commit: 7666a11
+  at: '2026-11-13T19:04:23+00:00'
+  digest: sha256:3fe82b2eeb45b2314a448dacf65e7cfdff0b61b0f6edbe60a532b873a6b65f31
+  commit: aa96a5e
   results:
   - check: format
     passed: true
-    summary: 264 files already formatted
+    summary: 299 files already formatted
   - check: lint
     passed: true
     summary: All checks passed!
   - check: types
     passed: true
-    summary: 'Success: no issues found in 69 source files'
+    summary: 'Success: no issues found in 85 source files'
   - check: architecture
     passed: true
-    summary: "domain KEPT\nInterfaces never touch infrastructure directly (only through the composition\
-      \ \nroot) KEPT\nDomain and application stay free of frameworks and I/O libraries KEPT\n\nContracts:\
-      \ 3 kept, 0 broken."
+    summary: "tssource interfaces never touch infrastructure directly (only through the \ncomposition\
+      \ root) KEPT\ntssource domain and application stay free of numpy, pyarrow, typer and \nsubprocess\
+      \ KEPT\n\nContracts: 6 kept, 0 broken."
   - check: tests
     passed: true
     summary: 'tools\sdd\interfaces\cli\app.py                          164     10     32      5    92%   98,
@@ -87,11 +87,11 @@ verification:
 
       --------------------------------------------------------------------------------------------------
 
-      TOTAL                                                   2365     50    492     35    97%
+      TOTAL                                                   2701     64    518     38    97%
 
-      Required test coverage of 85% reached. Total coverage: 96.81%
+      Required test coverage of 85% reached. Total coverage: 96.64%
 
-      233 passed in 96.21s (0:01:36)'
+      274 passed in 120.00s (0:01:59)'
   - check: security
     passed: true
     summary: (no output)
