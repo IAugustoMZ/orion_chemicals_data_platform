@@ -29,9 +29,9 @@ gate passes), and the agent confirms with `sdd status` before it starts the next
   `poetry run sdd new`, and the branch `spec/<id>-<slug>`. Later artifacts do not exist yet: the
   harness creates each one when the gate before it passes
   ([ADR-0018](../docs/architecture/decisions/0018-artifacts-are-created-as-gates-pass.md)).
-- **Gate:** **G0 · Context** (automatic): every cited RT exists; an enabler, and a feature that
-  cites no RT, state their rationale
-  ([ADR-0014](../docs/architecture/decisions/0014-work-outside-the-requirements-catalogue.md)).
+- **Gate:** **G0 · Context** (automatic): every cited RT exists and every dossier states its
+  rationale ([ADR-0026](../docs/architecture/decisions/0026-a-rationale-is-required-for-every-dossier.md),
+  which extends [ADR-0014](../docs/architecture/decisions/0014-work-outside-the-requirements-catalogue.md)).
 
 ## Phase 1: Discover
 

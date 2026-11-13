@@ -7,7 +7,7 @@ Human gates are closed when **both of us** approved the current content (policy 
 
 | Gate | Phase | Kind | Judges | Passes when |
 |---|---|---|---|---|
-| **G0** Context | 0 | automated | `dossier.yaml` + every artifact | every RT cited exists; an enabler, and a feature citing no RT (outside the catalogue), have a rationale |
+| **G0** Context | 0 | automated | `dossier.yaml` + every artifact | every RT cited exists; every dossier has a rationale |
 | **G1** PRD validated | 1 Discover | human | `prd.md` | both of us approved the current `prd.md` |
 | **G2** Backlog approved | 2 Plan | human | `backlog.md` | both of us approved the current `backlog.md` |
 | **G3** Approach approved | 3 Structure | human | `ux-approach.md` | both of us approved the current `ux-approach.md` |

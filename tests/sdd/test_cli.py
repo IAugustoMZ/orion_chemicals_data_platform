@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -48,7 +49,16 @@ def run(*args: str):
 
 
 def test_new_status_rt_and_sync(repo):
-    created = run("new", "Source contracts", "--slug", "source-contracts", "--rt", "rt02")
+    created = run(
+        "new",
+        "Source contracts",
+        "--slug",
+        "source-contracts",
+        "--rt",
+        "rt02",
+        "--rationale",
+        "why",
+    )
     assert created.exit_code == 0, created.output
     assert "spec/000-source-contracts" in created.output
     assert sorted(p.name for p in (repo / "specs/000-source-contracts").iterdir()) == [
@@ -65,9 +75,24 @@ def test_new_status_rt_and_sync(repo):
     assert "never point to two pieces of equipment" in shown.output
 
 
+@pytest.mark.ac("PBI-002-05:AC1")
+@pytest.mark.parametrize("extra", [(), ("--rationale", "  ")])
+def test_new_without_a_rationale_creates_nothing_and_exits_2(repo, extra):
+    refused = run("new", "X", "--slug", "x", "--rt", "RT01", *extra)
+    assert refused.exit_code == 2
+    assert not (repo / "specs").exists() or not any((repo / "specs").iterdir())
+
+
+@pytest.mark.ac("PBI-002-05:AC4")
+def test_new_help_says_the_rationale_is_mandatory():
+    plain = re.sub(r"\[[0-9;]*m", "", run("new", "--help").output)
+    text = " ".join(plain.split())
+    assert "--rationale" in text and "mandatory" in text.lower()
+
+
 def test_typed_errors_exit_with_2(repo):
-    assert run("new", "X", "--slug", "x", "--rt", "RT99").exit_code == 2
-    run("new", "X", "--slug", "x", "--rt", "RT01")
+    assert run("new", "X", "--slug", "x", "--rt", "RT99", "--rationale", "why").exit_code == 2
+    run("new", "X", "--slug", "x", "--rt", "RT01", "--rationale", "why")
     refused = run("approve", "000", "G1", "--as", "mentor")
     assert refused.exit_code == 2
     assert "Not ready for approval" in refused.output or "interactive terminal" in refused.output
@@ -75,7 +100,7 @@ def test_typed_errors_exit_with_2(repo):
 
 
 def test_guard_and_check(repo):
-    run("new", "X", "--slug", "x", "--rt", "RT01")
+    run("new", "X", "--slug", "x", "--rt", "RT01", "--rationale", "why")
     blocked = run("guard-commit", "tools/sdd/a.py")
     assert blocked.exit_code == 1 and "commit-guard" in blocked.output
     assert run("guard-commit", "docs/a.md").exit_code == 0
@@ -91,7 +116,7 @@ class _Yes:
 
 
 def test_approval_that_passes_a_gate_prints_the_files_it_created(repo, monkeypatch):
-    run("new", "X", "--slug", "x", "--rt", "RT01")
+    run("new", "X", "--slug", "x", "--rt", "RT01", "--rationale", "why")
     prd = repo / "specs/000-x/prd.md"
     prd.write_text(prd.read_text(encoding="utf-8").replace("TODO(sdd)", "done"), encoding="utf-8")
     monkeypatch.setattr(
@@ -109,7 +134,7 @@ def test_approval_that_passes_a_gate_prints_the_files_it_created(repo, monkeypat
 
 
 def test_failed_scaffolding_exits_with_2_and_an_error_line(repo, monkeypatch):
-    run("new", "X", "--slug", "x", "--rt", "RT01")
+    run("new", "X", "--slug", "x", "--rt", "RT01", "--rationale", "why")
     prd = repo / "specs/000-x/prd.md"
     prd.write_text(prd.read_text(encoding="utf-8").replace("TODO(sdd)", "done"), encoding="utf-8")
     monkeypatch.setattr(

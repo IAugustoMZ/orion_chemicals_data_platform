@@ -106,13 +106,13 @@ def status(
 def new(
     title: Annotated[str, typer.Argument(help="Human title of the work.")],
     slug: Annotated[str, typer.Option(help="kebab-case short name, e.g. source-contracts.")],
+    rationale: Annotated[
+        str, typer.Option(help="Why the work is worth doing (mandatory for every dossier).")
+    ],
     rt: Annotated[
         list[str] | None, typer.Option("--rt", help="An RT served (repeat; none = outside RTs).")
     ] = None,
     kind: Annotated[DossierKind, typer.Option(help="feature or enabler.")] = DossierKind.FEATURE,
-    rationale: Annotated[
-        str, typer.Option(help="Why (mandatory for enablers and work outside the RTs).")
-    ] = "",
 ) -> None:
     """Create a new dossier specs/<id>-<slug>/ from the templates."""
 

@@ -85,15 +85,22 @@ Order: 01, 02, 03, 04, 05 (01 unblocks commits; 02 and 03 install the flow; 04 t
 ### PBI-002-05 · A rationale is required for every dossier
 
 - **Feature:** F1 · **Serves:** none directly (repair) · **Size:** S · **Depends on:** 04
-- **Context:** only enablers and out-of-catalogue work needed a rationale, so dossier 001 started with none.
-- **What:** `sdd new` without a rationale fails with exit 2 and creates nothing; G0 fails for an empty rationale.
-- **How:** `Dossier.needs_rationale` true for all (`domain/dossier.py`); one message in `application/evidence.py`; reject empty in `create_dossier.py` with the typed error; update `--rationale` help in `interfaces/cli/app.py` and any doc saying "mandatory for enablers".
-- **Out of scope:** judging rationale quality; old dossiers.
+- **Context:** only enablers and out-of-catalogue work needed a rationale, so dossier 001 started with none. Dossiers 000, 001 and 002 already have one, so G0 of the existing dossiers does not change.
+- **What:** `sdd new` without a rationale fails with exit 2 and creates nothing; G0 fails for an empty rationale, whatever the kind.
+- **How:**
+  - `domain/dossier.py`: remove `needs_rationale` (always true); `outside_catalogue` stays, it is used elsewhere.
+  - `application/evidence.py`: one message replaces `_MISSING_RATIONALE`; G0 checks every dossier.
+  - `create_dossier.py`: `NewDossier.rationale` has no default; a blank one raises `InvalidDossierError` before anything is written.
+  - `interfaces/cli/app.py`: `--rationale` is required and its help says so.
+  - Test fixtures that build dossiers or call `sdd new` without a rationale get one.
+  - Docs saying "mandatory for enablers": `CONTRIBUTING.md`, `harness/gates.md`, `lifecycle.md`, `how-it-works.md`, `docs/tutorials/first-feature.md`, `docs/learn/glossary.md`, skill `sdd-start` (then `sdd sync`); ADR-0025 records the change to ADR-0014.
+- **Out of scope:** judging rationale quality; changing old dossiers.
 - **Acceptance criteria (EARS):**
-  - AC1: If `sdd new` is called without a rationale, then it shall create nothing and exit 2.
-  - AC2: If the rationale is empty or whitespace, then G0 shall fail with "a dossier must state its rationale in dossier.yaml".
+  - AC1: If `sdd new` is called without a rationale, or with a blank one, then it shall create nothing and exit 2.
+  - AC2: If the rationale of any dossier is empty or whitespace, then G0 shall fail with "a dossier must state its rationale in dossier.yaml".
   - AC3: When a dossier has a rationale and valid RTs, G0 shall pass.
-- **Verification:** `tests/sdd/test_domain.py`, `test_use_cases.py`, `test_cli.py`.
+  - AC4: The `sdd new --help` text shall say the rationale is mandatory.
+- **Verification:** `tests/sdd/test_domain.py`, `test_use_cases.py`, `test_cli.py`; `sdd check` on the three existing dossiers.
 
 ## Order and dependencies
 

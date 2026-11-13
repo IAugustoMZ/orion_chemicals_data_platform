@@ -66,7 +66,7 @@ flowchart TD
     MAP --> OK{"👥 We confirm<br/>the mapping"}
     OK -->|"adjust"| MAP
     OK -->|"yes"| NEW["🤖 sdd new 'Title' --slug x --rt RTnn<br/>creates specs/NNN-x/ with dossier.yaml and prd.md,<br/>and branch spec/NNN-x"]
-    NEW --> G0{"G0 · Context<br/>RTs exist? rationale<br/>when none is cited?"}
+    NEW --> G0{"G0 · Context<br/>RTs exist?<br/>rationale stated?"}
     G0 -->|"no: fix dossier.yaml"| NEW
     G0 -->|"yes (automatic)"| P1
 
@@ -189,9 +189,9 @@ stateDiagram-v2
 The two automated gates have their own rules:
 
 - **G0 · Context** passes when every RT cited in `dossier.yaml` *or mentioned in any artifact*
-  exists in the catalogue, and an enabler or a feature that cites no RT (*outside the
-  catalogue*, [ADR-0014](../docs/architecture/decisions/0014-work-outside-the-requirements-catalogue.md))
-  states its rationale.
+  exists in the catalogue, and the dossier states its rationale (always;
+  [ADR-0026](../docs/architecture/decisions/0026-a-rationale-is-required-for-every-dossier.md),
+  [ADR-0014](../docs/architecture/decisions/0014-work-outside-the-requirements-catalogue.md)).
   It is checked continuously; no action closes it.
 - **G5 · Checks passed** passes when the last `sdd verify` ran every check of
   [checks.yaml](checks.yaml) successfully **on the current governed code**. Change one governed
@@ -414,7 +414,7 @@ parts lives in this repository; details in [context-plane.md](context-plane.md) 
 # 0. Context: we ask the agent in plain words; it reads every RT, proposes the mapping
 #    (here RT01, RT02) and, once we agree, runs:
 poetry run sdd rt
-poetry run sdd new "Source integration contracts" --slug source-contracts --rt RT01 --rt RT02
+poetry run sdd new "Source integration contracts" --slug source-contracts --rt RT01 --rt RT02 --rationale "each source needs an agreed contract"
 git switch -c spec/001-source-contracts
 
 # 1-4. The agent fills prd.md, then (as each gate passes and the harness creates the next file)

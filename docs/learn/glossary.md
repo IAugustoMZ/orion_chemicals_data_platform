@@ -25,7 +25,7 @@ introduces them.
 | **EARS** | Easy Approach to Requirements Syntax: sentence patterns like "When X, the system shall Y" |
 | **Enabler** | a dossier that builds tooling or foundations; supports RTs without delivering them |
 | **Feature** | a dossier that delivers platform behaviour; cites the RTs it serves, or is *outside the catalogue* |
-| **Outside the catalogue** | a feature that serves no RT; allowed with a rationale and the list of RTs considered (ADR-0014) |
+| **Outside the catalogue** | a feature that serves no RT; allowed with the list of RTs considered; every dossier states a rationale (ADR-0014, ADR-0026) |
 | **Gate** | the checkpoint closing a phase (G0-G7); human gates are approved by us, automated ones by machines |
 | **Governed file** | a file whose change alters behaviour or rules (code, tests, containers, dependencies, harness, agent config); changes only after G4 |
 | **Grain** | what one row of a dataset represents (one reading, one order, one order activity) (RT11) |

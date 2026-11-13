@@ -39,3 +39,4 @@ ADR is listed here and has a status and a date.
 | [0023](0023-item-by-item-build-flow.md) | A backlog is approved and built one card at a time | Accepted |
 | [0024](0024-ci-with-github-actions-blocks-merge.md) | CI with GitHub Actions blocks the merge (supersedes ADR-0004) | Accepted |
 | [0025](0025-pi-like-acquisition-and-quality-codes.md) | The output has the shape of a historian: exception, snapshot, compression, quality codes | Proposed |
+| [0026](0026-a-rationale-is-required-for-every-dossier.md) | A rationale is required for every dossier (amends ADR-0014) | Accepted |

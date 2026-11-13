@@ -1,6 +1,6 @@
 # ADR-0014: Work outside the requirements catalogue is allowed, with a rationale
 
-- **Status:** Accepted
+- **Status:** Accepted (rationale rule amended by [ADR-0026](0026-a-rationale-is-required-for-every-dossier.md))
 - **Date:** 2026-10-21
 - **Dossier:** specs/000-sdd-harness
 - **Requirements:** RT01-RT42 (how work relates to them); refines [ADR-0011](0011-requirements-catalogue-as-yaml.md)

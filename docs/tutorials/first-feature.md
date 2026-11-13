@@ -49,7 +49,7 @@ the request (skill `sdd-start`):
 The agent updates the mapping, then runs:
 
 ```bash
-poetry run sdd new "Source integration contracts" --slug source-contracts --rt RT01 --rt RT02 --rt RT38
+poetry run sdd new "Source integration contracts" --slug source-contracts --rt RT01 --rt RT02 --rt RT38 --rationale "agreed contracts let each source be built and checked on its own"
 git switch -c spec/001-source-contracts
 poetry run sdd status 001
 ```
