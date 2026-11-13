@@ -1,6 +1,6 @@
 # ADR-0023: A backlog is approved and built one card at a time
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-11-12
 - **Dossier:** specs/002-harness-item-flow
 - **Requirements:** supports RT38 (approvals record actor, time, digest) and RT42; refines [ADR-0003](0003-gates-approved-by-people-bound-to-digests.md) and [ADR-0015](0015-one-gate-at-a-time-reviewed-in-chat.md)

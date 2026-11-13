@@ -131,6 +131,41 @@ class ItemProgress:
             )
         return self._with(replace(current, state=target))
 
+    def with_branch(self, number: str, branch: str) -> ItemProgress:
+        """Record the git branch of a card.
+
+        Args:
+            number: the card number.
+            branch: the branch name.
+        """
+        return self._with(replace(self.record(number), branch=branch))
+
+    def opened(self, number: str, commit: str) -> ItemProgress:
+        """Record the commit a pull request was opened from; the card becomes ``pr-open``.
+
+        Args:
+            number: the card number.
+            commit: the full commit id.
+
+        Raises:
+            IllegalTransitionError: when the card is not ``verified`` (or already ``pr-open``).
+        """
+        moved = self.move(number, ItemState.PR_OPEN)
+        return moved._with(replace(moved.record(number), commit=commit))
+
+    def merged(self, number: str, at: datetime) -> ItemProgress:
+        """Record that the card's commit reached the main branch.
+
+        Args:
+            number: the card number.
+            at: when the merge was recorded.
+
+        Raises:
+            IllegalTransitionError: when the card is not ``pr-open``.
+        """
+        moved = self.move(number, ItemState.MERGED)
+        return moved._with(replace(moved.record(number), merged_at=at))
+
     def unmerged(self, numbers: tuple[str, ...]) -> tuple[str, ...]:
         """Return the cards among `numbers` that are not merged yet.
 

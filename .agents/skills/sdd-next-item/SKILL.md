@@ -1,0 +1,33 @@
+---
+name: sdd-next-item
+description: Phase 5 (Build), card by card. Use in a dossier with progress.yaml to start the next backlog card, build it on its own feat/<id>-<nn>-<slug> branch, prove it with `sdd item verify`, open the pull request and stop for a person to merge.
+---
+
+# Build one card at a time (phase 5 · ADR-0023)
+
+Reference: [lifecycle, phase 5](../../../harness/lifecycle.md#phase-5-build),
+[ADR-0023](../../../docs/architecture/decisions/0023-item-by-item-build-flow.md).
+
+## Preconditions
+
+- `poetry run sdd status <id>`: **G4 passed**; the dossier has `progress.yaml`.
+- `poetry run sdd item status <id>`: the previous card is `merged`.
+
+## Steps
+
+1. **Start.** `poetry run sdd item next <id>` syncs `main`, deletes merged local branches and
+   creates `feat/<id>-<nn>-<slug>`. If it refuses, read the reason and stop; fix nothing by hand
+   with force or hard deletes.
+2. **Refine with us.** Rewrite the card's section of `backlog.md` against the code that exists,
+   review it with us in the chat, then ask us to run
+   `poetry run sdd item approve <id> <nn> --as <member>` (never run it yourself). Governed files
+   cannot be committed on the branch until both of us approved the current text.
+3. **Build** test first. Mark each acceptance criterion's test with
+   `@pytest.mark.ac("PBI-<id>-<nn>:ACn")`; one criterion without a passing marked test fails.
+4. **Prove.** `poetry run sdd item verify <id> <nn>`; same loop limit as `sdd-build` (3).
+5. **Deliver.** Commit (pre-commit runs), push the branch, open the pull request, report, and
+   **stop**. Never `gh pr merge`, `git branch -D` or a force push.
+6. **After a person merged:** `poetry run sdd item merged <id> <nn>`, then back to step 1.
+
+If the card turns out wrong, stop and propose the change to its section; editing it makes only
+that card's approvals stale.

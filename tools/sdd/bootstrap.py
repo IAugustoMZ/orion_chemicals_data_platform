@@ -23,6 +23,7 @@ from sdd.application.use_cases.check_harness import CheckHarness
 from sdd.application.use_cases.create_dossier import CreateDossier
 from sdd.application.use_cases.evaluate_dossier import EvaluateDossier
 from sdd.application.use_cases.guard_commit import GuardCommit
+from sdd.application.use_cases.item_flow import MarkItemMerged, NextItem
 from sdd.application.use_cases.items import ApproveItem, ItemCards, VerifyItem
 from sdd.application.use_cases.lint_docs import LintDocs
 from sdd.application.use_cases.sync_generated import SyncGenerated
@@ -31,6 +32,7 @@ from sdd.config import Settings
 from sdd.infrastructure.file_document_store import FileDocumentStore
 from sdd.infrastructure.file_template_library import FileTemplateLibrary
 from sdd.infrastructure.git import listed_files
+from sdd.infrastructure.git_cli_repository import GitCliRepository
 from sdd.infrastructure.git_workspace import GitWorkspace
 from sdd.infrastructure.pytest_ac_reader import PytestAcStatusReader
 from sdd.infrastructure.subprocess_check_runner import SubprocessCheckRunner
@@ -63,6 +65,8 @@ class Harness:
         cards: the cards of a dossier with their progress (`sdd item status`).
         approve_item: `sdd item approve`.
         verify_item: `sdd item verify`.
+        next_item: `sdd item next`.
+        merged_item: `sdd item merged`.
     """
 
     settings: Settings
@@ -77,6 +81,8 @@ class Harness:
     cards: ItemCards
     approve_item: ApproveItem
     verify_item: VerifyItem
+    next_item: NextItem
+    merged_item: MarkItemMerged
 
 
 def build_harness(settings: Settings, confirmation: HumanConfirmation | None = None) -> Harness:
@@ -101,6 +107,7 @@ def build_harness(settings: Settings, confirmation: HumanConfirmation | None = N
     cards = ItemCards(dossiers, progress, team)
     checks = YamlQualityCheckCatalog(settings.path(settings.checks_file))
     runner = SubprocessCheckRunner(root, listed_files)
+    git = GitCliRepository(root)
     confirm = confirmation or TerminalConfirmation()
     rules = (
         MermaidDiagramTypeRule(),
@@ -143,7 +150,7 @@ def build_harness(settings: Settings, confirmation: HumanConfirmation | None = N
             workspace,
             clock,
         ),
-        guard=GuardCommit(workspace, evaluate),
+        guard=GuardCommit(workspace, evaluate, cards),
         check=CheckHarness(
             evaluate, dossiers, team, LintDocs(store, rules, settings.lint_excluded), sync
         ),
@@ -153,4 +160,6 @@ def build_harness(settings: Settings, confirmation: HumanConfirmation | None = N
         verify_item=VerifyItem(
             cards, progress, evaluate, PytestAcStatusReader(root), checks, runner
         ),
+        next_item=NextItem(cards, progress, evaluate, git),
+        merged_item=MarkItemMerged(cards, progress, git, clock),
     )

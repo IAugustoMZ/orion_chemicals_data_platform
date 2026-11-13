@@ -14,6 +14,7 @@ from sdd.domain.card_digest import (
 from sdd.domain.errors import IllegalTransitionError
 from sdd.domain.gate_status import GateEvidence, GateState, evaluate_gates
 from sdd.domain.gates import GateId
+from sdd.domain.governance import item_branch_name, item_from_branch
 from sdd.domain.item_progress import ItemProgress, ItemState
 from tests.sdd.fakes import NOW, TEAM, dossier
 
@@ -101,3 +102,31 @@ class TestGateRules:
     def test_g5_passes_when_all_merged_or_without_progress_file(self):
         assert self._g5(()) is GateState.PASSED
         assert self._g5(None) is GateState.PASSED
+
+
+class TestRecordedFacts:
+    def test_branch_commit_and_merge_are_recorded_in_order(self):
+        progress = ItemProgress().with_approval("01", approval("mentor", "d"), complete=True)
+        progress = progress.with_branch("01", "feat/001-01-first").move("01", ItemState.VERIFIED)
+        progress = progress.opened("01", "c0ffee")
+        assert progress.record("01").state is ItemState.PR_OPEN
+        record = progress.merged("01", NOW).record("01")
+        assert (record.branch, record.commit, record.merged_at) == (
+            "feat/001-01-first",
+            "c0ffee",
+            NOW,
+        )
+        assert record.state is ItemState.MERGED
+
+
+class TestBranches:
+    def test_card_branch_names_round_trip(self):
+        name = item_branch_name("002", "03", "PBI-002-03 · Item flow: branch, merge and guard!")
+        assert name == "feat/002-03-item-flow-branch-merge-and-guard"
+        assert item_from_branch(name) == ("002", "03")
+        assert item_from_branch("spec/002-harness") is None
+
+    def test_long_titles_are_cut_at_a_word(self):
+        name = item_branch_name("002", "03", "PBI-002-03 · " + "word " * 20)
+        assert len(name) <= len("feat/002-03-") + 40 and not name.endswith("-")
+        assert item_branch_name("002", "03", "PBI-002-03 · ??") == "feat/002-03-card"

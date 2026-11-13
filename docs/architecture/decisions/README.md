@@ -36,6 +36,6 @@ ADR is listed here and has a status and a date.
 | [0020](0020-deterministic-generation-and-simulated-reception-time.md) | Generation is deterministic, and the reception time is simulated | Proposed |
 | [0021](0021-output-as-immutable-files-and-segments.md) | The output is a folder of immutable files, with small stream segments | Proposed |
 | [0022](0022-hidden-plant-and-site-local-time.md) | The plant stays hidden in `truth/`, and events carry site-local time | Proposed |
-| [0023](0023-item-by-item-build-flow.md) | A backlog is approved and built one card at a time | Proposed |
+| [0023](0023-item-by-item-build-flow.md) | A backlog is approved and built one card at a time | Accepted |
 | [0024](0024-ci-with-github-actions-blocks-merge.md) | CI with GitHub Actions blocks the merge (supersedes ADR-0004 when accepted) | Proposed |
 | [0025](0025-pi-like-acquisition-and-quality-codes.md) | The output has the shape of a historian: exception, snapshot, compression, quality codes | Proposed |

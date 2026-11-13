@@ -4,8 +4,9 @@ from __future__ import annotations
 
 import pytest
 
-from sdd.domain.errors import InvalidDossierError, ItemRefusedError
-from sdd.domain.item_progress import ItemProgress, ItemState
+from sdd.application.use_cases.item_flow import NextItemResult
+from sdd.domain.errors import ForbiddenGitCommandError, InvalidDossierError, ItemRefusedError
+from sdd.domain.item_progress import ItemProgress, ItemRecord, ItemState
 from sdd.infrastructure.pytest_ac_reader import PytestAcStatusReader, parse_report
 from sdd.infrastructure.yaml_progress_repository import YamlProgressRepository
 from tests.sdd import test_cli
@@ -121,3 +122,50 @@ class TestItemCommands:
         monkeypatch.setattr("sdd.interfaces.cli.app._harness", lambda: Stub())
         refused = run("item", "verify", "000", "1")
         assert refused.exit_code == 1 and "card 01 is not approved" in refused.output
+
+
+class TestFlowCommands:
+    def _stub(self, monkeypatch, **uses):
+        stub = type("Stub", (), uses)()
+        monkeypatch.setattr("sdd.interfaces.cli.app._harness", lambda: stub)
+
+    def test_next_prints_the_deleted_branches_and_the_new_one(self, monkeypatch):
+        class Next:
+            def execute(self, dossier_id):
+                return NextItemResult("03", "feat/002-03-guard", ("feat/002-02-old",))
+
+        self._stub(monkeypatch, next_item=Next())
+        shown = run("item", "next", "002")
+        assert shown.exit_code == 0, shown.output
+        assert "deleted merged branch feat/002-02-old" in shown.output
+        assert "card 03: now on feat/002-03-guard" in shown.output
+
+    def test_next_refusal_exits_with_1_and_names_the_reason(self, monkeypatch):
+        class Next:
+            def execute(self, dossier_id):
+                raise ItemRefusedError(("the working tree has uncommitted changes: a.py",))
+
+        self._stub(monkeypatch, next_item=Next())
+        refused = run("item", "next", "002")
+        assert refused.exit_code == 1 and "uncommitted changes" in refused.output
+
+    def test_merged_prints_the_card_and_pads_its_number(self, monkeypatch):
+        seen = []
+
+        class Merged:
+            def execute(self, dossier_id, number):
+                seen.append(number)
+                return ItemRecord(number, ItemState.MERGED, commit="c0ffee1234")
+
+        self._stub(monkeypatch, merged_item=Merged())
+        shown = run("item", "merged", "002", "3")
+        assert shown.exit_code == 0 and seen == ["03"]
+        assert "card 03: merged (c0ffee1)" in shown.output
+
+    def test_forbidden_git_command_is_an_error_not_a_crash(self, monkeypatch):
+        class Merged:
+            def execute(self, dossier_id, number):
+                raise ForbiddenGitCommandError("git push is never run by the harness")
+
+        self._stub(monkeypatch, merged_item=Merged())
+        assert run("item", "merged", "002", "3").exit_code == 2
