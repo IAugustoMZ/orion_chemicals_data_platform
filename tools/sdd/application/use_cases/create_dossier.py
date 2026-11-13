@@ -16,7 +16,7 @@ from sdd.application.ports.environment import Clock
 from sdd.application.ports.reference_data import RequirementCatalog
 from sdd.application.scaffold_artifacts import ScaffoldArtifacts
 from sdd.domain.dossier import Dossier, DossierKind
-from sdd.domain.errors import UnknownRequirementError
+from sdd.domain.errors import InvalidDossierError, UnknownRequirementError
 
 
 @dataclass(frozen=True)
@@ -28,15 +28,14 @@ class NewDossier:
         slug: kebab-case short name (folder and branch are derived from it).
         kind: feature or enabler.
         requirements: RT ids the work serves.
-        rationale: why the work is worth doing (mandatory for enablers and for features that
-            cite no RT).
+        rationale: why the work is worth doing (mandatory for every dossier, ADR-0026).
     """
 
     title: str
     slug: str
     kind: DossierKind
     requirements: tuple[str, ...]
-    rationale: str = ""
+    rationale: str
 
 
 class CreateDossier:
@@ -70,8 +69,10 @@ class CreateDossier:
 
         Raises:
             UnknownRequirementError: when an RT id is not in the catalogue.
-            InvalidDossierError: when the slug or title is malformed.
+            InvalidDossierError: when the slug or title is malformed, or the rationale is blank.
         """
+        if not request.rationale.strip():
+            raise InvalidDossierError("a dossier must state its rationale: pass --rationale")
         catalog = self._requirements.all()
         unknown = [rt for rt in request.requirements if rt not in catalog]
         if unknown:

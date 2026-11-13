@@ -94,7 +94,7 @@ class TestAcReader:
 
 class TestItemCommands:
     def _dossier(self, repo):
-        run("new", "X", "--slug", "x", "--rt", "RT01")
+        run("new", "X", "--slug", "x", "--rt", "RT01", "--rationale", "why")
         (repo / "specs/000-x/backlog.md").write_text(BACKLOG, encoding="utf-8")
 
     def test_status_lists_every_card_or_one(self, repo):

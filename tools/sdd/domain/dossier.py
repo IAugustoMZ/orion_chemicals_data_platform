@@ -44,8 +44,7 @@ class Dossier:
         title: human title.
         kind: feature or enabler.
         requirements: RT ids the dossier serves, in the order they were cited.
-        rationale: why the work is worth doing (mandatory for enablers and for features
-            outside the catalogue).
+        rationale: why the work is worth doing (mandatory for every dossier, ADR-0026).
         created: creation date.
         approvals: approvals per human gate; at most one per member per gate (the latest).
         verification: the latest G5 verification, if the suite was ever run.
@@ -88,11 +87,6 @@ class Dossier:
     def outside_catalogue(self) -> bool:
         """Return whether this is a feature that serves no RT of the catalogue (ADR-0014)."""
         return self.kind is DossierKind.FEATURE and not self.requirements
-
-    @property
-    def needs_rationale(self) -> bool:
-        """Return whether `rationale` is mandatory: for enablers and work outside the catalogue."""
-        return self.kind is DossierKind.ENABLER or self.outside_catalogue
 
     def approvals_for(self, gate_id: GateId) -> tuple[Approval, ...]:
         """Return the approvals recorded for a gate (empty when none).

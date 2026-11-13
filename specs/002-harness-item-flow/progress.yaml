@@ -54,7 +54,7 @@ items:
     pull_request: ''
     merged_at: '2026-11-13T02:19:42+00:00'
   '04':
-    state: verified
+    state: merged
     approvals:
     - member: mentor
       at: '2026-11-13T02:28:20+00:00'
@@ -67,6 +67,23 @@ items:
       git_identity: Icaro Zelioli <i.augustomz@gmail.com>
       note: ''
     branch: feat/002-04-ci-with-github-actions-that-blocks
+    commit: dd5cc858e6e21bab46b9a4a670f9596d88f9f0e3
+    pull_request: ''
+    merged_at: '2026-11-13T03:06:32+00:00'
+  '05':
+    state: verified
+    approvals:
+    - member: mentor
+      at: '2026-11-13T03:29:40+00:00'
+      digest: sha256:016c88fc5ccdf7e62818bf34c85b5bddb79951279e8f12c3cb5c6c83b46b5caf
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-13T03:32:15+00:00'
+      digest: sha256:016c88fc5ccdf7e62818bf34c85b5bddb79951279e8f12c3cb5c6c83b46b5caf
+      git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: feat/002-05-a-rationale-is-required-for-every
     commit: ''
     pull_request: ''
     merged_at: null

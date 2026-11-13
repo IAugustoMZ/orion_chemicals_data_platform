@@ -216,14 +216,11 @@ class TestDossier:
         with pytest.raises(InvalidDossierError):
             Dossier(dossier_id, slug, title, DossierKind.FEATURE, (), "", base.created)
 
-    def test_outside_catalogue_and_rationale_rules(self):
+    def test_outside_catalogue_rule(self):
         assert not dossier().outside_catalogue
-        assert not dossier().needs_rationale
         assert dossier(requirements=()).outside_catalogue
-        assert dossier(requirements=()).needs_rationale
         enabler = dossier(kind=DossierKind.ENABLER)
         assert not enabler.outside_catalogue
-        assert enabler.needs_rationale
 
     def test_with_approval_replaces_same_member(self):
         first = Approval("mentor", NOW, "sha256:a", "Ana")

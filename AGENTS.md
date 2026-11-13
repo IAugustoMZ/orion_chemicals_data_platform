@@ -41,7 +41,7 @@ and propose the dossier (skill `sdd-start`). If no RT applies, say so: the work 
 catalogue*, which is allowed with a rationale and the list of RTs you considered
 ([ADR-0014](docs/architecture/decisions/0014-work-outside-the-requirements-catalogue.md)).
 Once we agree, you run `poetry run sdd new "Title" --slug kebab-name --rt RTnn` (or
-`--rationale "why"` instead of `--rt`) and switch to the branch it prints. Fill each artifact by
+`--rationale "why"`, mandatory in every dossier; outside the catalogue it replaces `--rt`) and switch to the branch it prints. Fill each artifact by
 replacing every `TODO(sdd)` and keeping every `##` section of its template.
 
 ## 3. Hard rules (the agent guard and pre-commit enforce most of them)
@@ -105,7 +105,7 @@ poetry install --with docs          # once
 poetry run sdd status               # where every spec is
 poetry run sdd rt RT01 RT09         # read requirements
 poetry run sdd rt                   # every requirement (read them all before proposing)
-poetry run sdd new "Title" --slug x --rt RT01
+poetry run sdd new "Title" --slug x --rt RT01 --rationale "why"
 poetry run sdd new "Title" --slug x --rationale "why"   # outside the catalogue
 poetry run sdd verify <id>          # gate G5: the deterministic suite
 poetry run sdd item status <id> [nn]    # cards: state and who must approve

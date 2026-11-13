@@ -14,7 +14,7 @@ from sdd.application.ports.dossiers import DossierRepository
 from sdd.application.ports.progress import ProgressRepository
 from sdd.domain.card_digest import backlog_without_card_bodies, card_sections
 from sdd.domain.digest import digest_texts
-from sdd.domain.dossier import Dossier, DossierKind
+from sdd.domain.dossier import Dossier
 from sdd.domain.gate_status import GateEvidence
 from sdd.domain.gates import GATES, GateDefinition, GateId, GateKind, all_artifacts
 from sdd.domain.requirement import RT_ID_PATTERN, Requirement
@@ -72,8 +72,7 @@ def context_problems(
     """Return why gate G0 (requirements read and cited) fails; empty when it passes.
 
     Rules: every RT in `dossier.yaml` and every RT mentioned in an artifact must exist in the
-    catalogue; an enabler, and a feature that cites no RT (outside the catalogue, ADR-0014),
-    state their rationale.
+    catalogue; every dossier states its rationale (ADR-0026).
 
     Args:
         dossier: the dossier.
@@ -87,19 +86,13 @@ def context_problems(
     unknown = sorted(rt for rt in mentioned if rt not in catalog)
     if unknown:
         problems.append(f"unknown requirements cited: {', '.join(unknown)}")
-    if dossier.needs_rationale and not dossier.rationale.strip():
-        problems.append(_MISSING_RATIONALE[dossier.kind])
+    if not dossier.rationale.strip():
+        problems.append(MISSING_RATIONALE)
     return tuple(problems)
 
 
-_MISSING_RATIONALE: Mapping[DossierKind, str] = {
-    DossierKind.ENABLER: "an enabler must state its rationale in dossier.yaml",
-    DossierKind.FEATURE: (
-        "a feature that cites no RT is outside the catalogue: cite the RTs it serves, "
-        "or state in dossier.yaml's rationale why it is worth doing anyway"
-    ),
-}
-"""The G0 problem reported when a mandatory rationale is empty, per kind."""
+MISSING_RATIONALE = "a dossier must state its rationale in dossier.yaml"
+"""The G0 problem reported when the rationale of any dossier is empty (ADR-0026)."""
 
 
 def collect_evidence(

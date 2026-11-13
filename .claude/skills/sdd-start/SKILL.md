@@ -34,8 +34,8 @@ mapping the request to the requirements is your job. Phase reference:
 
    ```bash
    # serves RTs
-   poetry run sdd new "Title" --slug the-slug --rt RT01 --rt RT02
-   # outside the catalogue: no --rt, a rationale instead
+   poetry run sdd new "Title" --slug the-slug --rt RT01 --rt RT02 --rationale "why it serves them"
+   # outside the catalogue: no --rt; the rationale is mandatory in every case
    poetry run sdd new "Title" --slug the-slug --rationale "why it is worth doing"
    # an enabler
    poetry run sdd new "Title" --slug the-slug --kind enabler --rationale "why"
@@ -46,7 +46,7 @@ mapping the request to the requirements is your job. Phase reference:
    harness when the gate before it passes; never copy templates by hand.
 
 6. **Check G0:** `poetry run sdd status <id>` shows G0 passed. If not, fix `dossier.yaml`
-   (an unknown RT, or a missing rationale).
+   (an unknown RT, or an empty rationale: every dossier states one, ADR-0026).
 7. Continue with `sdd-discover`. The PRD's "Requirements digest" records the mapping of step 3,
    so we review it at G1.
 

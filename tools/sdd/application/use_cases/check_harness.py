@@ -3,8 +3,7 @@
 Application layer. Runs in pre-commit and as a G5 check. It does *not* demand that gates have
 passed (work in progress is normal); it reports what is inconsistent:
 
-* dossier errors: G0 failing (unknown RT, a missing rationale for an enabler or for a feature
-  outside the catalogue),
+* dossier errors: G0 failing (unknown RT, a missing rationale),
   approvals by people who are not in the team;
 * dossier warnings: stale approvals or a stale/failed G5 (work needed, not a broken repository),
   and artifacts *written ahead of their gate* (one gate at a time, ADR-0015);

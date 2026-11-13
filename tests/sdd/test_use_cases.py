@@ -19,6 +19,7 @@ from sdd.domain.errors import (
     GateNotReadyError,
     GateOrderError,
     HumanConfirmationRequiredError,
+    InvalidDossierError,
     UnknownMemberError,
     UnknownRequirementError,
 )
@@ -89,14 +90,26 @@ class World:
 class TestCreate:
     def test_assigns_ids_in_sequence_and_renders_templates(self):
         world = World()
-        first = world.create.execute(NewDossier("One", "one", DossierKind.FEATURE, ("RT01",)))
-        second = world.create.execute(NewDossier("Two", "two", DossierKind.FEATURE, ("RT02",)))
+        first = world.create.execute(
+            NewDossier("One", "one", DossierKind.FEATURE, ("RT01",), "why")
+        )
+        second = world.create.execute(
+            NewDossier("Two", "two", DossierKind.FEATURE, ("RT02",), "why")
+        )
         assert (first.id, second.id) == ("000", "001")
         assert [k[1] for k in world.dossiers.artifacts if k[0] == "000"] == ["prd.md"]
 
+    @pytest.mark.ac("PBI-002-05:AC1")
+    @pytest.mark.parametrize("blank", ["", "  ", "\n"])
+    def test_a_blank_rationale_creates_nothing(self, blank):
+        world = World()
+        with pytest.raises(InvalidDossierError):
+            world.create.execute(NewDossier("X", "x", DossierKind.FEATURE, ("RT01",), blank))
+        assert world.dossiers.ids() == ()
+
     def test_rejects_unknown_requirement(self):
         with pytest.raises(UnknownRequirementError):
-            World().create.execute(NewDossier("X", "x", DossierKind.FEATURE, ("RT77",)))
+            World().create.execute(NewDossier("X", "x", DossierKind.FEATURE, ("RT77",), "why"))
 
     def test_requirements_table_is_rendered(self):
         world = World()
@@ -146,18 +159,25 @@ class TestContext:
     def test_feature_outside_the_catalogue_passes_with_a_rationale(self):
         assert self.g0(dossier(requirements=()))[0] is GateState.PASSED
 
+    @pytest.mark.ac("PBI-002-05:AC2")
     @pytest.mark.parametrize(
-        ("kind", "requirements", "expected"),
+        ("kind", "requirements"),
         [
-            (DossierKind.FEATURE, (), "outside the catalogue"),
-            (DossierKind.ENABLER, ("RT01",), "an enabler must state its rationale"),
+            (DossierKind.FEATURE, ()),
+            (DossierKind.FEATURE, ("RT01",)),
+            (DossierKind.ENABLER, ("RT01",)),
         ],
     )
-    def test_missing_rationale_fails(self, kind, requirements, expected):
-        value = replace(dossier(kind=kind, requirements=requirements), rationale=" ")
+    @pytest.mark.parametrize("empty", ["", " ", "\n\t"])
+    def test_missing_rationale_fails_for_every_dossier(self, kind, requirements, empty):
+        value = replace(dossier(kind=kind, requirements=requirements), rationale=empty)
         state, problems = self.g0(value)
         assert state is GateState.FAILED
-        assert expected in problems[0]
+        assert problems == ("a dossier must state its rationale in dossier.yaml",)
+
+    @pytest.mark.ac("PBI-002-05:AC3")
+    def test_a_rationale_with_valid_rts_passes(self):
+        assert self.g0(dossier(requirements=("RT01", "RT02"))) == (GateState.PASSED, ())
 
     def test_unknown_rt_in_an_artifact_fails(self):
         world = World()
