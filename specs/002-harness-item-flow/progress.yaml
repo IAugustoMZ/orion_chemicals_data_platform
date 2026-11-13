@@ -71,7 +71,7 @@ items:
     pull_request: ''
     merged_at: '2026-11-13T03:06:32+00:00'
   '05':
-    state: verified
+    state: merged
     approvals:
     - member: mentor
       at: '2026-11-13T03:29:40+00:00'
@@ -84,6 +84,6 @@ items:
       git_identity: Icaro Zelioli <i.augustomz@gmail.com>
       note: ''
     branch: feat/002-05-a-rationale-is-required-for-every
-    commit: ''
+    commit: 9ad031fedc57432fe453285ee65f27c8c88eb0ed
     pull_request: ''
-    merged_at: null
+    merged_at: '2026-11-13T04:04:45+00:00'

@@ -1,5 +1,11 @@
 # Branch protection for `main` (a person applies it)
 
+> **Not applied here (decided 2026-11-13).** This repository is private on a free GitHub plan,
+> which does not offer branch protection. Until that changes (a paid plan or a public
+> repository) CI only *reports*: a red `quality` does not disable *Merge*. The control is
+> our own discipline: we merge a pull request only when `quality` is green, and the agent
+> never merges. The checklist below stays for the day protection becomes available.
+
 The workflow only reports. It blocks a merge when GitHub is told to require it
 ([ADR-0024](../docs/architecture/decisions/0024-ci-with-github-actions-blocks-merge.md)).
 An agent never edits these settings; we do, at *Settings → Branches → Add rule* for `main`.
@@ -15,6 +21,10 @@ An agent never edits these settings; we do, at *Settings → Branches → Add ru
 - [ ] Actions → General: workflow permissions set to *Read repository contents*.
 
 ## Manual proof (acceptance criterion 5 of card 04)
+
+Without protection, step 1 shows a red `quality` but *Merge* stays enabled; the green/red
+signal is what is proved. Pull request #7 gave a real red run (the help test failed on ANSI
+codes) and the green run after the fix.
 
 1. Push a change that breaks a rule (for instance an unformatted file). `quality` turns red and
    *Merge* is disabled.
