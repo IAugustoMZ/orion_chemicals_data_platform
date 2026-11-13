@@ -1,6 +1,6 @@
 # ADR-0024: CI with GitHub Actions blocks the merge
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-11-12
 - **Dossier:** specs/002-harness-item-flow
 - **Requirements:** RT42, RT36; supersedes [ADR-0004](0004-local-enforcement-without-ci.md)
@@ -16,8 +16,10 @@ generator or receives its data.
 
 - One workflow, `.github/workflows/ci.yml`, one required job `quality`, runs on every pull request
   into `main` and every push to `main`.
-- It runs, in order, every command of `harness/checks.yaml` and the per-card verification in
-  read-only mode (`sdd verify --no-record`). A test fails if a command is missing from the workflow.
+- It runs, in order, every command of `harness/checks.yaml`, then the proof of the card when the
+  branch is a card branch (`sdd item current`, then `sdd item verify`; skipped on any other branch).
+  `sdd verify <id> --no-record` exists for a read-only G5 run: it never rewrites `dossier.yaml`.
+  A test fails if a command is missing from the workflow.
 - The workflow has `permissions: contents: read`, no secret, a timeout, a Poetry cache, a
   concurrency group that cancels outdated runs, and third-party actions pinned to full commit SHAs.
 - `.github/` is a governed path.
@@ -37,5 +39,5 @@ generator or receives its data.
 
 - + RT42 is demonstrable: a deliberate error turns the check red and the merge is blocked.
 - − The pipeline needs network (`pip-audit`, action downloads); pinned SHAs must be refreshed on purpose.
-- − If branch protection is not applied, the control is not real; card 23 ends with a checklist and
-  a manual proof recorded in `validation.md`.
+- − If branch protection is not applied, the control is not real; [the checklist](../../../harness/ci-protection.md) is
+  for a person to apply, and the manual proof is recorded in `validation.md`.

@@ -78,3 +78,9 @@ Every `spec.md` has a STRIDE table. Ask, for each new component, interface or da
 | E | Elevation of privilege | Can a read-only identity write? Can an agent approve? |
 
 The review in phase 6 verifies every row (`validation.md`, "Security review").
+
+## The pipeline is part of the attack surface
+
+The workflow has `permissions: contents: read`, uses no secret, never runs on
+`pull_request_target`, has a timeout, and pins every action to a full commit SHA that a person
+refreshes on purpose. `.github/` is a governed path: it changes only on a card branch, approved.
