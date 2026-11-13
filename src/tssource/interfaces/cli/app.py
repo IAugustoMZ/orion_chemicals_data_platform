@@ -43,7 +43,9 @@ def run() -> None:
 
 @app.command()
 def bench(
-    seconds: Annotated[int, typer.Option(min=1, help="Wall-clock seconds to run.")] = 60,
+    seconds: Annotated[
+        int, typer.Option(min=1, max=3600, help="Wall-clock seconds to run (1-3600).")
+    ] = 60,
     seed: Annotated[int | None, typer.Option(help="Random seed (default TSSOURCE_SEED).")] = None,
     fmt: Annotated[Format, typer.Option("--format", help="Serialiser to measure.")] = (
         Format.JSONL_GZIP

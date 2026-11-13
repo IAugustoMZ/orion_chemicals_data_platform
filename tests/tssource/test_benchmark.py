@@ -307,3 +307,11 @@ def test_probe_and_clock_report_sane_values() -> None:
     assert probe.cpu_seconds() >= before
     assert probe.peak_memory_mb() >= 0.0
     assert clock.now() >= t0
+
+
+@pytest.mark.ac("PBI-003-02:AC3")
+def test_seconds_has_an_upper_bound(tmp_path: Path) -> None:
+    """`--seconds` above one hour is a usage error (exit 2), so a typo cannot fill the disk."""
+    outcome = runner.invoke(app, ["bench", "--seconds", "3601", "--out", str(tmp_path)])
+    assert outcome.exit_code == 2
+    assert not (tmp_path / "bench.json").exists()
