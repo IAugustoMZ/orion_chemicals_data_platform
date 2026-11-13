@@ -4,7 +4,7 @@
 
 Each technical requirement of the [catalogue](README.md), the dossiers that cite it and how far it got: *in discovery* (cited), *specified* (G4 passed), *delivered* (G6 passed), *validated* (G7 passed). Enablers support requirements but never deliver them.
 
-Requirements RT01-RT42: in discovery **10** · specified **2** · delivered **0** · validated **0** · not started **30**.
+Requirements RT01-RT42: in discovery **8** · specified **4** · delivered **0** · validated **0** · not started **30**.
 
 ## 01 / Data integration and ingestion
 
@@ -52,8 +52,8 @@ Requirements RT01-RT42: in discovery **10** · specified **2** · delivered **0*
 
 | RT | Phase | First | Requirement | Specs | Status |
 |---|---|---|---|---|---|
-| RT28 | P | ★ | Sizing shall declare tags, frequencies, average size, history, concurrency and growth, separating measurement from projection. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
-| RT29 | P | ★ | The prototype shall measure sustained throughput, load duration, delay between availability and publication, and resources used. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
+| RT28 | P | ★ | Sizing shall declare tags, frequencies, average size, history, concurrency and growth, separating measurement from projection. | [001](../../specs/001-timeseries-source/prd.md), [003](../../specs/003-tssource-skeleton-spike/prd.md) | specified |
+| RT29 | P | ★ | The prototype shall measure sustained throughput, load duration, delay between availability and publication, and resources used. | [001](../../specs/001-timeseries-source/prd.md), [003](../../specs/003-tssource-skeleton-spike/prd.md) | specified |
 | RT30 | A |  | Scaling to the whole plant depends on a test at the required scale; the prototype does not prove industrial capacity by extrapolation. | — | not started |
 | RT31 | P |  | Queries shall declare period, resolution and return limits, with pagination or controlled export for large datasets. | — | not started |
 | RT32 | A |  | Query interfaces shall have a documented and versioned contract, with filters, types, errors and data quality. | — | not started |

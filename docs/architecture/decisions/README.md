@@ -40,3 +40,4 @@ ADR is listed here and has a status and a date.
 | [0024](0024-ci-with-github-actions-blocks-merge.md) | CI with GitHub Actions blocks the merge (supersedes ADR-0004) | Accepted |
 | [0025](0025-pi-like-acquisition-and-quality-codes.md) | The output has the shape of a historian: exception, snapshot, compression, quality codes | Proposed |
 | [0026](0026-a-rationale-is-required-for-every-dossier.md) | A rationale is required for every dossier (amends ADR-0014) | Accepted |
+| [0027](0027-benchmark-measures-per-second-rates-with-a-bounded-queue.md) | The spike measures per-second rates through a bounded queue and exits 3 below the floor | Proposed |
