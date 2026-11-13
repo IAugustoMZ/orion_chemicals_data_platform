@@ -94,3 +94,7 @@ class ItemRefusedError(SddError):
         """
         super().__init__("; ".join(problems))
         self.problems = problems
+
+
+class ForbiddenGitCommandError(SddError):
+    """A git command the harness must never run (force, hard delete, push) was requested."""

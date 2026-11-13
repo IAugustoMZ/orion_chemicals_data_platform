@@ -36,7 +36,7 @@ app = typer.Typer(
 
 
 item_app = typer.Typer(
-    help="One backlog card at a time: status, approve, verify.", no_args_is_help=True
+    help="One backlog card at a time: status, approve, verify, next, merged.", no_args_is_help=True
 )
 app.add_typer(item_app, name="item")
 
@@ -217,6 +217,37 @@ def item_verify(
             f"card {number.zfill(2)}: " + ("verified" if not failed else f"failed: {failed}")
         )
         return 1 if failed else 0
+
+    _run(body)
+
+
+@item_app.command("next")
+def item_next(
+    dossier_id: Annotated[str, typer.Argument(help="Dossier id, e.g. 002.")],
+) -> None:
+    """Sync main, tidy merged branches and open the branch of the next card."""
+
+    def body(harness: Harness) -> None:
+        """Run the step and say what happened."""
+        result = harness.next_item.execute(dossier_id)
+        for branch in result.deleted:
+            typer.echo(f"  deleted merged branch {branch}")
+        typer.echo(f"card {result.number}: now on {result.branch}")
+
+    _run(body)
+
+
+@item_app.command("merged")
+def item_merged(
+    dossier_id: Annotated[str, typer.Argument(help="Dossier id, e.g. 002.")],
+    number: Annotated[str, typer.Argument(help="Card number, e.g. 02.")],
+) -> None:
+    """Record a card as merged once its commit is in origin/main (a person merges the PR)."""
+
+    def body(harness: Harness) -> None:
+        """Record the merge and print the card."""
+        record = harness.merged_item.execute(dossier_id, number.zfill(2))
+        typer.echo(f"card {record.number}: merged ({record.commit[:7]})")
 
     _run(body)
 

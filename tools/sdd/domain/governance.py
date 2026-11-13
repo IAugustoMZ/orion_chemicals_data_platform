@@ -35,6 +35,10 @@ GOVERNED_FILES: tuple[str, ...] = (
 _SPEC_BRANCH = re.compile(r"^spec/(?P<id>\d{3})-[a-z0-9]+(?:-[a-z0-9]+)*$")
 
 
+_ITEM_BRANCH = re.compile(r"^feat/(?P<id>\d{3})-(?P<number>\d{2})-[a-z0-9]+(?:-[a-z0-9]+)*$")
+_MAX_SLUG = 40
+
+
 def is_governed(path: str) -> bool:
     """Tell whether a change to `path` needs an approved specification.
 
@@ -59,3 +63,34 @@ def spec_id_from_branch(branch: str) -> str | None:
     """
     match = _SPEC_BRANCH.match(branch)
     return match.group("id") if match else None
+
+
+def item_from_branch(branch: str) -> tuple[str, str] | None:
+    """Extract the dossier id and card number from a card branch name.
+
+    Args:
+        branch: the current git branch, e.g. ``feat/002-03-item-flow``.
+
+    Returns:
+        ``("002", "03")``, or None when the branch is not a card branch.
+    """
+    match = _ITEM_BRANCH.match(branch)
+    return (match.group("id"), match.group("number")) if match else None
+
+
+def item_branch_name(dossier_id: str, number: str, title: str) -> str:
+    """Build the branch name of a card from its heading.
+
+    Args:
+        dossier_id: three-digit dossier id.
+        number: the card number, ``"03"``.
+        title: the card heading, e.g. ``PBI-002-03 · Item flow: branch and guard``.
+
+    Returns:
+        ``feat/<id>-<nn>-<slug>``; the slug is the lower-cased title without the PBI id,
+        cut at a word boundary within 40 characters (``card`` when nothing is left).
+    """
+    text = title.split("·", 1)[1] if "·" in title else title
+    words = re.sub(r"[^a-z0-9]+", "-", text.lower()).strip("-")
+    slug = words[:_MAX_SLUG].rsplit("-", 1)[0] if len(words) > _MAX_SLUG else words
+    return f"feat/{dossier_id}-{number}-{slug or 'card'}"
