@@ -97,13 +97,13 @@ The full picture, with every rule and how it is enforced: **[how the harness wor
 | [000 · The SDD harness](specs/000-sdd-harness/prd.md) | enabler | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/000-sdd-harness/teaching-guide.md) |
 | [001 · Time-series source: global plant data generator](specs/001-timeseries-source/prd.md) | feature | Specify (G4) | ✅ | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | ⏸️ | not yet |
 | [002 · Harness: item-by-item flow and CI](specs/002-harness-item-flow/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/002-harness-item-flow/teaching-guide.md) |
-| [003 · Generator skeleton and throughput spike](specs/003-tssource-skeleton-spike/prd.md) | feature | Release & Learn (G7) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | [📘](specs/003-tssource-skeleton-spike/teaching-guide.md) |
+| [003 · Generator skeleton and throughput spike](specs/003-tssource-skeleton-spike/prd.md) | feature | done: released | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | [📘](specs/003-tssource-skeleton-spike/teaching-guide.md) |
 
 ✅ passed · 🟡 partly approved · ⚪ pending · 🟠 stale (changed after approval) · ❌ failed · ⏸️ blocked by an earlier gate
 <!-- sdd:status:end -->
 
 <!-- sdd:coverage:start -->
-Requirements RT01-RT42: in discovery **8** · specified **2** · delivered **2** · validated **0** · not started **30**. [Full traceability matrix](docs/requirements/traceability.md).
+Requirements RT01-RT42: in discovery **8** · specified **2** · delivered **0** · validated **2** · not started **30**. [Full traceability matrix](docs/requirements/traceability.md).
 <!-- sdd:coverage:end -->
 
 ## Quick start
