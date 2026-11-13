@@ -59,9 +59,9 @@ approvals:
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
     note: ''
 verification:
-  at: '2026-11-13T04:10:20+00:00'
-  digest: sha256:2ec96c5a3fa5fc625509f9ce11e12101f0079208868fdc2c4b563199a6eea663
-  commit: efa83c3
+  at: '2026-11-13T11:59:13+00:00'
+  digest: sha256:e25c6e5ae709cd44f6e10eca4d037de5430d65a5074a5994365b1c3d7468dadf
+  commit: 7666a11
   results:
   - check: format
     passed: true
@@ -91,7 +91,7 @@ verification:
 
       Required test coverage of 85% reached. Total coverage: 96.81%
 
-      233 passed in 69.78s (0:01:09)'
+      233 passed in 96.21s (0:01:36)'
   - check: security
     passed: true
     summary: (no output)
@@ -112,7 +112,10 @@ verification:
     summary: 'WARNING  gate-stale         specs/000-sdd-harness/dossier.yaml  G5 is stale: code changed
       since the last `sdd verify`
 
-      sdd check: 1 finding(s)'
+      WARNING  gate-stale         specs/002-harness-item-flow/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      sdd check: 2 finding(s)'
   - check: docs-site
     passed: true
     summary: (no output)

@@ -33,6 +33,6 @@ codes) and the green run after the fix.
 
 ## Pinned actions
 
-The SHAs in `ci.yml` were written without access to the releases page. Before relying on them,
-check each one against its tag (`actions/checkout` v4.2.2, `actions/setup-python` v5.3.0) and
-fix the comment or the SHA.
+The SHAs in `ci.yml` were checked on 2026-11-13 with `git ls-remote` against their tags
+(`actions/checkout` v4.2.2 and `actions/setup-python` v5.3.0): both match. Repeat the check
+whenever a pin is changed.
