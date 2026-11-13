@@ -11,8 +11,8 @@ Orion Chemicals, its five sites and every tag, value and fault are fictional.
 ## How this backlog is approved (decision of the mentor, 2026-11-04)
 
 This dossier is large, and what we learn from building one item changes the next ones. So the
-backlog is approved **one item at a time**, and built one item per branch (the flow is delivered
-by PBI-001-22):
+backlog is approved **one item at a time**, and built one item per branch (the flow was delivered
+by dossier 002):
 
 1. **G2 is a partial approval.** It covers the *skeleton* of this file (epics, features, shared
    ground rules, order) and the **full review of PBI-001-01 only**. Every other card is an
@@ -27,18 +27,13 @@ by PBI-001-22):
    approval; refining one card does not stale the others. If refining or building a card shows
    that the specification (G4) is wrong or incomplete, the agent stops, proposes the change in
    the chat and edits the specification: **G4 becomes stale on purpose** and no code is written
-   until we approve the refined specification (PBI-001-22, AC9).
-5. Until the tool of PBI-001-22 exists, the cards built before it (01, 22, 23) are approved by
-   re-running `sdd approve 001 G2` with a new note on the refined file; from PBI-001-22 on, each
-   card has its own approval.
+   until we approve the refined specification (dossier 002).
+5. Dossier 002 delivered the tool for this flow (`sdd item ...`, one approval per card, a CI job
+   `quality`). Every card of this dossier is approved with `sdd item approve 001 <nn>`.
 
-Cards **01, 22 and 23 are written in full** because they define this flow and the CI that
-protects it; **02 to 21 are outlines** until their turn.
-
-> **Scope note.** Our decision of 2026-11-04 added two harness changes to the two in the first PRD:
-> the item-by-item flow (PBI-001-22) and the CI pipeline (PBI-001-23, which serves RT42). The PRD
-> and `dossier.yaml` were amended to cite RT42 and list the four changes, so G1 is approved
-> again on the amended text before G2.
+> **Scope note (2026-11-13).** The four harness cards of the first PRD (01, 02, 22, 23) were built
+> in dossier 002 and are merged. They are stubs here; this dossier no longer carries harness work
+> and no longer serves RT42. Branch protection could not be applied (free private repository).
 
 ## Epics
 
@@ -61,7 +56,7 @@ protects it; **02 to 21 are outlines** until their turn.
 | F3.1 Fast, safe service | Start one container that writes to a local folder, in real time or ahead of the clock, at a measured rate. | E3 | 03, 04, 15 |
 | F3.2 Governance, lineage, observability | Trace any record back to its run, reconstruct a configuration change, and see the health and outcome of every run. | E3 | 17, 18, 19 |
 | F3.3 Measured and reproducible | Reproduce a run byte for byte from its seed, and read the sizing and throughput report. | E3 | 20, 21 |
-| F3.4 Harness hygiene and flow | Create a new dossier whose `sdd check` passes, never start one without a rationale, build and approve a large backlog one item per branch, and have every pull request blocked unless the CI passes. | E3 | 01, 02, 22, 23 |
+| ~~F3.4 Harness hygiene and flow~~ (moved to dossier 002) | Create a new dossier whose `sdd check` passes, never start one without a rationale, build and approve a large backlog one item per branch, and have every pull request blocked unless the CI passes. | E3 | none here |
 
 ## Work items
 
@@ -89,84 +84,18 @@ protects it; **02 to 21 are outlines** until their turn.
 
 ### PBI-001-01 · Status table links the teaching guide only when it exists
 
-- **Feature:** F3.4 Harness hygiene
-- **Serves:** none directly. It repairs the harness so that this dossier can be committed
-  (carried by this dossier by our decision; the rationale and the friction note are in the PRD).
-- **Size:** S
-- **Depends on:** none (built right after G4, before anything else, so `sdd check` and
-  pre-commit pass)
-- **Context:** `sdd sync` writes a status table into `README.md` and `specs/README.md` with a
-  link to `<folder>/teaching-guide.md` for every dossier, but ADR-0018 creates that file only
-  when G4 passes, so `sdd check` reports a broken link right after `sdd new` and pre-commit
-  blocks the commit.
-- **What:** the status table shows the 📘 link only when `teaching-guide.md` exists in the
-  dossier folder, and the text `not yet` otherwise. `poetry run sdd sync` on a repository with a
-  dossier at G1 produces a table with no broken link and `poetry run sdd check` exits 0.
-- **How:**
-  1. In `tools/sdd/application/generators/status.py`, the table builder (the function that
-     contains the row `f"| {where_it_is(report)} | {chips} | [📘]({folder}/teaching-guide.md) |"`)
-     decides the last cell from a fact "this dossier has a teaching guide".
-  2. Get that fact without I/O in the generator: add `has_teaching_guide: bool` to
-     `DossierReport` (`tools/sdd/application/use_cases/evaluate_dossier.py`) filled by
-     `EvaluateDossier` through the existing `DossierRepository` port
-     (`tools/sdd/application/ports/dossiers.py`: `read_artifact` returns `None` when the file is
-     missing, so reuse it; add no new port method unless the spec shows a need).
-  3. Keep the pure function pure: it receives the report, never a path.
-  4. Regenerate with `poetry run sdd sync`; the three-dossier table must not change for dossier
-     000, whose teaching guide exists.
-- **Out of scope:** changing when ADR-0018 creates the guide; any other column of the table.
-- **Acceptance criteria (EARS):**
-  - AC1: Where a dossier folder contains `teaching-guide.md`, the status table shall link it.
-  - AC2: If a dossier folder has no `teaching-guide.md`, then the status table shall show `not yet`
-    in the Guide column and no link to a missing file.
-  - AC3: When `sdd sync` runs for a dossier at G1, `sdd check` shall report no broken link.
-- **Verification:** `tests/sdd/test_docs_and_sync.py` (new cases for AC1 and AC2 with the fake
-  repository in `tests/sdd/fakes.py`) and a CLI test in `tests/sdd/test_cli.py` for AC3;
-  `poetry run pytest tests/sdd -q`, then `poetry run sdd check`.
+**Moved to dossier 002 (decision 2026-11-13).** Delivered there as card 01, merged in `main`. Nothing to build here; the number stays so that references do not break.
 
 ### PBI-001-02 · A rationale is required for every dossier
 
-- **Feature:** F3.4 Harness hygiene
-- **Serves:** none directly (harness repair carried by this dossier).
-- **Size:** S
-- **Depends on:** 23 (built right after the CI, as the first card that follows the new flow)
-- **Context:** today only enablers and features outside the catalogue need a rationale
-  (`Dossier.needs_rationale`), so dossier 001 started with an empty one. We want the "why" of
-  every dossier recorded, whatever its kind.
-- **What:** `poetry run sdd new "T" --slug x --rt RT01` without `--rationale` fails with a clear
-  message and exit code 2 (the code the CLI already uses for validation errors); gate G0 fails
-  for any dossier whose rationale is empty or whitespace, with the message
-  "a dossier must state its rationale in dossier.yaml". Dossiers 000 and 001 already have one.
-- **How:**
-  1. `tools/sdd/domain/dossier.py`: `needs_rationale` returns `True` for every dossier. Remove
-     the now-pointless split, keeping the property so callers read well, or delete the property
-     and its callers; choose the smaller change and update the docstring.
-  2. `tools/sdd/application/evidence.py`: replace the per-kind map `_MISSING_RATIONALE` with one
-     message; G0 problem list keeps the unknown-RT check unchanged.
-  3. `tools/sdd/application/use_cases/create_dossier.py`: reject an empty rationale before any
-     file is created (raise the typed error already used for invalid requests, see
-     `tools/sdd/domain/errors.py`); update the field docstring.
-  4. `tools/sdd/interfaces/cli/app.py` (`new`): change the help text of `--rationale`; the
-     error maps to the existing exit code.
-  5. Update `harness/templates/prd.md` or the skills only if they claim the old rule (grep for
-     "mandatory for enablers"); `.agents/skills/` is the canonical copy, run `sdd sync`.
-- **Out of scope:** rewriting rationales of old dossiers; checking the rationale's quality.
-- **Acceptance criteria (EARS):**
-  - AC1: If `sdd new` is called without a rationale, then it shall create nothing and exit with
-    code 2.
-  - AC2: If a dossier's rationale is empty or only whitespace, then gate G0 shall fail with the
-    message "a dossier must state its rationale in dossier.yaml".
-  - AC3: When a dossier has a rationale and valid RTs, gate G0 shall pass.
-- **Verification:** `tests/sdd/test_domain.py` (the cases around `needs_rationale` change),
-  `tests/sdd/test_use_cases.py` (create without rationale), `tests/sdd/test_cli.py` (exit code);
-  `poetry run pytest tests/sdd -q`, `poetry run sdd check`.
+**Moved to dossier 002 (decision 2026-11-13).** Delivered there as card 05, merged in `main`. Nothing to build here; the number stays so that references do not break.
 
 ### PBI-001-03 · Skeleton: package, CLI, container, quality gates
 
 - **Feature:** F3.1 Fast, safe service
 - **Serves:** RT01, RT36 (must not break), RT29 (resources are measured later).
 - **Size:** M
-- **Depends on:** 01, 22, 23, 02 (so that commits pass and the new flow and CI are in force)
+- **Depends on:** none (the flow and CI of dossier 002 are in force)
 - **Context:** nothing of the generator exists. Every other card needs the same package layout,
   the same quality gates and a container that follows the hardening baseline, so this card makes
   the walking skeleton: it does nothing useful but is built, typed, linted, tested and runs.
@@ -1058,194 +987,19 @@ protects it; **02 to 21 are outlines** until their turn.
   `tests/tssource/application/test_trial.py` (with fakes and a tiny run); the measured trial
   itself is run by us and attached to `validation.md`.
 
-### PBI-001-22 · Item-by-item build flow: branch per card, approval per card, merge before next
+### PBI-001-22 · Item-by-item build flow
 
-- **Feature:** F3.4 Harness hygiene and flow
-- **Serves:** none directly. It changes the harness so that large dossiers are built safely
-  (carried by this dossier by our decision of 2026-11-04). It supports RT38 (each card approval
-  records actor, time and digest) and RT42 (a card is done only when its checks pass).
-- **Size:** L
-- **Depends on:** 01
-- **Context:** until now gate G5 meant "the whole dossier's code passes `sdd verify`", and G2
-  approved the whole backlog at once. For a dossier of 21 cards that hides progress, makes every
-  review huge and freezes cards that will change once earlier ones exist. We want: one card, one
-  branch, one pull request, one approval, in order, each refined with the context of what was
-  built before.
-- **What:** the rule below, written into the harness documents and enforced by `sdd`.
-  *The rule.*
-  1. A card is built only after it is **approved** (its own digest-bound approval by both of us,
-     in the chat first, per `sdd-review-gate`).
-  2. Build starts with `poetry run sdd item next <id>`: it refuses unless the previous card is
-     recorded as **merged** and the working tree is clean; then it runs `git fetch`, switches to
-     `main`, fast-forwards it (`git pull --ff-only`), deletes every local branch other than
-     `main` with `git branch -d` (the *safe* delete: it refuses a branch that is not merged,
-     and then `item next` stops and tells us), and creates the branch
-     `feat/<id>-<nn>-<slug>` (for example `feat/001-04-throughput-spike`) from `main`.
-  3. The agent refines the next card on that branch (documents only), reviews it with us in the
-     chat, and waits for `sdd approve <id> PBI-<id>-<nn>` by both of us.
-  4. The agent implements the card with tests until **every acceptance criterion is met**, runs
-     `poetry run sdd item verify <id> <nn>`, then commits (pre-commit runs, never bypassed),
-     pushes the branch and opens a pull request into `main` with `gh`; the pull request text
-     lists each acceptance criterion with the test that proves it. **The agent never merges.**
-  5. The agent **stops and waits** for our confirmation that the pull request is merged. On
-     confirmation it runs `poetry run sdd item merged <id> <nn>`, which checks the claim with
-     git (the recorded commit must be contained in `origin/main`) and refuses otherwise.
-  6. Back to step 2 with the next card, until the backlog is complete; gate **G5** then passes
-     when every card is merged.
-  *Files and commands.* `specs/<id>-<slug>/progress.yaml`, written only by `sdd`, holds for each
-  card: state (`outline`, `refined`, `approved`, `building`, `verified`, `pr-open`, `merged`),
-  its approvals (member, time, git identity, note) bound to the digest of **that card's
-  section** of `backlog.md`, branch, commit, pull request number and merge time. Commands:
-  `sdd item status <id>`, `sdd item next <id>`, `sdd item verify <id> <nn>`,
-  `sdd item merged <id> <nn>`; `sdd approve <id> PBI-<id>-<nn> --as <member>` for the card
-  approval (human, interactive, same yes/no prompt as the gates).
-- **How:**
-  1. `domain/` (`tools/sdd/domain/`): `item_progress.py` with `ItemState` (enum), `ItemRecord`
-     (frozen dataclass) and `ItemProgress` (aggregate: allowed transitions only, in card order;
-     illegal states unrepresentable); `card_digest.py` with a pure function that extracts the
-     section `### PBI-<id>-<nn> · ...` up to the next `###` or `##` and hashes it.
-  2. `application/` : use cases `NextItem`, `VerifyItem`, `MarkItemMerged`, `ApproveItem`
-     (reusing the approval rules of `approve_gate.py`: interactive confirmation port, team
-     members from `harness/team.yaml`); new ports `ProgressRepository`, `GitRepository`
-     (`fetch`, `switch`, `pull_ff_only`, `local_branches`, `delete_merged_branch`,
-     `create_branch`, `is_ancestor(commit, "origin/main")`, `is_clean`) and `AcStatusReader`.
-  3. `infrastructure/`: `yaml_progress_repository.py` and `git_cli_repository.py` (subprocess
-     with an argument list, no shell, never `-D`, never `--force`); `interfaces/cli/` gets the
-     `item` command group.
-  4. **AC proof.** Each acceptance criterion of a card has an id (`AC1`...). A pytest marker
-     `@pytest.mark.ac("PBI-001-04:AC1")` ties a test to it. `sdd item verify` fails unless every
-     AC of the card has at least one marked test and every marked test passes, and then runs
-     the full `harness/checks.yaml` suite. The marker is registered in `pyproject.toml`.
-  5. **G2 and G5 semantics.** G2's digest covers `backlog.md` *with the card bodies removed*
-     (epics, features, ground rules, order) plus the approved first card; G5 passes when
-     `progress.yaml` shows every card `merged`. Update `domain/gates.py` and the evaluator
-     accordingly; the current whole-file digest for dossiers already past G2 (dossier 000) must
-     keep working (a dossier without `progress.yaml` uses the old rules).
-  6. **Commit guard.** `sdd guard-commit` (`application/use_cases/guard_commit.py`) must accept
-     governed files on a branch named `feat/<id>-<nn>-<slug>` only when the dossier's G4 passed
-     and card `<nn>` is `approved`; the spec-phase branch `spec/<id>-<slug>` keeps working. If the
-     agent guard (`tools/agent_hooks/agent_guard.py`) needs changes (for example to forbid
-     `gh pr merge`, `git branch -D` and `git push --force`), they are **listed in the spec and
-     made by us**, because agents may not edit that folder.
-  7. **Documents and skills** (canonical copies in `.agents/skills/`, then `sdd sync`): rewrite
-     `AGENTS.md` sections 2 and 3, `harness/lifecycle.md` phase 5, `harness/gates.md`,
-     `harness/how-it-works.md`, the skills `sdd-plan`, `sdd-build`, `sdd-review-gate`, and add a
-     skill `sdd-next-item` (the loop above). Add an ADR (the flow, and the reversal of "work only
-     on the dossier's spec branch").
-  8. **Safety of branch deletion.** `item next` lists the branches it will delete and the
-     commit each one points at before deleting, in its output, and uses only the safe delete, so
-     nothing unmerged can be lost.
-- **Out of scope:** merging the pull request (always a person); configuring GitHub branch
-  protection (PBI-001-23 gives the settings; a person applies them); changing dossiers that are
-  already past G5.
-- **Acceptance criteria (EARS):**
-  - AC1: When `sdd item next` runs and the previous card is `merged`, the tree is clean and the
-    remote is reachable, it shall sync `main`, delete the other local branches that are merged
-    and create the branch of the next card.
-  - AC2: If the previous card is not `merged`, or the working tree has uncommitted changes, or a
-    local branch is not merged, then `sdd item next` shall change nothing and exit with a
-    non-zero code naming the reason.
-  - AC3: If a card is not `approved` by both members for its current digest, then
-    `sdd item verify` and the commit guard shall refuse work on it.
-  - AC4: When a card's section changes, its approvals shall become stale and the approvals of
-    other cards shall not change.
-  - AC5: If an acceptance criterion of the card has no marked test, or a marked test fails, then
-    `sdd item verify` shall fail and list the criterion.
-  - AC6: When `sdd item merged` runs and the recorded commit is not contained in `origin/main`,
-    it shall refuse and keep the state `pr-open`.
-  - AC7: When every card is `merged`, gate G5 shall show passed.
-  - AC8: The tool shall never run `git branch -D`, `git push --force` or `gh pr merge`.
-  - AC9: If refining or building a card shows that the specification is wrong or incomplete,
-    then the agent shall stop, propose the change to us in the chat and, once agreed, edit
-    `spec.md`, `plan.md` or `tasks.md` on the card's branch; G4 shall become stale, and while G4
-    is stale `sdd item verify` and the commit guard shall refuse governed changes on any item
-    branch until we approve G4 again (the same applies to G3 for the approach and to the G2
-    skeleton for the order).
-- **Verification:** `tests/sdd/test_item_progress.py` (domain transitions, card digest),
-  `tests/sdd/test_item_use_cases.py` (use cases with fakes in `tests/sdd/fakes.py`),
-  `tests/sdd/test_git_cli_repository.py` (against a temporary git repository with a bare
-  remote), `tests/sdd/test_guard_commit_items.py` (including AC9: stale G4 blocks item branches), `tests/sdd/test_cli_items.py`;
-  `poetry run pytest tests/sdd -q`, then `poetry run sdd check`.
+**Moved to dossier 002 (decision 2026-11-13).** Delivered there as card 02, 03, merged in `main`. Nothing to build here; the number stays so that references do not break.
 
-### PBI-001-23 · CI pipeline with GitHub Actions that blocks merging
+### PBI-001-23 · CI pipeline with GitHub Actions
 
-- **Feature:** F3.4 Harness hygiene and flow
-- **Serves:** RT42 (automated validation before publication: introduce an incompatibility,
-  observe a controlled failure, then fix it); supports RT36 (secret scan).
-- **Size:** M
-- **Depends on:** 22
-- **Context:** ADR-0004 chose local enforcement because there was no remote. There is one now
-  (`origin`, GitHub), and the new flow merges pull requests built by an agent, so local
-  pre-commit alone is no longer a sufficient control: anyone can skip it. A pipeline on the
-  server runs every quality check and the merge is blocked unless it is green. GitHub only
-  stores the repository and runs the checks; it never runs the generator or receives its data.
-- **What:** `.github/workflows/ci.yml`, one workflow, one required job named `quality`, that
-  runs on every pull request into `main` and on every push to `main`. It runs: `ruff format
-  --check`, `ruff check`, `mypy`, `lint-imports`, `pytest` with the coverage threshold,
-  `bandit`, `detect-secrets`, `pip-audit`, `sdd check`, `mkdocs build --strict`, and the
-  per-card verification of the branch (`sdd item verify` in read-only mode). Any failure fails
-  the job. It uses read-only permissions, no secrets, a timeout, a cache for Poetry and
-  concurrency that cancels outdated runs of the same pull request. An ADR supersedes ADR-0004
-  ("no CI"), and the harness documents say the pipeline is the merge control. The settings that
-  make it *required* are given as a checklist and, if you want, as `gh api` commands in the card's
-  output for **a person to run**: protect `main` so that merging needs a pull request, the
-  `quality` check green and the branch up to date; no force push; no deletion; applied also to
-  administrators.
-- **How:**
-  1. `.github/workflows/ci.yml`: trigger `pull_request` (branches: main) and `push` (branches:
-     main); top-level `permissions: contents: read`; a single job on `ubuntu-latest` with
-     `timeout-minutes`; steps: checkout, set up Python (3.11), install Poetry through the
-     documented method (pinned version) with cache, `poetry install --with dev,docs`, and one
-     step per command of `harness/checks.yaml`, in its order. Third-party actions are pinned to
-     a full commit SHA (supply-chain control, `harness/security.md`).
-  2. Do not duplicate the command list by hand: a test reads `harness/checks.yaml` and fails if
-     any command is missing from the workflow (single source of truth, open/closed).
-  3. `sdd verify` today records its result in `dossier.yaml`; add a `--no-record` option (CI
-     must never write) in `tools/sdd/interfaces/cli/app.py` and the use case
-     `application/use_cases/verify_quality.py`; the CI job uses it.
-  4. Where the pipeline needs the dossier id, derive it from the branch name
-     (`feat/<id>-<nn>-<slug>`) with a small command `sdd item current`, and skip the item step
-     for branches that are not item branches (for example the spec branch).
-  5. `.github/` and the workflow become **governed paths** (add them to the governed list in
-     `tools/sdd/domain/governance.py`), because the pipeline is a control.
-  6. ADR: "CI with GitHub Actions supersedes ADR-0004"; update `harness/quality.md`,
-     `harness/security.md`, `docs/architecture/deployment.md`, `README.md`, and ADR-0004's
-     status line (superseded).
-  7. The card output prints the branch protection checklist (and the `gh api` commands in a
-     fenced block); the agent never runs those commands: they change settings outside the
-     repository.
-- **Out of scope:** a deployment pipeline; self-hosted runners; matrix builds; notifications;
-  the branch-protection settings themselves (a person applies them).
-- **Acceptance criteria (EARS):**
-  - AC1: When a pull request is opened into `main`, the workflow shall run the job `quality`.
-  - AC2: If any command of `harness/checks.yaml` fails, then the job `quality` shall fail.
-  - AC3: The workflow shall contain a step for every command in `harness/checks.yaml`, and a
-    test shall fail when one is missing.
-  - AC4: The workflow shall declare `permissions: contents: read`, use no secret, and pin every
-    third-party action to a commit SHA.
-  - AC5: When a change that breaks a rule (for example a type error) is pushed to a branch with
-    an open pull request, the check shall turn red and, with branch protection applied, the
-    merge button shall be disabled; after the fix it shall turn green.
-  - AC6: When `sdd verify --no-record` runs, it shall not modify `dossier.yaml`.
-- **Verification:** `tests/sdd/test_ci_workflow.py` (parses the YAML: triggers, permissions,
-  pinned actions, every `checks.yaml` command present: AC1-AC4), `tests/sdd/test_cli.py` (AC6);
-  AC5 is a **manual proof** by us on the first pull request (introduce a type error, observe red,
-  fix, observe green) recorded in `validation.md`, because GitHub Actions cannot run locally.
+**Moved to dossier 002 (decision 2026-11-13).** Delivered there as card 04, merged in `main`. Nothing to build here; the number stays so that references do not break.
 
 ## Order and dependencies
 
 The order is risk first, then dependencies, then value:
 
-0. **Step zero, on the spec branch:** after G4, PBI-001-01 is built on `spec/001-timeseries-source`
-   together with the spec artifacts, because pre-commit cannot pass without it. That branch is
-   pushed, merged into `main` by one pull request (no CI yet), and only then does the one-card-
-   one-branch flow start from an up-to-date `main`. The pull request holds **two commits in this
-   order** so it can be reviewed commit by commit: first the code fix of PBI-001-01 with its tests
-   (the only commit that needs pre-commit to pass on its own), then the dossier documents (PRD,
-   backlog, spec, plan, tasks, approvals).
-1. **01, 22, 23, 02 (harness)** come first, in this order. 01 lets `sdd check` and pre-commit
-   pass; 22 installs the flow and the per-card approval that every later card uses; 23 installs
-   the CI that protects `main`; 02 is a small correction that follows the new flow.
+0. **Dossier 002 is done:** the flow, the per-card approval and the CI are in `main`.
 2. **03 (skeleton)** unlocks everything else.
 3. **04 (throughput spike)** is the largest technical risk (Python at 25,000 events/s); we know
    early whether the design holds.
@@ -1305,14 +1059,14 @@ flowchart LR
 
 **Requirement coverage.** RT02: 16. RT07: 05, 14. RT09: 07, 08, 16, 17. RT12: 05, 14, 20.
 RT17: 06, 09, 11, 12, 13, 14, 16. RT23: 12, 14, 20. RT28: 04, 06, 07, 15, 21. RT29: 04, 11, 15,
-19, 21. RT38: 08, 17, 18, 22. RT39: 17, 19. RT40: 19. RT42: 23 (supported by 22). RT01 and RT36
+19, 21. RT38: 08, 17, 18. RT39: 17, 19. RT40: 19. RT01 and RT36
 (must not break): 03, 15. RT30 is touched only in 21, to say what we do not claim. Every cited RT
 appears in at least one item; none is left out.
 
 **Cut line.** If the dossier is too big, the first thing to cut is anything beyond the default
 plant (already out of scope). After that, we would cut in this order: PBI-001-21's 24-hour
 real-time run (keep the 30-day backfill), the Parquet writer in PBI-001-04 comparison, and the
-hash chain in PBI-001-18 (keep the log). The flow (22) and the CI (23) are not cut: they protect everything else.
+hash chain in PBI-001-18 (keep the log).
 
 ## Definition of done
 
@@ -1331,7 +1085,6 @@ Specific to this dossier:
 - Every decision that picks one option over another (serialisation, thread layout, run id
   rule, quality codes) has an ADR.
 - `leakcheck` passes on every run produced by a test.
-- Items 01 and 02 also update the harness documentation that mentions the old rule.
-- From PBI-001-22 on, every card is built on its own branch, approved on its own digest, merged
+- Every card is built on its own branch, approved on its own digest, merged
   by a person through a pull request that the CI passed, and the next card is refined only after
   that merge. A card whose acceptance criteria lack a marked passing test is not done.

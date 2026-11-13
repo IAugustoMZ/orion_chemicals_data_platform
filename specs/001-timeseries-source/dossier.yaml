@@ -19,7 +19,6 @@ requirements:
 - RT38
 - RT39
 - RT40
-- RT42
 rationale: The platform team has no plant to connect to. This continuous source gives it simulated, labelled
   and deliberately messy plant time-series from five sites in different time zones, so identity, time,
   late-data and scale requirements can be built and tested before any ingestion exists, and so a future
@@ -27,30 +26,26 @@ rationale: The platform team has no plant to connect to. This continuous source 
 approvals:
   G1:
   - member: mentor
-    at: '2026-11-05T13:32:15+00:00'
-    digest: sha256:a1e979860f27335095714cf54454b9341f87cee53cf235bda4a2bc049911da96
+    at: '2026-11-13T12:11:34+00:00'
+    digest: sha256:0790b66c47175dd3a3e1639c83592f670d2ce921c929e6a0ddbd1c762ce23b3f
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
-    note: 'Amended: RT42 cited; four harness changes (status link, rationale, item-by-item flow, CI);
-      GitHub only hosts the repo and checks; G2 partial'
+    note: ''
   - member: mentee
-    at: '2026-11-05T13:32:38+00:00'
-    digest: sha256:a1e979860f27335095714cf54454b9341f87cee53cf235bda4a2bc049911da96
+    at: '2026-11-13T12:12:17+00:00'
+    digest: sha256:0790b66c47175dd3a3e1639c83592f670d2ce921c929e6a0ddbd1c762ce23b3f
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
-    note: 'Amended: RT42 cited; four harness changes (status link, rationale, item-by-item flow, CI);
-      GitHub only hosts the repo and checks; G2 partial'
+    note: ''
   G2:
   - member: mentor
-    at: '2026-11-05T13:41:22+00:00'
-    digest: sha256:c9b9bbaf87a32b0217c707757228bec7019ffaf9b0b16d184ba5d71cd97edb0f
+    at: '2026-11-13T12:12:39+00:00'
+    digest: sha256:890174690e74734561e38a3efced187803ef0ea1e2ad2963635f40630660bb85
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
-    note: 'Partial G2: skeleton + PBI-001-01 only; others are outlines refined and approved one at a
-      time; placeholder ''not yet''; boolean kept; step-zero PR in two commits'
+    note: ''
   - member: mentee
-    at: '2026-11-05T13:42:09+00:00'
-    digest: sha256:c9b9bbaf87a32b0217c707757228bec7019ffaf9b0b16d184ba5d71cd97edb0f
+    at: '2026-11-13T12:12:53+00:00'
+    digest: sha256:890174690e74734561e38a3efced187803ef0ea1e2ad2963635f40630660bb85
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
-    note: 'Partial G2: skeleton + PBI-001-01 only; others are outlines refined and approved one at a
-      time; placeholder ''not yet''; boolean kept; step-zero PR in two commits'
+    note: ''
   G3:
   - member: mentor
     at: '2026-11-12T20:34:35+00:00'

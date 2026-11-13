@@ -71,7 +71,7 @@ Requirements RT01-RT42: in discovery **10** · specified **2** · delivered **0*
 | RT39 | P | ★ | Each load shall expose its run, state, times, volumes, period covered and cause of error. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT40 | P |  | Operations shall track delay, backlog, failures, pending identity issues, quality and duration per source. | [001](../../specs/001-timeseries-source/prd.md) | in discovery |
 | RT41 | A |  | Backups and restore tests of data and metadata shall exist; acceptable loss and maximum recovery time are agreed before real operation. | — | not started |
-| RT42 | P |  | Changes to integrations and rules shall pass automated validation of contracts, exceptions and regression before publication. | [000](../../specs/000-sdd-harness/prd.md) (enabler), [001](../../specs/001-timeseries-source/prd.md), [002](../../specs/002-harness-item-flow/prd.md) | specified |
+| RT42 | P |  | Changes to integrations and rules shall pass automated validation of contracts, exceptions and regression before publication. | [000](../../specs/000-sdd-harness/prd.md) (enabler), [002](../../specs/002-harness-item-flow/prd.md) | specified |
 
 ★ = the catalogue asks to tackle this RT first (risk discovery).
 
