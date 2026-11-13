@@ -4,25 +4,16 @@
 # (written by `sdd verify`). Both are bound to content digests; a hand edit is detected.
 id: '001'
 slug: timeseries-source
-title: 'Time-series source: global plant data generator'
+title: 'Time-series source: global time core'
 kind: feature
 created: 2026-11-04
 requirements:
-- RT02
 - RT07
-- RT09
 - RT12
-- RT17
-- RT23
-- RT28
-- RT29
-- RT38
-- RT39
-- RT40
-rationale: The platform team has no plant to connect to. This continuous source gives it simulated, labelled
-  and deliberately messy plant time-series from five sites in different time zones, so identity, time,
-  late-data and scale requirements can be built and tested before any ingestion exists, and so a future
-  contextualisation model has training data while the plant structure stays hidden in an answer key.
+rationale: The platform team has no plant to connect to. The simulated plant data of five sites in different
+  time zones must get time right (UTC, original representation, ambiguity flagged, three timestamps),
+  because a wrong rule would poison every later test. This is the first dossier of the time-series source;
+  the rest of the original need moved to the dossiers of roadmap.md (specs are one file of at most 50 lines).
 approvals:
   G1:
   - member: mentor
