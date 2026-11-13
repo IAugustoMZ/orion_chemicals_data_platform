@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -84,7 +85,8 @@ def test_new_without_a_rationale_creates_nothing_and_exits_2(repo, extra):
 
 @pytest.mark.ac("PBI-002-05:AC4")
 def test_new_help_says_the_rationale_is_mandatory():
-    text = " ".join(run("new", "--help").output.split())
+    plain = re.sub(r"\[[0-9;]*m", "", run("new", "--help").output)
+    text = " ".join(plain.split())
     assert "--rationale" in text and "mandatory" in text.lower()
 
 
