@@ -32,7 +32,7 @@ checks:
 
   - id: security
     title: Static security analysis of the code (bandit)
-    command: [bandit, -q, -c, pyproject.toml, -r, tools]
+    command: [bandit, -q, -c, pyproject.toml, -r, tools, src]
 
   - id: secrets
     title: No credentials in the repository (detect-secrets)

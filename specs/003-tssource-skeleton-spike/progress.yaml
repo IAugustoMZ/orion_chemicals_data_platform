@@ -3,7 +3,7 @@
 version: 1
 items:
   '01':
-    state: approved
+    state: verified
     approvals:
     - member: mentor
       at: '2026-11-13T14:00:08+00:00'
@@ -15,7 +15,7 @@ items:
       digest: sha256:d3983d09ae254f6d3a6c4f07acdb25ca740ee2af3103abe380f51809ce7efa3c
       git_identity: Icaro Zelioli <i.augustomz@gmail.com>
       note: ''
-    branch: ''
+    branch: feat/003-01-skeleton-package-cli-container-quality
     commit: ''
     pull_request: ''
     merged_at: null

@@ -1,4 +1,7 @@
-# The docs image needs only the dependency files; the repository is mounted at run time.
+# The images need only the dependency files (and the tssource source); docs mounts the repo at run time.
 *
 !pyproject.toml
 !poetry.lock
+# The tssource image also needs its package source (and nothing else).
+!src/tssource/
+src/**/__pycache__/

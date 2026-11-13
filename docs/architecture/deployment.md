@@ -13,17 +13,20 @@ flowchart LR
         REPO[("Repository working tree<br/>README · docs · harness · specs · tools")]
         subgraph compose["<img src='https://cdn.simpleicons.org/docker/2496ED' width='24' height='24'/> Docker Compose project orion"]
             DOCS["<img src='https://cdn.simpleicons.org/materialformkdocs/526CFE' width='28' height='28'/><br/>service docs<br/>MkDocs + Material · mkdocs serve<br/>user 10001 · read-only rootfs · no capabilities"]
+            TSS["<img src='https://cdn.simpleicons.org/python/3776AB' width='28' height='28'/><br/>service tssource<br/>idles healthy · no port · one bind data/ts_source"]
         end
         IMG["<img src='https://cdn.simpleicons.org/docker/2496ED' width='28' height='28'/><br/>image orion/docs:local<br/>docker/docs.Dockerfile, 2 stages<br/>Poetry group docs only"]
     end
     BR -->|"loopback only, port 8000"| DOCS
     REPO -->|"bind mounts, read-only"| DOCS
+    OUT[("data/ts_source<br/>generated files, git-ignored")] <-->|"one writable bind"| TSS
     IMG -.->|built by docker compose up --build| DOCS
 ```
 
 | Service | Image | Port | Volumes | Hardening |
 |---|---|---|---|---|
 | `docs` | `orion/docs:local` from [docker/docs.Dockerfile](../../docker/docs.Dockerfile) (python:3.12-slim, two stages) | `127.0.0.1:8000` | the published folders of the repository, each read-only | non-root user `10001`, `read_only: true` + `/tmp` tmpfs, `cap_drop: [ALL]`, `no-new-privileges`, healthcheck |
+| `tssource` | `orion/tssource:local` from [docker/tssource.Dockerfile](../../docker/tssource.Dockerfile) (python:3.12-slim pinned by digest, two stages, groups `main` and `tssource`) | none | one writable bind, `./data/ts_source` | non-root user `10001`, `read_only: true` + `/tmp` tmpfs, `cap_drop: [ALL]`, `no-new-privileges`, healthcheck `tssource health` |
 
 ```bash
 docker compose up --build docs     # start (first build takes a minute)

@@ -33,3 +33,6 @@ deploy/secrets/
 .idea/
 .DS_Store
 Thumbs.db
+
+# Generated data of the time-series source (tssource): large, reproducible, never committed
+data/
