@@ -58,6 +58,17 @@ approvals:
     digest: sha256:2d8a022bc81ffa8105220c430bd06aecb63b4a331f7981d780b06932b8661f7a
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
     note: ''
+  G6:
+  - member: mentor
+    at: '2026-11-13T18:18:35+00:00'
+    digest: sha256:cd02f339bd5c9f1011b3aea285c75cbbceedc3f6a12fec03ad6b0d1e21abeada
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  - member: mentee
+    at: '2026-11-13T18:18:49+00:00'
+    digest: sha256:cd02f339bd5c9f1011b3aea285c75cbbceedc3f6a12fec03ad6b0d1e21abeada
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
 verification:
   at: '2026-11-13T17:58:05+00:00'
   digest: sha256:3fe82b2eeb45b2314a448dacf65e7cfdff0b61b0f6edbe60a532b873a6b65f31
