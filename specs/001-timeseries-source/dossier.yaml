@@ -13,18 +13,19 @@ requirements:
 rationale: The platform team has no plant to connect to. The simulated plant data of five sites in different
   time zones must get time right (UTC, original representation, ambiguity flagged, three timestamps),
   because a wrong rule would poison every later test. This is the first dossier of the time-series source;
-  the rest of the original need moved to the dossiers of roadmap.md (specs are one file of at most 50 lines).
+  the rest of the original need moved to the dossiers of roadmap.md (specs are one file of at most 50
+  lines).
 approvals:
   G1:
   - member: mentor
-    at: '2026-11-13T12:11:34+00:00'
-    digest: sha256:0790b66c47175dd3a3e1639c83592f670d2ce921c929e6a0ddbd1c762ce23b3f
-    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    at: '2026-11-13T22:52:45+00:00'
+    digest: sha256:797f0e6e1e2c9a7c292681c5afa644f4d821e803a47c8f5c191721728336709a
+    git_identity: IZelioli <i.augustomz@gmail.com>
     note: ''
   - member: mentee
-    at: '2026-11-13T12:12:17+00:00'
-    digest: sha256:0790b66c47175dd3a3e1639c83592f670d2ce921c929e6a0ddbd1c762ce23b3f
-    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    at: '2026-11-13T22:52:50+00:00'
+    digest: sha256:797f0e6e1e2c9a7c292681c5afa644f4d821e803a47c8f5c191721728336709a
+    git_identity: IZelioli <i.augustomz@gmail.com>
     note: ''
   G2:
   - member: mentor
@@ -47,5 +48,16 @@ approvals:
     at: '2026-11-12T20:34:48+00:00'
     digest: sha256:7cd85103b189a8cc09387aff5298201d13dbe640695eeb55cfc8413aeb86fedc
     git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: ''
+  G4:
+  - member: mentor
+    at: '2026-11-15T13:54:19+00:00'
+    digest: sha256:56891caf4ab24d949aea4f88c7863e1bb49d3442de60ffc714caa8810df278da
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: ''
+  - member: mentee
+    at: '2026-11-15T13:54:23+00:00'
+    digest: sha256:56891caf4ab24d949aea4f88c7863e1bb49d3442de60ffc714caa8810df278da
+    git_identity: IZelioli <i.augustomz@gmail.com>
     note: ''
 verification: null
