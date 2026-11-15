@@ -29,15 +29,17 @@ approvals:
     note: ''
   G2:
   - member: mentor
-    at: '2026-11-13T12:12:39+00:00'
-    digest: sha256:890174690e74734561e38a3efced187803ef0ea1e2ad2963635f40630660bb85
-    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
-    note: ''
+    at: '2026-11-15T14:33:29+00:00'
+    digest: sha256:f30d68f9b1ae8c11ee1075ca2d90bea2ea1f4e5fcb1e1ecfdf8914bc651a78b9
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Retained only the global time core; adopted historical DST cases and explicit next-valid gap
+      semantics; accepted one large PBI.
   - member: mentee
-    at: '2026-11-13T12:12:53+00:00'
-    digest: sha256:890174690e74734561e38a3efced187803ef0ea1e2ad2963635f40630660bb85
-    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
-    note: ''
+    at: '2026-11-15T14:33:41+00:00'
+    digest: sha256:f30d68f9b1ae8c11ee1075ca2d90bea2ea1f4e5fcb1e1ecfdf8914bc651a78b9
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Retained only the global time core; adopted historical DST cases and explicit next-valid gap
+      semantics; accepted one large PBI.
   G3:
   - member: mentor
     at: '2026-11-12T20:34:35+00:00'
