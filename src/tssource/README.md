@@ -13,7 +13,8 @@ Component of dossier [003](../../specs/003-tssource-skeleton-spike/spec.md) (chi
 
 ```bash
 poetry install --with tssource          # once
-poetry run tssource --help              # run, bench, config, report, health
+poetry run tssource --help              # run, bench, config, report, health, time-table
+poetry run tssource time-table --site us-gulf-coast --date 2024-03-10
 mkdir -p data/ts_source                 # the one writable folder of the container
 docker compose up --build tssource      # idles, reported healthy
 docker compose run --rm tssource --help
@@ -29,3 +30,9 @@ and names the bottleneck stage when the mean is below 25,000 events/s. Measured 
 Settings come from `TSSOURCE_SEED`, `TSSOURCE_OUT`, `TSSOURCE_MODE`, `TSSOURCE_START`,
 `TSSOURCE_END` and `TSSOURCE_SPEED_FACTOR`. Exit codes: 0 success, 1 not implemented or a
 handled error, 2 usage, 3 benchmark floor missed.
+
+`time-table` is a read-only civil-time diagnostic. It prints all local top-of-hour values for a
+site and date, their explicit `ok`, `ambiguous`, or `gap` outcome, retained UTC candidate(s), and
+offset(s). A gap retains the requested wall-clock value and shows the first valid UTC instant;
+there is never an implicit fold choice. Sites are `brazil`, `us-gulf-coast`, `belgium`, `china`,
+and `india`.

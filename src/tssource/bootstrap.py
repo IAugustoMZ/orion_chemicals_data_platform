@@ -12,15 +12,20 @@ import shutil
 import tempfile
 from collections.abc import Mapping
 from dataclasses import replace
+from datetime import date
 from pathlib import Path
 
 from tssource.application.bench import EventSink, RunBenchmark
 from tssource.application.settings import Settings
+from tssource.application.time_table import ResolveTimeTable
 from tssource.domain.benchmark import BenchResult, Format
+from tssource.domain.time.resolution import LocalResolution
+from tssource.domain.time.site_zone import SITE_ZONES, SiteCode
 from tssource.infrastructure.clock import MonotonicClock
 from tssource.infrastructure.numpy_source import NumpyBlockSource
 from tssource.infrastructure.probe import ProcessResourceProbe
 from tssource.infrastructure.sinks import JsonlGzipSink, JsonlSink, ParquetSink
+from tssource.infrastructure.zoneinfo_resolver import ZoneInfoResolver
 
 _SINKS: dict[Format, tuple[str, type[JsonlGzipSink] | type[JsonlSink] | type[ParquetSink]]] = {
     Format.JSONL_GZIP: ("bench.jsonl.gz", JsonlGzipSink),
@@ -73,3 +78,17 @@ def run_bench(
         return use_case.run(seconds=seconds, seed=settings.seed, fmt=fmt)
     finally:
         shutil.rmtree(scratch, ignore_errors=True)
+
+
+def resolve_time_table(site_code: str, requested_date: date) -> tuple[LocalResolution, ...]:
+    """Resolve one declared site's 24 local clock hours through the application use case.
+
+    Raises:
+        ValueError: ``site_code`` is not one of the declared fictional sites.
+    """
+    try:
+        site = SITE_ZONES[SiteCode(site_code)]
+    except ValueError as error:
+        allowed = ", ".join(code.value for code in SiteCode)
+        raise ValueError(f"unknown site '{site_code}'; choose one of: {allowed}") from error
+    return ResolveTimeTable(ZoneInfoResolver()).resolve(site, requested_date)

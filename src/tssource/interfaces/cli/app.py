@@ -10,12 +10,13 @@ never a stack trace.
 from __future__ import annotations
 
 import json
+from datetime import date
 from pathlib import Path
 from typing import Annotated
 
 import typer
 
-from tssource.bootstrap import build_settings, run_bench
+from tssource.bootstrap import build_settings, resolve_time_table, run_bench
 from tssource.domain.benchmark import Format
 from tssource.domain.errors import TssourceError
 
@@ -86,6 +87,31 @@ def report() -> None:
 def health() -> None:
     """Exit 0 when the settings can be read; used by the container healthcheck."""
     build_settings()
+
+
+@app.command("time-table")
+def time_table(
+    site: Annotated[str, typer.Option(help="Declared site code.")],
+    requested_date: Annotated[str, typer.Option("--date", help="ISO date (YYYY-MM-DD).")],
+) -> None:
+    """Print a 24-hour civil-time resolution table for one fictional site and date."""
+    try:
+        parsed_date = date.fromisoformat(requested_date)
+        rows = resolve_time_table(site, parsed_date)
+    except ValueError as error:
+        raise typer.BadParameter(str(error)) from error
+    typer.echo("local | resolution | offsets | utc candidates")
+    for row in rows:
+        candidates = ", ".join(
+            candidate.isoformat().replace("+00:00", "Z") for candidate in row.candidates
+        )
+        offsets = ", ".join(_format_offset(offset) for offset in row.offsets)
+        typer.echo(f"{row.requested_local:%H:%M} | {row.status.value} | {offsets} | {candidates}")
+
+
+def _format_offset(offset: object) -> str:
+    """Render the adapter-provided offset without allowing the interface to resolve zones."""
+    return str(offset)
 
 
 def main() -> None:

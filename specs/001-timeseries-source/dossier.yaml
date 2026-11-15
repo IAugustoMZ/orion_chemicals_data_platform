@@ -53,13 +53,86 @@ approvals:
     note: ''
   G4:
   - member: mentor
-    at: '2026-11-15T13:54:19+00:00'
-    digest: sha256:56891caf4ab24d949aea4f88c7863e1bb49d3442de60ffc714caa8810df278da
+    at: '2026-11-15T18:02:52+00:00'
+    digest: sha256:fe6eb8c9f1264b7a8d8505b94dfe405865c8e36a9f4c2dde20ef4da8b9987eb8
     git_identity: IZelioli <i.augustomz@gmail.com>
-    note: ''
+    note: Use settled 2024 DST transitions; time-table is a human-readable 24-hour table that preserves
+      gap input and shows its first valid UTC instant.
   - member: mentee
-    at: '2026-11-15T13:54:23+00:00'
-    digest: sha256:56891caf4ab24d949aea4f88c7863e1bb49d3442de60ffc714caa8810df278da
+    at: '2026-11-15T18:03:02+00:00'
+    digest: sha256:fe6eb8c9f1264b7a8d8505b94dfe405865c8e36a9f4c2dde20ef4da8b9987eb8
     git_identity: IZelioli <i.augustomz@gmail.com>
-    note: ''
-verification: null
+    note: Use settled 2024 DST transitions; time-table is a human-readable 24-hour table that preserves
+      gap input and shows its first valid UTC instant.
+verification:
+  at: '2026-11-15T18:16:54+00:00'
+  digest: sha256:938529e243f8a8e6a0783396f173be10f3df9c4525a7f16c67dd4cea83eb8703
+  commit: 3f5f58b
+  results:
+  - check: format
+    passed: true
+    summary: 319 files already formatted
+  - check: lint
+    passed: true
+    summary: All checks passed!
+  - check: types
+    passed: true
+    summary: 'Success: no issues found in 93 source files'
+  - check: architecture
+    passed: true
+    summary: "tssource interfaces never touch infrastructure directly (only through the \ncomposition\
+      \ root) KEPT\ntssource domain and application stay free of numpy, pyarrow, typer and \nsubprocess\
+      \ KEPT\n\nContracts: 6 kept, 0 broken."
+  - check: tests
+    passed: true
+    summary: 'tools/sdd/interfaces/cli/app.py                          164     10     32      5    92%   98,
+      207, 224-228, 306, 308, 310, 345, 354
+
+      tools/sdd/interfaces/cli/presenters.py                    46     13     16      4    63%   36,
+      61-67, 76-78, 103, 104->106, 107
+
+      --------------------------------------------------------------------------------------------------
+
+      TOTAL                                                   2886     75    566     51    96%
+
+      Required test coverage of 85% reached. Total coverage: 96.18%
+
+      286 passed in 17.27s'
+  - check: security
+    passed: true
+    summary: (no output)
+  - check: secrets
+    passed: true
+    summary: (no output)
+  - check: dependencies
+    passed: true
+    summary: 'Name                          Skip Reason
+
+      ----------------------------- -------------------------------
+
+      orion-chemicals-data-platform distribution marked as editable
+
+      No known vulnerabilities found'
+  - check: harness
+    passed: true
+    summary: 'WARNING  gate-stale         specs/000-sdd-harness/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      WARNING  gate-stale         specs/001-timeseries-source/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      WARNING  gate-stale         specs/002-harness-item-flow/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      WARNING  gate-stale         specs/003-tssource-skeleton-spike/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      WARNING  written-ahead      specs/003-tssource-skeleton-spike/release.md  release.md written before
+      G6 passed: review G6 first, then draft G7 (one gate at a time)
+
+      sdd check: 5 finding(s)'
+  - check: docs-site
+    passed: true
+    summary: "\nFor more info visit \e[1mhttps://github.com/ProperDocs/properdocs/discussions/33\e[0m\
+      \ and \e[1mhttps://properdocs.org/\e[0m\n\n(This warning was initiated by one of the plugins that\
+      \ you depend on.)\n\n----------------------------------------------------------------"
