@@ -109,6 +109,15 @@ The class-by-class explanation, with every decision justified, is the
 
 ## 3. What we keep from the reference platform
 
+## 3.1 Time-source civil-time core
+
+`src/tssource/` follows the same inward dependency rule: the pure `domain/time` value objects
+retain a declared site, original timestamp meaning, UTC candidates, offsets, three event times,
+and clock faults; `application/time_table.py` owns the 24-hour use case and `ZoneResolver` port;
+`infrastructure/zoneinfo_resolver.py` adapts Python's IANA rules; `bootstrap.py` is the only
+wiring point; and the Typer `time-table` command is the public boundary. The component README
+documents its stable CLI contract. This implements [ADR-0029](decisions/0029-resolve-site-local-time-with-zoneinfo.md).
+
 The industrial data platform we studied (Kairon) contributes its *high-level architecture*, not
 its technology choices:
 

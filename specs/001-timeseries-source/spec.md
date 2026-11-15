@@ -8,7 +8,7 @@
 |---|---|---|
 | SPEC-001-B01-B02 | When a declared-site local time is valid, repeated, or skipped, the resolver shall return `ok` with one UTC instant, `ambiguous` with both, or `gap` with the first valid instant after the gap; Shanghai and Kolkata shall never be gap or ambiguous. | RT12 |
 | SPEC-001-B03-B04 | When an instant is encoded in ISO-offset, ISO-local, epoch seconds, epoch milliseconds, local text, or FILETIME ticks, the codec shall preserve the original value and known zone/offset; five UTC/offset forms round-trip exactly, while local text requires a site zone and returns its resolution. | RT12 |
-| SPEC-001-B05-B06 | When an event is built, it shall retain distinct UTC-aware occurrence, source-update, and reception times and an active fault shall alter written occurrence time exactly; when `tssource time-table --site CODE --date YYYY-MM-DD` runs, it shall print candidates/offsets/resolution and invalid input shall exit 2 without a traceback. | RT07, RT12 |
+| SPEC-001-B05-B06 | When an event is built, it shall retain distinct UTC-aware occurrence, source-update, and reception times and an active fault shall alter written occurrence time exactly; when `tssource time-table --site CODE --date YYYY-MM-DD` runs, it shall print a human-readable 24-hour table with each requested local value, candidates/offsets/resolution (including requested gap value and first-valid UTC instant), and invalid input shall exit 2 without a traceback. | RT07, RT12 |
 ## Architecture impact
 ```mermaid
 flowchart LR; subgraph "Before"; C1["tssource CLI"] --> B1["bootstrap"] --> X["benchmark use case"]; end; subgraph "After"; C2["time-table CLI"] --> B2["bootstrap"] --> U["time-table use case"] --> D["time domain"]; P["<img src='https://cdn.simpleicons.org/python/3776AB' width='28' height='28'/><br/>Python zoneinfo adapter"] --> U; end
@@ -19,7 +19,7 @@ flowchart LR; subgraph "Before"; C1["tssource CLI"] --> B1["bootstrap"] --> X["b
 ## Contracts and data
 | Contract | Shape, producer, consumer, version |
 |---|---|
-| `LocalResolution`; `DecodedTimestamp`; `EventTimes`; `time-table` | Status plus 0/1/2 UTC candidates and original value; codec; three mandatory UTC-aware fields; CLI `--site`/`--date`, exit 0/2; internal v1, additive only. |
+| `LocalResolution`; `DecodedTimestamp`; `EventTimes`; `time-table` | Status plus 0/1/2 UTC candidates and original value; codec; three mandatory UTC-aware fields; human-readable 24-hour CLI rows for `--site`/`--date`, including gap input and first-valid UTC, exit 0/2; internal v1, additive only. |
 ## Design
 | Layer | Design, pattern, SOLID reason |
 |---|---|
@@ -37,10 +37,10 @@ flowchart LR; subgraph "Before"; C1["tssource CLI"] --> B1["bootstrap"] --> X["b
 ## Validation plan
 | Behaviour/RT | Evidence |
 |---|---|
-| B01-B02/RT12 | `test_site_zone.py`: Chicago 2026-03-08/11-01, Brussels 2026-03-29/10-25, São Paulo 2018/2019, fixed-offset sites. |
+| B01-B02/RT12 | `test_site_zone.py`: Chicago 2024-03-10/11-03, Brussels 2024-03-31/10-27, São Paulo 2018/2019, fixed-offset sites. |
 | B03-B04/RT12 | `test_representation.py`: six forms, five exact round trips, ambiguous local text unresolved. |
 | B05/RT07 | `test_event_times.py` and `test_clock_fault.py`: separate UTC times and fault boundaries. |
-| B06 | `test_time_table.py`: valid table, invalid options, output, exit code. |
+| B06 | `test_time_table.py`: 24 rows, human-readable gap input/UTC output, invalid options, exit code. |
 | All | `poetry run sdd verify 001`, strict types, imports, secrets, and quality suite. |
 ## Architecture decisions
 [ADR-0029](../../docs/architecture/decisions/0029-resolve-site-local-time-with-zoneinfo.md) is Proposed: use explicit `zoneinfo` outcomes.

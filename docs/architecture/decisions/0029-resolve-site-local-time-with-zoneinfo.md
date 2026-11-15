@@ -1,6 +1,6 @@
 # ADR-0029: We resolve site-local time with zoneinfo and explicit civil-time outcomes
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-11-13
 - **Dossier:** specs/001-timeseries-source
 - **Requirements:** RT07, RT12; refines [ADR-0019](0019-tssource-package-and-dependencies.md) and [ADR-0022](0022-hidden-plant-and-site-local-time.md)

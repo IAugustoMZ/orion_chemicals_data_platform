@@ -1,4 +1,21 @@
 # Progress of the backlog, one entry per card (ADR-0023). Written only by `sdd`:
 # never edit by hand. Approvals are bound to the digest of the card's section of backlog.md.
 version: 1
-items: {}
+items:
+  '05':
+    state: verified
+    approvals:
+    - member: mentor
+      at: '2026-11-15T18:06:59+00:00'
+      digest: sha256:b961d93eeb129950e86380d104589fd8ac41de485412454d62ad817bcecc979c
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-15T18:07:06+00:00'
+      digest: sha256:b961d93eeb129950e86380d104589fd8ac41de485412454d62ad817bcecc979c
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: feat/001-05-time-core-zones-daylight-saving
+    commit: ''
+    pull_request: ''
+    merged_at: null
