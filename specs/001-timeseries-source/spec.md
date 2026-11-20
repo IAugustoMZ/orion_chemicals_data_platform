@@ -2,48 +2,48 @@
 ## Context collected
 | Source | Contribution |
 |---|---|
-| [RT07/RT12](../../docs/requirements/rt-catalog.yaml), [PRD](prd.md), [PBI-001-05](backlog.md), [approach](ux-approach.md), [principles](../../harness/principles.md), [security](../../harness/security.md), [ADR-0019](../../docs/architecture/decisions/0019-tssource-package-and-dependencies.md), [ADR-0020](../../docs/architecture/decisions/0020-deterministic-generation-and-simulated-reception-time.md), [ADR-0022](../../docs/architecture/decisions/0022-hidden-plant-and-site-local-time.md), [Python zoneinfo](https://docs.python.org/3/library/zoneinfo.html) and [IANA TZDB](https://www.iana.org/time-zones), accessed 2026-11-13 | Requirements, approved scope, layers/security, existing decisions, and authoritative civil-time rules. |
+| [Requirements and implementation context](plan.md#context) | RT07, RT12, approved artifacts, current time core, G6 findings, and existing architecture decisions. |
 ## Behaviour
-| ID | EARS behaviour | RT |
+| ID | EARS behaviour | RT / criteria |
 |---|---|---|
-| SPEC-001-B01-B02 | When a declared-site local time is valid, repeated, or skipped, the resolver shall return `ok` with one UTC instant, `ambiguous` with both, or `gap` with the first valid instant after the gap; Shanghai and Kolkata shall never be gap or ambiguous. | RT12 |
-| SPEC-001-B03-B04 | When an instant is encoded in ISO-offset, ISO-local, epoch seconds, epoch milliseconds, local text, or FILETIME ticks, the codec shall preserve the original value and known zone/offset; five UTC/offset forms round-trip exactly, while local text requires a site zone and returns its resolution. | RT12 |
-| SPEC-001-B05-B06 | When an event is built, it shall retain distinct UTC-aware occurrence, source-update, and reception times and an active fault shall alter written occurrence time exactly; when `tssource time-table --site CODE --date YYYY-MM-DD` runs, it shall print a human-readable 24-hour table with each requested local value, candidates/offsets/resolution (including requested gap value and first-valid UTC instant), and invalid input shall exit 2 without a traceback. | RT07, RT12 |
+| SPEC-001-B01 | When a declared local reading is unique or repeated, the resolver shall return `ok` with one UTC instant or `ambiguous` with both in UTC order. When skipped, it shall preserve the requested reading and return `gap` with the first valid UTC instant and its offset. | RT12 / 24 AC3–AC4 |
+| SPEC-001-B02 | When resolving an in-range reading at China or India, the resolver shall use the site's declared fixed offset (`+08:00` or `+05:30`) for every date. Brazil, the US Gulf Coast and Belgium follow their declared IANA zones. | RT12 / 24 AC5 |
+| SPEC-001-B03 | When decoding ISO-offset, epoch seconds, epoch milliseconds or FILETIME, the codec shall retain raw value, form and known offset or UTC reference, and recover each representable instant exactly. If a conversion would lose precision or exceed the format or datetime range, it shall return a value error. | RT12 / 24 AC1–AC2 |
+| SPEC-001-B04 | When encoding or decoding ISO-local or local text, the codec shall require a declared site. Decode shall retain raw value, form, zone or fixed offset, and explicit resolution. Both UTC instants in a repeated hour shall encode to the same local value and decode to both candidates. | RT12 / 24 AC2–AC5 |
+| SPEC-001-B05 | When an event is built, it shall retain separate UTC-aware occurrence, source-update, and reception times. When a clock fault is active, it shall alter the written occurrence time by the specified amount. | RT07 / 05 AC5 |
+| SPEC-001-B06 | When `time-table` receives a declared site and a `YYYY-MM-DD` date whose entire table is in UTC range, it shall print the header and 24 local-hour rows with resolutions, offsets and candidates. If input or any row is invalid, it shall exit `2` with one usage diagnostic and no traceback or partial table. | RT12 / 24 AC6 |
 ## Architecture impact
 ```mermaid
-flowchart LR; subgraph "Before"; C1["tssource CLI"] --> B1["bootstrap"] --> X["benchmark use case"]; end; subgraph "After"; C2["time-table CLI"] --> B2["bootstrap"] --> U["time-table use case"] --> D["time domain"]; P["<img src='https://cdn.simpleicons.org/python/3776AB' width='28' height='28'/><br/>Python zoneinfo adapter"] --> U; end
+flowchart LR; subgraph "Before"; C1["time-table"] --> U1["ResolveTimeTable"]; U1 --> P1["<img src='https://cdn.simpleicons.org/python/3776AB' width='28' height='28'/><br/>Python zoneinfo for five sites"]; D1["Direct codec"] --> T1["UTC instant"]; end; subgraph "After"; C2["time-table"] --> U2["ResolveTimeTable"]; K["TimestampCodec"] --> D2["Domain formats and decoded values"]; U2 --> Z["ZoneResolver port"]; K --> Z; Z --> P2["<img src='https://cdn.simpleicons.org/python/3776AB' width='28' height='28'/><br/>Python zoneinfo or declared fixed offset"]; end
 ```
-| Component/dependency | Change and reason |
-|---|---|
-| `domain/time/{site_zone,resolution,representation,clock_fault,event_times}.py`; `application/time_table.py`; `infrastructure/zoneinfo_resolver.py`; bootstrap; CLI; time tests | Add pure values, resolver port/adapter, command; use stdlib `zoneinfo` and existing `tzdata` only. |
+The CLI and codec share site rules through `ZoneResolver`, wired by bootstrap. See the [affected files](plan.md#files-to-create-or-change).
 ## Contracts and data
 | Contract | Shape, producer, consumer, version |
 |---|---|
-| `LocalResolution`; `DecodedTimestamp`; `EventTimes`; `time-table` | Status plus 0/1/2 UTC candidates and original value; codec; three mandatory UTC-aware fields; human-readable 24-hour CLI rows for `--site`/`--date`, including gap input and first-valid UTC, exit 0/2; internal v1, additive only. |
+| [Time contracts](plan.md#time-contracts) | `DecodedTimestamp` retains source metadata and a `LocalResolution`. `EventTimes` keeps the three UTC fields. The CLI retains its options, table columns and exit codes. These are in-process values with no storage schema. |
 ## Design
 | Layer | Design, pattern, SOLID reason |
 |---|---|
-| Domain | Frozen value objects `SiteZone`, `LocalResolution`, `ClockFault`, `EventTimes`, and pure codec keep illegal states out. |
-| Application/infrastructure/interface | `ZoneResolver` Protocol plus `ZoneInfoResolver`, wired only by bootstrap, keeps TZDB mechanics outward and CLI validation at the boundary. |
+| Domain | Frozen `SiteZone`, `LocalResolution` and `DecodedTimestamp` hold rules and results. Pure format conversion uses integer units. |
+| [Application, adapter and CLI](plan.md#design) | `TimestampCodec` and `ResolveTimeTable` use the resolver port. The adapter owns zone rules. The CLI validates input and prints only complete results. |
 ## Security and threat model
 | STRIDE | Threat, mitigation, verification |
 |---|---|
-| S | Forged site: whitelist `SiteCode`; invalid-site CLI test. |
-| T | Altered rules: locked `tzdata`, original form/resolution retained; transition tests and lock review. |
-| R | No mutable configuration or audit-relevant change; G6 review. |
-| I | Error disclosure: one-line validated CLI errors; invalid-input test and `detect-secrets`. |
-| D | Large request: one ISO date and five sites only; date-validation test. |
-| E | Privilege: pure local calculation, no file/network/credential/industrial access; import and security review. |
+| S | An arbitrary site identifier could pick an unintended zone. Accept declared sites only. Verify via unknown-site CLI and missing-site codec tests. |
+| T | Timestamp rounding or a guessed fold could alter source meaning. Require exact units, retain raw metadata and check transitions against the locked dependency set. Verify AC1–AC5. |
+| R | In-memory conversions make no auditable configuration or operator changes. Confirm in G6 review. |
+| I | Invalid inputs could expose internals. Use short CLI diagnostics for syntax and UTC range failures. Verify AC6 and run secrets checks. |
+| D | A skipped wall time could trigger excessive search. Use one date, 24 rows and bounded UTC bisection. Verify range tests and review the search bound. |
+| E | The calculation introduces no privileged operations or new identities. Verify imports and review adapter and CLI calls at G6. |
 ## Validation plan
 | Behaviour/RT | Evidence |
 |---|---|
-| B01-B02/RT12 | `test_site_zone.py`: Chicago 2024-03-10/11-03, Brussels 2024-03-31/10-27, São Paulo 2018/2019, fixed-offset sites. |
-| B03-B04/RT12 | `test_representation.py`: six forms, five exact round trips, ambiguous local text unresolved. |
+| B01–B02/RT12 | `test_site_zone.py`: Chicago's `2024-03-10 02:15:30.123456` resolves to `08:00:00Z`. Verify the old offset one microsecond before the transition. Cover Brussels, São Paulo and historical dates at both fixed-offset sites. |
+| B03–B04/RT12 | `test_representation.py` and application codec tests: all six forms, raw metadata, exactness errors, both local folds, missing site, and gaps. |
 | B05/RT07 | `test_event_times.py` and `test_clock_fault.py`: separate UTC times and fault boundaries. |
-| B06 | `test_time_table.py`: 24 rows, human-readable gap input/UTC output, invalid options, exit code. |
-| All | `poetry run sdd verify 001`, strict types, imports, secrets, and quality suite. |
+| B06/RT12 | `test_time_table.py`: 24 rows, gap output, invalid syntax, and both UTC range boundaries with the site and date in the diagnostic and empty stdout. |
 ## Architecture decisions
-[ADR-0029](../../docs/architecture/decisions/0029-resolve-site-local-time-with-zoneinfo.md) is Proposed: use explicit `zoneinfo` outcomes.
+[ADR-0030](../../docs/architecture/decisions/0030-preserve-exact-timestamps-and-declared-site-rules.md) specifies exact conversion and declared site rules and refines [ADR-0029](../../docs/architecture/decisions/0029-resolve-site-local-time-with-zoneinfo.md).
 ## Documentation impact
 Update `time-table` in the component and architecture READMEs, root README, and G6 teaching guide after build.
 ## Out of scope

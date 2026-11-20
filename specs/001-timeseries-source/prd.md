@@ -64,17 +64,16 @@ Targets are our starting point; none depends on a measurement.
 
 | Goal | Metric | Baseline today | Target | How we measure |
 |---|---|---|---|---|
-| Daylight saving and zones behave exactly like the real rules | listed transitions of the five sites (US spring and autumn, EU spring and autumn, Brazil with and without daylight saving, China and India with a fixed offset) reported correctly as `ok`, `gap` or `ambiguous` | none | 100% of the listed transitions, each with its date written in the test and the time zone database version named | table-driven tests over the transitions; `tssource time-table` run for a gap, an ambiguous hour and a fixed-offset site |
-| The same instant can be written in every representation the sites use, and read back safely | representations (ISO with offset, ISO local, epoch seconds, epoch milliseconds, local text, FILETIME ticks) that encode and decode; share of the ambiguous local times that are flagged instead of chosen silently | none | 6 of 6 encode; the 5 that carry an offset or are UTC decode to the same instant; 100% of the ambiguous local times flagged | round-trip tests per representation; test of the ambiguous hour on a local text |
+| Daylight saving and offsets follow each fictional site's declared policy | UTC candidates and flags for gaps and repeated hours in the US Gulf Coast, Belgium and Brazil, plus fixed offsets for China and India | G6 validation found a late gap candidate and a historical gap at the China site | Every listed transition and fixed-offset case matches its expected candidates. A gap preserves the requested local reading and reports the first valid UTC instant after the gap, even when the reading includes seconds. | Table-driven tests with explicit dates and TZDB version, including a gap with seconds and a date when historical Shanghai rules changed the offset. |
+| Every declared timestamp format can be written and read without silently losing meaning | Six forms supported, exact round trips for representable instants, raw input and known zone or offset retained on decode, and ambiguity flagged in both offset-free formats | Four whole-second round trips pass. G6 validation found missing local decode paths, metadata and fractional precision. | All six forms encode and decode. The encoder returns an error when the selected format cannot represent the instant exactly. ISO with offset, epoch seconds, epoch milliseconds and FILETIME recover representable instants directly. ISO-local and local text use the declared site and return the unique instant or an explicit gap or ambiguity. | Round-trip and metadata tests for all six forms, precision-boundary tests covering unrepresentable instants, and a repeated-hour case for each offset-free form. |
 | Three timestamps per event and clocks that can be wrong on purpose | events carrying occurrence, source update and reception time, all UTC; clock faults (constant offset, drift per day) that move the written time by exactly the declared amount | none | 100% of events built with the three times; the written occurrence time differs from the true instant by the declared offset or accumulated drift, and by nothing else | tests of the event-times value object and of the clock fault |
 
 ## Users and scenarios
 
-- **Data engineer (the mentee, then the team), building ingestion.** Asks "what is 02:30 on
-  2026-11-01 in the Gulf Coast plant?" and gets two UTC instants and the word `ambiguous`; then
-  asks the same for a Chinese plant and gets one instant and `ok`. The scenario that matters: the
-  engineer feeds the platform a local text taken from this library and checks that it refuses to
-  guess (RT12).
+- **Data engineer (the mentee, then the team), building ingestion.** Resolves 01:30 on
+  2024-11-03 at the Gulf Coast plant and gets two UTC instants with `ambiguous`. The same
+  reading at the China plant gives one instant with `ok`. The engineer uses the local text
+  to test that ingestion preserves the ambiguity (RT12).
 - **The later dossiers (acquisition, source contract, final trial).** Call the library to stamp
   every event with its three times and to write them in the representation the site's contract
   declares. They need it to be pure, deterministic and tested before they are built.
@@ -85,13 +84,14 @@ Targets are our starting point; none depends on a measurement.
 
 ### In scope
 
-- A **time library** inside the `tssource` package: the zone of each of the five fictional sites
-  (Brazil `America/Sao_Paulo`, US Gulf Coast `America/Chicago`, Belgium `Europe/Brussels`, China
-  `Asia/Shanghai`, India `Asia/Kolkata`), a resolver of local time to UTC that reports `ok`, `gap`
-  or `ambiguous`, six timestamp representations with encode and decode, the three timestamps of an
-  event (RT07) and clock faults (constant offset or drift per day).
-- A **command** `tssource time-table --site <code> --date <YYYY-MM-DD>` that prints, for local
-  times of that date, the UTC instant(s), the offset and the flag.
+- A **time library** inside the `tssource` package. Brazil (`America/Sao_Paulo`), the US Gulf
+  Coast (`America/Chicago`) and Belgium (`Europe/Brussels`) use civil-time rules. The fictional
+  China and India sites use fixed UTC+08:00 and UTC+05:30 offsets, including on historical dates.
+  Resolution reports `ok`, `gap` or `ambiguous`. The library encodes and decodes six timestamp
+  forms, models three event times (RT07) and supports clock faults (offset and drift per day).
+- A **command** `tssource time-table --site <code> --date <YYYY-MM-DD>` that prints each hour's UTC
+  result, offset and flag. For an invalid date or a date whose UTC results are out of range, the
+  command exits with status `2` and prints a short usage error without a traceback.
 - Tests with the real transitions of the years we choose, the date written in each test.
 
 ### Out of scope
@@ -108,22 +108,23 @@ Targets are our starting point; none depends on a measurement.
   (dossier 003); no cloud, no new service. Python through Poetry only; everything in English.
 - Decision (mentor, 2026-11-04): Orion Chemicals, its five sites and all their data are
   fictional. The sites are chosen because their time rules differ; the zones and daylight saving
-  rules are real-world rules applied to invented plants.
+  rules are real-world rules applied to the three sites with named zones.
 - Decision (mentor, 2026-11-13): a specification is one file of at most 50 lines; the need was
-  split into the dossiers of the roadmap. This dossier keeps one card.
+  split into the dossiers of the roadmap. One follow-up card addresses the findings from
+  validating the merged time core.
 - Decision (mentor, 2026-11-04): the backlog is approved one card at a time (`sdd item`).
 - Assumption: the standard library `zoneinfo` with the `tzdata` package (already a dependency of
   the `tssource` group) gives the real rules; we name the database version in the tests.
-- Assumption: the offsets of China (+08:00) and India (+05:30) never change in the years we test.
+- China and India use the same declared offsets across the dates the library supports.
 
 ## Risks and open questions
 
 | Risk or question | Impact | Mitigation or owner |
 |---|---|---|
-| A daylight saving or zone rule is reproduced wrongly | the platform is tested against a false reality | rules come from the time zone database, never typed by hand; every transition has its date in a test (owner: mentee) |
+| A daylight saving or zone rule is reproduced wrongly | the platform is tested against a false reality | use the time zone database for the three named zones and test the two fictional fixed-offset policies explicitly (owner: mentee) |
 | The time zone database changes in a later release (for example Brazil in 2019) | a test that passed starts failing, or an old date is read with a new rule | name the database version in the tests and the ADR; tests use fixed dates (owner: mentee) |
 | Windows FILETIME ticks (100 ns since 1601) lose precision in floating point | an instant is off by microseconds | use integers; test the round trip at the edges (owner: mentee) |
-| Open question: should a gap time return the next valid instant or an error? | the later dossiers behave differently | proposed: report `gap` and return the next valid instant, as the first backlog says; confirm at the specification (owner: mentor) |
+| A gap result overshoots the transition when the input contains seconds | consumers can move an event later than the first valid instant | keep the requested value, report `gap` and test the exact transition boundary (owner: mentee) |
 | The roadmap changes while we learn | cards move between dossiers again | the roadmap is amended in the open and each dossier is re-approved only for what changed (owner: mentor) |
 
 ## Review notes (optional)

@@ -43,3 +43,4 @@ ADR is listed here and has a status and a date.
 | [0027](0027-benchmark-measures-per-second-rates-with-a-bounded-queue.md) | The spike measures per-second rates through a bounded queue and exits 3 below the floor | Proposed |
 | [0028](0028-writer-choice-after-the-throughput-spike.md) | Writer choice after the throughput spike: Parquet by row group, JSON Lines as fallback (draft for card 15 of 001) | Proposed |
 | [0029](0029-resolve-site-local-time-with-zoneinfo.md) | We resolve site-local time with zoneinfo and explicit civil-time outcomes | Accepted |
+| [0030](0030-preserve-exact-timestamps-and-declared-site-rules.md) | We preserve exact timestamps and apply declared site rules | Proposed |

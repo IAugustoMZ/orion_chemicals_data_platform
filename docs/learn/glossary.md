@@ -16,15 +16,19 @@ introduces them.
 | **Artifact** | a Markdown file of a dossier produced in a phase (`prd.md`, `spec.md`, ...) |
 | **Blocked** | gate state: an earlier gate has not passed, so this one cannot be judged yet |
 | **Checkpoint** (data) | the resume point of an incremental load; must advance only after the data is preserved (RT04) |
+| **Civil time** | the clock reading under a site's calendar and time-zone rules |
 | **Composition root** | the one place where adapters are created and wired into use cases (`bootstrap.py`) |
 | **Constitution** | the non-negotiable articles of the harness (`harness/constitution.md`) |
 | **Context plane** | the governed knowledge agents read: requirements, code, architecture, docs, contracts |
 | **Control plane (AI)** | how agents are governed: model routing, guardrails, cost, audit, loop limits |
+| **Daylight-saving gap** | local clock readings skipped when the UTC offset moves forward |
 | **Digest** | a SHA-256 fingerprint of content; an approval stores the digest of what was approved |
 | **Dossier** | the folder `specs/<id>-<slug>/` holding everything about one piece of work |
 | **EARS** | Easy Approach to Requirements Syntax: sentence patterns like "When X, the system shall Y" |
 | **Enabler** | a dossier that builds tooling or foundations; supports RTs without delivering them |
 | **Feature** | a dossier that delivers platform behaviour; cites the RTs it serves, or is *outside the catalogue* |
+| **FILETIME tick** | a 100-nanosecond unit from the Windows epoch of January 1, 1601 UTC |
+| **Fold** | a selector for the earlier or later occurrence of a repeated local reading |
 | **Outside the catalogue** | a feature that serves no RT; allowed with the list of RTs considered; every dossier states a rationale (ADR-0014, ADR-0026) |
 | **Gate** | the checkpoint closing a phase (G0-G7); human gates are approved by us, automated ones by machines |
 | **Governed file** | a file whose change alters behaviour or rules (code, tests, containers, dependencies, harness, agent config); changes only after G4 |
@@ -35,13 +39,17 @@ introduces them.
 | **import-linter** | the tool that checks the clean-architecture import contracts (`lint-imports`) |
 | **Loop limit** | 3 consecutive failing verifications on one task, after which the agent must ask us |
 | **Mermaid** | a text syntax for diagrams rendered in Markdown |
+| **Naive datetime** | a datetime with no time-zone information attached |
+| **Offset** | the difference between local clock time and UTC at an instant |
 | **Partial** | gate state: one of us approved the current content, the other has not yet |
 | **Phase** | a stretch of the lifecycle (Discover, Plan, Structure, Specify, Build, Validate, Release & Learn) |
 | **Port** | an application-layer `typing.Protocol` describing what a use case needs from the outside |
 | **PRD** | Product Requirements Document: the validated product intent of phase 1 |
 | **Readiness** | an artifact is ready when it keeps every template section and has no `TODO(sdd)` |
+| **Reception time** | when a receiving system obtained a record |
 | **RQ** | a business requirement of the Business Case Canvas (RQ01-RQ25), the source of the RTs |
 | **RT** | a technical requirement of the Orion Chemicals catalogue (RT01-RT42) |
+| **Source-update time** | when the source last changed a record |
 | **Stale** | gate state: approvals or a verification exist but the content changed since |
 | **Strategy** | a pattern: interchangeable classes behind one interface (doc rules, generators) |
 | **STRIDE** | threat categories: spoofing, tampering, repudiation, information disclosure, denial of service, elevation of privilege |
@@ -50,6 +58,8 @@ introduces them.
 | **TODO(sdd)** | the placeholder marking text an author must replace before approval |
 | **Traceability matrix** | the generated table RT → dossiers → status (`docs/requirements/traceability.md`) |
 | **TTY** | an interactive terminal; `sdd approve` requires one, which agents do not have |
+| **TZDB** | IANA's database of civil-time rules |
 | **Use case** | an application-layer class that performs one thing a user asks for |
+| **UTC** | Coordinated Universal Time, the common reference for internal instants |
 | **Value object** | an immutable domain value validated at construction, compared by value |
 | **"We"** | the mentor and the mentee: the only approvers of human gates |
