@@ -7,7 +7,7 @@ Every piece of work is a *dossier*: one folder with one artifact per phase of th
 | Spec | Kind | Where it is | G0 | G1 | G2 | G3 | G4 | G5 | G6 | G7 | Guide |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | [000 · The SDD harness](000-sdd-harness/prd.md) | enabler | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](000-sdd-harness/teaching-guide.md) |
-| [001 · Time-series source: global time core](001-timeseries-source/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | [📘](001-timeseries-source/teaching-guide.md) |
+| [001 · Time-series source: global time core](001-timeseries-source/prd.md) | feature | Specify (G4) | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | ⏸️ | [📘](001-timeseries-source/teaching-guide.md) |
 | [002 · Harness: item-by-item flow and CI](002-harness-item-flow/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](002-harness-item-flow/teaching-guide.md) |
 | [003 · Generator skeleton and throughput spike](003-tssource-skeleton-spike/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](003-tssource-skeleton-spike/teaching-guide.md) |
 

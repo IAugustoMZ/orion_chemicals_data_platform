@@ -95,7 +95,7 @@ The full picture, with every rule and how it is enforced: **[how the harness wor
 | Spec | Kind | Where it is | G0 | G1 | G2 | G3 | G4 | G5 | G6 | G7 | Guide |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | [000 · The SDD harness](specs/000-sdd-harness/prd.md) | enabler | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/000-sdd-harness/teaching-guide.md) |
-| [001 · Time-series source: global time core](specs/001-timeseries-source/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | [📘](specs/001-timeseries-source/teaching-guide.md) |
+| [001 · Time-series source: global time core](specs/001-timeseries-source/prd.md) | feature | Specify (G4) | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | ⏸️ | [📘](specs/001-timeseries-source/teaching-guide.md) |
 | [002 · Harness: item-by-item flow and CI](specs/002-harness-item-flow/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/002-harness-item-flow/teaching-guide.md) |
 | [003 · Generator skeleton and throughput spike](specs/003-tssource-skeleton-spike/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/003-tssource-skeleton-spike/teaching-guide.md) |
 
@@ -103,7 +103,7 @@ The full picture, with every rule and how it is enforced: **[how the harness wor
 <!-- sdd:status:end -->
 
 <!-- sdd:coverage:start -->
-Requirements RT01-RT42: in discovery **0** · specified **6** · delivered **0** · validated **0** · not started **36**. [Full traceability matrix](docs/requirements/traceability.md).
+Requirements RT01-RT42: in discovery **2** · specified **4** · delivered **0** · validated **0** · not started **36**. [Full traceability matrix](docs/requirements/traceability.md).
 <!-- sdd:coverage:end -->
 
 ## Quick start
@@ -115,6 +115,9 @@ poetry install --with docs        # tools and docs into .venv/
 poetry run pre-commit install     # the local gates run on every commit
 poetry run sdd status             # where every dossier is
 ```
+
+To explore the synthetic source's civil-time diagnostic, see the
+[time-series source quick start](src/tssource/README.md).
 
 Before approving anything, put your names in [harness/team.yaml](harness/team.yaml).
 

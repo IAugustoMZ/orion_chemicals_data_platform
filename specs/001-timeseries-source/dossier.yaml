@@ -18,28 +18,30 @@ rationale: The platform team has no plant to connect to. The simulated plant dat
 approvals:
   G1:
   - member: mentor
-    at: '2026-11-13T22:52:45+00:00'
-    digest: sha256:797f0e6e1e2c9a7c292681c5afa644f4d821e803a47c8f5c191721728336709a
-    git_identity: IZelioli <i.augustomz@gmail.com>
-    note: ''
+    at: '2026-11-19T20:38:02+00:00'
+    digest: sha256:0a19927e71ec7bd515fcffefd8972050f765c6742bafc74b3d866e007484d08b
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: Reject lossy encodes. Preserve gap input and report the first valid UTC instant. Use exit 2
+      for UTC range errors.
   - member: mentee
-    at: '2026-11-13T22:52:50+00:00'
-    digest: sha256:797f0e6e1e2c9a7c292681c5afa644f4d821e803a47c8f5c191721728336709a
-    git_identity: IZelioli <i.augustomz@gmail.com>
-    note: ''
+    at: '2026-11-19T20:38:17+00:00'
+    digest: sha256:0a19927e71ec7bd515fcffefd8972050f765c6742bafc74b3d866e007484d08b
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: Reject lossy encodes. Preserve gap input and report the first valid UTC instant. Use exit 2
+      for UTC range errors.
   G2:
   - member: mentor
-    at: '2026-11-15T14:33:29+00:00'
-    digest: sha256:f30d68f9b1ae8c11ee1075ca2d90bea2ea1f4e5fcb1e1ecfdf8914bc651a78b9
-    git_identity: IZelioli <i.augustomz@gmail.com>
-    note: Retained only the global time core; adopted historical DST cases and explicit next-valid gap
-      semantics; accepted one large PBI.
+    at: '2026-11-19T20:45:59+00:00'
+    digest: sha256:092545ffa0d20826f5fe6729563ee7930e6eaf521c06ab13d9325d0413ed5f0c
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: Allow both repeated-hour instants to encode and return both on decode. Preserve raw input and
+      fixed offsets. Return one usage error and no partial table for UTC range errors.
   - member: mentee
-    at: '2026-11-15T14:33:41+00:00'
-    digest: sha256:f30d68f9b1ae8c11ee1075ca2d90bea2ea1f4e5fcb1e1ecfdf8914bc651a78b9
-    git_identity: IZelioli <i.augustomz@gmail.com>
-    note: Retained only the global time core; adopted historical DST cases and explicit next-valid gap
-      semantics; accepted one large PBI.
+    at: '2026-11-19T20:46:18+00:00'
+    digest: sha256:092545ffa0d20826f5fe6729563ee7930e6eaf521c06ab13d9325d0413ed5f0c
+    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
+    note: Allow both repeated-hour instants to encode and return both on decode. Preserve raw input and
+      fixed offsets. Return one usage error and no partial table for UTC range errors.
   G3:
   - member: mentor
     at: '2026-11-12T20:34:35+00:00'
