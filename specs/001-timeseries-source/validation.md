@@ -112,6 +112,10 @@ fixed offsets, and strict CLI date behavior. The card verification passed all te
 checks, including the strict documentation build. The independent review and QA of PR #26
 closed the original issues and found the remaining ISO-offset parsing defect.
 
+PBI-001-25 validates ISO offset components before the standard-library conversion. The new
+tests reproduced nine failures on the prior parser. `poetry run sdd item verify 001 25` passed
+both acceptance criteria and all ten quality checks after the correction.
+
 ## Review notes (optional)
 
 PBI-001-25 tracks the correction under the existing B03 exactness contract. Repeat the

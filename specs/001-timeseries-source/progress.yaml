@@ -37,7 +37,7 @@ items:
     pull_request: ''
     merged_at: '2026-11-21T16:40:48+00:00'
   '25':
-    state: approved
+    state: verified
     approvals:
     - member: mentor
       at: '2026-11-21T16:53:57+00:00'
@@ -51,7 +51,7 @@ items:
       git_identity: IZelioli <i.augustomz@gmail.com>
       note: Reject malformed and shortened fractional offsets. Preserve exact compact
         offsets and explicit fractional seconds.
-    branch: ''
+    branch: feat/001-25-validate-iso-offset-components-before
     commit: ''
     pull_request: ''
     merged_at: null

@@ -118,6 +118,8 @@ def test_iso_offset_does_not_truncate_fractional_precision() -> None:
     """An ISO offset input with excess significant digits cannot be decoded exactly."""
     with pytest.raises(ValueError, match="precision"):
         decode_instant("2024-01-02T03:04:05.1234567Z", TimestampForm.ISO_OFFSET)
+    with pytest.raises(ValueError, match="precision"):
+        decode_instant("2024-01-02T03:04:05+00:00:00.1234567", TimestampForm.ISO_OFFSET)
 
 
 def test_epoch_decoding_preserves_previously_supported_exact_fractions() -> None:
@@ -129,8 +131,52 @@ def test_epoch_decoding_preserves_previously_supported_exact_fractions() -> None
         decode_instant("-0.0000001", TimestampForm.EPOCH_SECONDS)
 
 
-def test_iso_decoding_preserves_a_subsecond_offset() -> None:
-    """A nonzero ISO offset below one second still contributes to the UTC conversion."""
-    decoded = decode_direct("2024-01-02T00:00:00-00:00:00.5", TimestampForm.ISO_OFFSET)
-    assert decoded.known_zone_or_offset == "-00:00:00.500000"
-    assert decoded.resolution.candidates == (datetime(2024, 1, 2, 0, 0, 0, 500000, tzinfo=UTC),)
+@pytest.mark.ac("PBI-001-25:AC1")
+@pytest.mark.parametrize(
+    "value",
+    [
+        "2024-01-02T00:00:00+00:60",
+        "2024-01-02T00:00:00+00:00:60",
+        "2024-01-02T00:00:00+24:00",
+        "2024-01-02T00:00:00+00:00.5",
+        "2024-01-02T00:00:00+0000.5",
+        "2024-01-02T00:00:00-00.5",
+        "2024-01-02T00.5+00:00",
+        "2024-01-02T00:30.5+00:00",
+    ],
+)
+def test_iso_decoding_rejects_overflow_and_abbreviated_fractions(value: str) -> None:
+    """Overflow and shortened fractions cannot be silently reinterpreted."""
+    with pytest.raises(ValueError, match="invalid ISO offset timestamp"):
+        decode_instant(value, TimestampForm.ISO_OFFSET)
+
+
+@pytest.mark.ac("PBI-001-25:AC2")
+@pytest.mark.parametrize(
+    ("suffix", "offset", "instant"),
+    [
+        ("Z", "+00:00", datetime(2024, 1, 2, tzinfo=UTC)),
+        ("+05:30", "+05:30", datetime(2024, 1, 1, 18, 30, tzinfo=UTC)),
+        ("+0530", "+05:30", datetime(2024, 1, 1, 18, 30, tzinfo=UTC)),
+        ("+00:00:00.5", "+00:00:00.500000", datetime(2024, 1, 1, 23, 59, 59, 500000, tzinfo=UTC)),
+        ("-00:00:00.5", "-00:00:00.500000", datetime(2024, 1, 2, 0, 0, 0, 500000, tzinfo=UTC)),
+    ],
+)
+def test_iso_decoding_preserves_supported_offsets(
+    suffix: str, offset: str, instant: datetime
+) -> None:
+    """Normalize each supported offset without changing its contribution to UTC."""
+    raw = f"2024-01-02T00:00:00{suffix}"
+    decoded = decode_direct(raw, TimestampForm.ISO_OFFSET)
+    assert decoded.original == raw
+    assert decoded.known_zone_or_offset == offset
+    assert decoded.resolution.candidates == (instant,)
+
+
+@pytest.mark.parametrize(
+    "value",
+    ["20240102T000000+000000,0000000", "2024-W01-2T00:00Z", "2024W012T00+00"],
+)
+def test_iso_decoding_preserves_existing_exact_spellings(value: str) -> None:
+    """Compact dates, week dates and whole abbreviated values still decode exactly."""
+    assert decode_instant(value, TimestampForm.ISO_OFFSET) == datetime(2024, 1, 2, tzinfo=UTC)

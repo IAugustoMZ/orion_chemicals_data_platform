@@ -114,8 +114,8 @@ The class-by-class explanation, with every decision justified, is the
 `src/tssource/` follows the same inward dependency rule. The pure `domain/time` value objects
 model site identity, timestamp metadata, UTC candidates and offsets, three event times,
 and clock faults. `ResolveTimeTable` uses the bidirectional `ZoneResolver` port to produce the
-CLI table. `TimestampCodec` delegates numeric and text precision checks to the domain and uses
-the same port for offset-free forms. Bootstrap supplies the adapter for each use case.
+CLI table. `TimestampCodec` delegates syntax, offset range and precision checks to the domain
+and uses the same port for offset-free forms. Bootstrap supplies the adapter for each use case.
 
 ```mermaid
 flowchart LR
