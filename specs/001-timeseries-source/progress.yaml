@@ -20,7 +20,7 @@ items:
     pull_request: ''
     merged_at: '2026-11-19T20:26:40+00:00'
   '24':
-    state: approved
+    state: verified
     approvals:
     - member: mentor
       at: '2026-11-21T16:11:17+00:00'
@@ -32,7 +32,7 @@ items:
       digest: sha256:6981ff8ed97f61e1dd0f0bceeea1a3e681a16d16b5e9b25e49774d241420be86
       git_identity: IZelioli <i.augustomz@gmail.com>
       note: ''
-    branch: ''
+    branch: feat/001-24-complete-timestamp-conversions-and-site
     commit: ''
     pull_request: ''
     merged_at: null

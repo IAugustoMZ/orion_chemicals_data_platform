@@ -113,11 +113,24 @@ The class-by-class explanation, with every decision justified, is the
 
 `src/tssource/` follows the same inward dependency rule. The pure `domain/time` value objects
 model site identity, timestamp metadata, UTC candidates and offsets, three event times,
-and clock faults. `application/time_table.py` owns the 24-hour use case and `ZoneResolver` port.
-`infrastructure/zoneinfo_resolver.py` adapts Python's IANA rules, `bootstrap.py` wires it, and
-the `time-table` command is the public boundary. See the [command examples](../../src/tssource/README.md),
-the [runtime sequence](../../specs/001-timeseries-source/teaching-guide.md#6-how-it-behaves-at-runtime),
-and the [timezone decision](decisions/0029-resolve-site-local-time-with-zoneinfo.md).
+and clock faults. `ResolveTimeTable` uses the bidirectional `ZoneResolver` port to produce the
+CLI table. `TimestampCodec` delegates numeric and text precision checks to the domain and uses
+the same port for offset-free forms. Bootstrap supplies the adapter for each use case.
+
+```mermaid
+flowchart LR
+    CLI["time-table"] --> Table["ResolveTimeTable"]
+    Codec["TimestampCodec"] --> Forms["Domain timestamp forms"]
+    Table --> Resolver["ZoneResolver port"]
+    Codec --> Resolver
+    Adapter["<img src='https://cdn.simpleicons.org/python/3776AB' width='32' height='32'/><br/>Python zoneinfo adapter"] -. implements .-> Resolver
+    Adapter --> Rules["Declared IANA zone or fixed offset"]
+```
+
+The adapter applies the declared rule in both directions. The CLI validates the date and completes
+all rows before writing stdout. The codec retains the raw value and explicit resolution for
+in-process consumers. See the [command examples](../../src/tssource/README.md) and
+[exact conversion decision](decisions/0030-preserve-exact-timestamps-and-declared-site-rules.md).
 
 The industrial data platform we studied (Kairon) contributes its *high-level architecture*, not
 its technology choices:

@@ -95,7 +95,7 @@ The full picture, with every rule and how it is enforced: **[how the harness wor
 | Spec | Kind | Where it is | G0 | G1 | G2 | G3 | G4 | G5 | G6 | G7 | Guide |
 |---|---|---|---|---|---|---|---|---|---|---|---|
 | [000 · The SDD harness](specs/000-sdd-harness/prd.md) | enabler | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/000-sdd-harness/teaching-guide.md) |
-| [001 · Time-series source: global time core](specs/001-timeseries-source/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | [📘](specs/001-timeseries-source/teaching-guide.md) |
+| [001 · Time-series source: global time core](specs/001-timeseries-source/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/001-timeseries-source/teaching-guide.md) |
 | [002 · Harness: item-by-item flow and CI](specs/002-harness-item-flow/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/002-harness-item-flow/teaching-guide.md) |
 | [003 · Generator skeleton and throughput spike](specs/003-tssource-skeleton-spike/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/003-tssource-skeleton-spike/teaching-guide.md) |
 
@@ -116,7 +116,8 @@ poetry run pre-commit install     # the local gates run on every commit
 poetry run sdd status             # where every dossier is
 ```
 
-To explore the synthetic source's civil-time diagnostic, see the
+The synthetic source's civil-time diagnostic uses declared site rules and reports both UTC
+candidates for repeated hours. For commands and timestamp formats, see the
 [time-series source quick start](src/tssource/README.md).
 
 Before approving anything, put your names in [harness/team.yaml](harness/team.yaml).

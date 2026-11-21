@@ -10,10 +10,14 @@ from tssource.domain.time.site_zone import SiteZone
 
 
 class ZoneResolver(Protocol):
-    """Resolve local civil values under the IANA rules of a declared site."""
+    """Resolve local civil values under the rules of a declared site."""
 
     def resolve(self, site: SiteZone, local: datetime) -> LocalResolution:
         """Return every UTC interpretation, or a visible daylight-saving gap result."""
+        ...
+
+    def to_local(self, site: SiteZone, instant: datetime) -> datetime:
+        """Project a UTC instant onto the declared site's wall clock."""
         ...
 
 

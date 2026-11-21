@@ -87,6 +87,12 @@ the local feature ref was reconstructed at that verified commit so the SDD comma
 the merge. The independent component test run passed. The exploratory cases above found
 specification gaps beyond the marked tests.
 
+PBI-001-24 implements the revised G4 contract. Its marked tests cover exact numeric
+conversion and original metadata, both offset-free forms, precise gap boundaries, historical
+fixed offsets, and strict CLI date behavior. The card verification passed all ten quality
+checks, including the strict documentation build. The independent review above describes PR #24.
+The follow-up still needs independent validation before G6.
+
 ## Review notes (optional)
 
 Keep G6 pending. Agree on the local timestamp and historical-zone contracts before modifying

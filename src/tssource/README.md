@@ -34,5 +34,13 @@ handled error, 2 usage, 3 benchmark floor missed.
 `time-table` is a read-only civil-time diagnostic. It prints all local top-of-hour values for a
 site and date, their explicit `ok`, `ambiguous`, or `gap` outcome, retained UTC candidate(s), and
 offset(s). A gap retains the requested wall-clock value and shows the first valid UTC instant;
-there is never an implicit fold choice. Sites are `brazil`, `us-gulf-coast`, `belgium`, `china`,
-and `india`.
+a repeated hour shows both UTC candidates. The date must use ASCII `YYYY-MM-DD`. Invalid dates
+and dates that would put any row outside the UTC calendar range exit with code 2 before printing
+the table.
+
+Brazil, the US Gulf Coast, and Belgium use their declared IANA zones. The fictional China and
+India sites use fixed offsets of `+08:00` and `+05:30` for every supported date. In-process callers
+can get the shared `TimestampCodec` from `tssource.bootstrap.build_timestamp_codec()`. It handles
+six source forms, preserves the original value and its source zone or offset on decode, and raises
+`ValueError` when a conversion would lose precision. Both offset-free formats require a declared
+site. See [the time contracts](../../specs/001-timeseries-source/plan.md#time-contracts).

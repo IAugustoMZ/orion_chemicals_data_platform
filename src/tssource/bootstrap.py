@@ -18,6 +18,7 @@ from pathlib import Path
 from tssource.application.bench import EventSink, RunBenchmark
 from tssource.application.settings import Settings
 from tssource.application.time_table import ResolveTimeTable
+from tssource.application.timestamp_codec import TimestampCodec
 from tssource.domain.benchmark import BenchResult, Format
 from tssource.domain.time.resolution import LocalResolution
 from tssource.domain.time.site_zone import SITE_ZONES, SiteCode
@@ -92,3 +93,8 @@ def resolve_time_table(site_code: str, requested_date: date) -> tuple[LocalResol
         allowed = ", ".join(code.value for code in SiteCode)
         raise ValueError(f"unknown site '{site_code}'; choose one of: {allowed}") from error
     return ResolveTimeTable(ZoneInfoResolver()).resolve(site, requested_date)
+
+
+def build_timestamp_codec() -> TimestampCodec:
+    """Wire the timestamp codec with the declared-site resolver used by the CLI."""
+    return TimestampCodec(ZoneInfoResolver())
