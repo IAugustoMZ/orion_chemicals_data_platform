@@ -55,17 +55,15 @@ approvals:
     note: ''
   G4:
   - member: mentor
-    at: '2026-11-15T18:02:52+00:00'
-    digest: sha256:fe6eb8c9f1264b7a8d8505b94dfe405865c8e36a9f4c2dde20ef4da8b9987eb8
+    at: '2026-11-21T16:08:07+00:00'
+    digest: sha256:62258da191f926542393f8cbc79cd0484020c12af44b4bfb133d69bc89222a2f
     git_identity: IZelioli <i.augustomz@gmail.com>
-    note: Use settled 2024 DST transitions; time-table is a human-readable 24-hour table that preserves
-      gap input and shows its first valid UTC instant.
+    note: ''
   - member: mentee
-    at: '2026-11-15T18:03:02+00:00'
-    digest: sha256:fe6eb8c9f1264b7a8d8505b94dfe405865c8e36a9f4c2dde20ef4da8b9987eb8
+    at: '2026-11-21T16:08:09+00:00'
+    digest: sha256:62258da191f926542393f8cbc79cd0484020c12af44b4bfb133d69bc89222a2f
     git_identity: IZelioli <i.augustomz@gmail.com>
-    note: Use settled 2024 DST transitions; time-table is a human-readable 24-hour table that preserves
-      gap input and shows its first valid UTC instant.
+    note: ''
 verification:
   at: '2026-11-15T18:16:54+00:00'
   digest: sha256:938529e243f8a8e6a0783396f173be10f3df9c4525a7f16c67dd4cea83eb8703
