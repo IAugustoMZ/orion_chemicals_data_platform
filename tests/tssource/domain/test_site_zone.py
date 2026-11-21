@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from datetime import UTC, datetime
+from datetime import UTC, datetime, timedelta
 
 import pytest
 
@@ -38,4 +38,22 @@ def test_repeated_time_returns_both_instants() -> None:
     assert resolution.candidates == (
         datetime(2024, 11, 3, 6, tzinfo=UTC),
         datetime(2024, 11, 3, 7, tzinfo=UTC),
+    )
+
+
+@pytest.mark.ac("PBI-001-24:AC4")
+def test_gap_boundary_has_microsecond_precision() -> None:
+    """A fractional wall time resolves to the transition itself, with its new offset."""
+    resolver = ZoneInfoResolver()
+    site = SITE_ZONES[SiteCode.US_GULF_COAST]
+    local = datetime(2024, 3, 10, 2, 15, 30, 123456)
+    boundary = datetime(2024, 3, 10, 8, tzinfo=UTC)
+    resolution = resolver.resolve(site, local)
+    assert resolution.requested_local == local
+    assert resolution.status is ResolutionStatus.GAP
+    assert resolution.candidates == (boundary,)
+    assert resolution.offsets == (timedelta(hours=-5),)
+    earlier = boundary - timedelta(microseconds=1)
+    assert resolver.resolve(site, resolver.to_local(site, earlier)).offsets == (
+        timedelta(hours=-6),
     )

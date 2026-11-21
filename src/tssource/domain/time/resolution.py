@@ -7,6 +7,10 @@ from datetime import UTC, datetime, timedelta
 from enum import StrEnum
 
 
+class TimeRangeError(ValueError):
+    """The source or UTC datetime exceeds the supported calendar range."""
+
+
 class ResolutionStatus(StrEnum):
     """Whether a local civil value has zero, one, or two physical instants."""
 

@@ -10,6 +10,7 @@ never a stack trace.
 from __future__ import annotations
 
 import json
+import re
 from datetime import date
 from pathlib import Path
 from typing import Annotated
@@ -19,6 +20,7 @@ import typer
 from tssource.bootstrap import build_settings, resolve_time_table, run_bench
 from tssource.domain.benchmark import Format
 from tssource.domain.errors import TssourceError
+from tssource.domain.time.resolution import TimeRangeError
 
 app = typer.Typer(
     help=(
@@ -96,8 +98,20 @@ def time_table(
 ) -> None:
     """Print a 24-hour civil-time resolution table for one fictional site and date."""
     try:
+        if not re.fullmatch(r"[0-9]{4}-[0-9]{2}-[0-9]{2}", requested_date):
+            raise ValueError("expected YYYY-MM-DD")
         parsed_date = date.fromisoformat(requested_date)
+    except ValueError as error:
+        raise typer.BadParameter(
+            f"Invalid date {requested_date} for {site}. Use a valid YYYY-MM-DD date."
+        ) from error
+    try:
         rows = resolve_time_table(site, parsed_date)
+    except TimeRangeError as error:
+        raise typer.BadParameter(
+            f"The date {requested_date} is outside the supported UTC range for {site}. "
+            "Choose a date farther from the calendar boundary."
+        ) from error
     except ValueError as error:
         raise typer.BadParameter(str(error)) from error
     typer.echo("local | resolution | offsets | utc candidates")

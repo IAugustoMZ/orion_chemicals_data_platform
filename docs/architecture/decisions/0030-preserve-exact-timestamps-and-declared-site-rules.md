@@ -1,6 +1,6 @@
 # ADR-0030: We preserve exact timestamps and apply declared site rules
 
-- **Status:** Proposed
+- **Status:** Accepted
 - **Date:** 2026-11-19
 - **Dossier:** specs/001-timeseries-source
 - **Requirements:** RT12. Refines [ADR-0029](0029-resolve-site-local-time-with-zoneinfo.md).
