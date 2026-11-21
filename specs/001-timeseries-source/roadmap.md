@@ -14,7 +14,7 @@ there and refines them at its own G2, so nothing is written twice.
 
 | Order | Dossier (working name) | Cards | RTs served | Waits for | Inherits |
 |---|---|---|---|---|---|
-| 1 | **001 Global time core** (this folder) | 05, 24 | RT07, RT12 | 003 (merged) | none |
+| 1 | **001 Global time core** (this folder) | 05, 24, 25 | RT07, RT12 | 003 (merged) | none |
 | 2 | Plant and tag catalogue | 06, 07 | RT09, RT17, RT28 | 003 | none |
 | 3 | Signals and signal faults | 09, 10 | RT17, RT28 | plant | none |
 | 4 | Answer key and leak guard | 08 | RT09, RT38 | plant | none |
@@ -26,6 +26,7 @@ there and refines them at its own G2, so nothing is written twice.
 
 Cards 01, 02, 22 and 23 went to dossier 002; cards 03 and 04 were delivered by dossier 003.
 Card 24 addresses the findings from validating the merged time core.
+Card 25 addresses the ISO-offset parsing finding from validating card 24.
 
 ## Rules for the split
 

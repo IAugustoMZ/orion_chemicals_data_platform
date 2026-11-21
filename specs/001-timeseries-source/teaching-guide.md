@@ -218,6 +218,10 @@ boundary. A whole-second fixture cannot reveal a loss of fractional precision. S
 testing the resolver with a parsed datetime does not prove the decoder can read the original
 text. Card 24 checks these boundaries through both the domain helpers and the assembled codec.
 A successful local encode during a repeated hour can legitimately decode to two instants.
+The independent review found that Python's ISO parser accepts offset components such as
+`+00:60` and normalizes them. It also drops the subsecond offset in shortened spellings such
+as `+00:00.5`. The pending correction validates these inputs before interpreting them as UTC.
+See the [review evidence](validation.md#code-review).
 
 ## 13. Questions for the mentee
 

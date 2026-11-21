@@ -31,17 +31,17 @@ approvals:
       for UTC range errors.
   G2:
   - member: mentor
-    at: '2026-11-19T20:45:59+00:00'
-    digest: sha256:092545ffa0d20826f5fe6729563ee7930e6eaf521c06ab13d9325d0413ed5f0c
-    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
-    note: Allow both repeated-hour instants to encode and return both on decode. Preserve raw input and
-      fixed offsets. Return one usage error and no partial table for UTC range errors.
+    at: '2026-11-21T16:50:54+00:00'
+    digest: sha256:b076c49c458529f6747d19168e30b4380401f1306ac0ff60f025502f4da0b3ff
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Reject shortened fractional offsets and preserve exact compact offsets and explicit fractional
+      seconds.
   - member: mentee
-    at: '2026-11-19T20:46:18+00:00'
-    digest: sha256:092545ffa0d20826f5fe6729563ee7930e6eaf521c06ab13d9325d0413ed5f0c
-    git_identity: Icaro Zelioli <i.augustomz@gmail.com>
-    note: Allow both repeated-hour instants to encode and return both on decode. Preserve raw input and
-      fixed offsets. Return one usage error and no partial table for UTC range errors.
+    at: '2026-11-21T16:51:04+00:00'
+    digest: sha256:b076c49c458529f6747d19168e30b4380401f1306ac0ff60f025502f4da0b3ff
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Reject shortened fractional offsets and preserve exact compact offsets and explicit fractional
+      seconds.
   G3:
   - member: mentor
     at: '2026-11-12T20:34:35+00:00'
@@ -65,19 +65,19 @@ approvals:
     git_identity: IZelioli <i.augustomz@gmail.com>
     note: ''
 verification:
-  at: '2026-11-15T18:16:54+00:00'
-  digest: sha256:938529e243f8a8e6a0783396f173be10f3df9c4525a7f16c67dd4cea83eb8703
-  commit: 3f5f58b
+  at: '2026-11-21T16:41:32+00:00'
+  digest: sha256:48b181abdf37c85a3733db71c0b5f99330cc2eb78fd805f9247bb0b9f411cd92
+  commit: 909604e
   results:
   - check: format
     passed: true
-    summary: 319 files already formatted
+    summary: 322 files already formatted
   - check: lint
     passed: true
     summary: All checks passed!
   - check: types
     passed: true
-    summary: 'Success: no issues found in 93 source files'
+    summary: 'Success: no issues found in 94 source files'
   - check: architecture
     passed: true
     summary: "tssource interfaces never touch infrastructure directly (only through the \ncomposition\
@@ -93,11 +93,11 @@ verification:
 
       --------------------------------------------------------------------------------------------------
 
-      TOTAL                                                   2886     75    566     51    96%
+      TOTAL                                                   3030     88    610     61    96%
 
-      Required test coverage of 85% reached. Total coverage: 96.18%
+      Required test coverage of 85% reached. Total coverage: 95.74%
 
-      286 passed in 17.27s'
+      316 passed in 21.81s'
   - check: security
     passed: true
     summary: (no output)
