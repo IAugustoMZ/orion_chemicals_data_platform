@@ -122,3 +122,11 @@ def test_direct_codec_does_not_require_a_site() -> None:
     assert decoded.resolution.requested_local == datetime(2024, 1, 1, 18, 0, 0, 123457)
     assert decoded.resolution.candidates == (instant,)
     assert codec.encode(instant, TimestampForm.ISO_OFFSET) == "2024-01-01T12:30:00.123457Z"
+
+
+@pytest.mark.ac("PBI-001-25:AC1")
+@pytest.mark.parametrize("offset", ["+00:60", "+00:00.5"])
+def test_codec_rejects_iso_offsets_that_would_change_the_instant(offset: str) -> None:
+    """The assembled codec surfaces invalid ISO offsets as value errors."""
+    with pytest.raises(ValueError, match="invalid ISO offset timestamp"):
+        build_timestamp_codec().decode(f"2024-01-02T00:00:00{offset}", TimestampForm.ISO_OFFSET)

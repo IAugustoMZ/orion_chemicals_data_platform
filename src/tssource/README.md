@@ -42,5 +42,8 @@ Brazil, the US Gulf Coast, and Belgium use their declared IANA zones. The fictio
 India sites use fixed offsets of `+08:00` and `+05:30` for every supported date. In-process callers
 can get the shared `TimestampCodec` from `tssource.bootstrap.build_timestamp_codec()`. It handles
 six source forms, preserves the original value and its source zone or offset on decode, and raises
-`ValueError` when a conversion would lose precision. Both offset-free formats require a declared
-site. See [the time contracts](../../specs/001-timeseries-source/plan.md#time-contracts).
+`ValueError` for an invalid or inexact conversion. ISO-offset input accepts `Z`, signed offsets
+such as `+05:30` and `+0530`, and representable fractions on explicit seconds such as
+`+00:00:00.5`. Invalid fields such as `+00:60` and shortened fractions such as `+00:00.5` raise
+`ValueError`. Both offset-free formats require a declared site.
+See [the time contracts](../../specs/001-timeseries-source/plan.md#time-contracts).

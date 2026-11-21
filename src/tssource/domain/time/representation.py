@@ -16,8 +16,22 @@ _UNIX_EPOCH = datetime(1970, 1, 1, tzinfo=UTC)
 _MICROSECONDS_PER_SECOND = 1_000_000
 _ISO_LOCAL = re.compile(r"[0-9]{4}-[0-9]{2}-[0-9]{2}T[0-9]{2}:[0-9]{2}:[0-9]{2}(?:\.[0-9]{1,6})?")
 _LOCAL_TEXT = re.compile(r"[0-9]{2}/[0-9]{2}/[0-9]{4} [0-9]{2}:[0-9]{2}:[0-9]{2}")
-_ISO_FRACTION = re.compile(r"[.,][0-9]{6}([0-9]+)")
-_SUBSECOND_OFFSET = re.compile(r"([+-])00:?00:?00[.,]([0-9]+)$")
+_ISO_OFFSET = re.compile(
+    r"""
+    # The calendar or week date can use extended or compact notation.
+    [0-9]{4} (?: -[0-9]{2}-[0-9]{2} | [0-9]{4} | -W[0-9]{2}(?:-[0-9])? | W[0-9]{2}[0-9]? )
+    .
+    # A wall-clock fraction requires an explicit seconds field.
+    [0-9]{2} (?: (?P<wall_sep>:?) [0-9]{2}
+        (?: (?P=wall_sep) [0-9]{2} (?:[.,](?P<wall_fraction>[0-9]+))? )?
+    )?
+    # Check offset field ranges before datetime can normalize them.
+    (?: Z | (?P<sign>[+-]) (?:[01][0-9]|2[0-3]) (?: (?P<offset_sep>:?) [0-5][0-9]
+        (?: (?P=offset_sep) [0-5][0-9] (?:[.,](?P<offset_fraction>[0-9]+))? )?
+    )? )
+    """,
+    re.VERBOSE | re.DOTALL,
+)
 
 
 class TimestampForm(StrEnum):
@@ -77,15 +91,19 @@ def decode_direct(value: str | int | float, form: TimestampForm) -> DecodedTimes
 
 
 def _parse_iso_offset(value: str) -> datetime:
-    """Reject significant digits that ISO parsing would truncate."""
-    if any(fraction.strip("0") for fraction in _ISO_FRACTION.findall(value)):
+    """Validate ISO components before Python can normalize them or truncate precision."""
+    match = _ISO_OFFSET.fullmatch(value)
+    if match is None:
+        raise ValueError("invalid ISO offset timestamp")
+    wall_fraction = match["wall_fraction"] or ""
+    offset_fraction = match["offset_fraction"] or ""
+    if wall_fraction[6:].strip("0") or offset_fraction[6:].strip("0"):
         raise ValueError("ISO offset input exceeds datetime precision")
     parsed = datetime.fromisoformat(value)
-    match = _SUBSECOND_OFFSET.search(value)
-    if match and parsed.utcoffset() == timedelta():
-        sign, fraction = match.groups()
-        microseconds = int(fraction[:6].ljust(6, "0"))
-        if sign == "-":
+    if offset_fraction and parsed.utcoffset() == timedelta():
+        # fromisoformat can discard a fractional offset whose whole seconds are zero.
+        microseconds = int(offset_fraction[:6].ljust(6, "0"))
+        if match["sign"] == "-":
             microseconds = -microseconds
         return parsed.replace(tzinfo=timezone(timedelta(microseconds=microseconds)))
     return parsed

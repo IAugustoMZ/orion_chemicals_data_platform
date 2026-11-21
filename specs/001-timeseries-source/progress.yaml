@@ -20,7 +20,7 @@ items:
     pull_request: ''
     merged_at: '2026-11-19T20:26:40+00:00'
   '24':
-    state: verified
+    state: merged
     approvals:
     - member: mentor
       at: '2026-11-21T16:11:17+00:00'
@@ -33,6 +33,25 @@ items:
       git_identity: IZelioli <i.augustomz@gmail.com>
       note: ''
     branch: feat/001-24-complete-timestamp-conversions-and-site
+    commit: 6c591121aa8e9af4009118abd6f6053730eb94b1
+    pull_request: ''
+    merged_at: '2026-11-21T16:40:48+00:00'
+  '25':
+    state: verified
+    approvals:
+    - member: mentor
+      at: '2026-11-21T16:53:57+00:00'
+      digest: sha256:3ba0d93f705ec58dbc79f35311638049a92f6d390d1bf2cd70ddd0d2fbb539eb
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: Reject malformed and shortened fractional offsets. Preserve exact compact
+        offsets and explicit fractional seconds.
+    - member: mentee
+      at: '2026-11-21T16:54:13+00:00'
+      digest: sha256:3ba0d93f705ec58dbc79f35311638049a92f6d390d1bf2cd70ddd0d2fbb539eb
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: Reject malformed and shortened fractional offsets. Preserve exact compact
+        offsets and explicit fractional seconds.
+    branch: feat/001-25-validate-iso-offset-components-before
     commit: ''
     pull_request: ''
     merged_at: null

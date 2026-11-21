@@ -14,7 +14,7 @@
 
 | Feature | User outcome | Item | Dependency |
 |---|---|---|---|
-| F1 · Civil-time semantics | An engineer can inspect UTC candidates, timestamp forms, three times, and clock faults for each fictional site. | PBI-001-05, PBI-001-24 | Dossier 003 merged |
+| F1 · Civil-time semantics | An engineer can inspect UTC candidates, timestamp forms, three times, and clock faults for each fictional site. | PBI-001-05, PBI-001-24, PBI-001-25 | Dossier 003 merged |
 
 ## Order and dependencies
 
@@ -22,6 +22,7 @@
 |---|---|---|---|
 | 1 | PBI-001-05 | Resolves the source-wide time risk before acquisition and writers reuse it. | Dossier 003 merged. |
 | 2 | PBI-001-24 | Closes the RT12 findings from validation before other dossiers rely on the timestamp contract. | PBI-001-05 merged. |
+| 3 | PBI-001-25 | Closes the ISO-offset precision and validation finding before acquisition reuses the codec. | PBI-001-24 merged. |
 
 ## Work items
 
@@ -173,6 +174,55 @@ new dependencies, and ingestion storage. The roadmap covers acquisition and sour
 
 Use the corresponding `@pytest.mark.ac("PBI-001-24:ACn")` marker for each case. The card passes
 `poetry run sdd item verify 001 24` before its pull request is opened.
+
+### PBI-001-25 · Validate ISO offset components before conversion
+
+- **Feature:** F1 · Civil-time semantics.
+- **Serves:** RT12, under SPEC-001-B03.
+- **Size:** S.
+- **Depends on:** PBI-001-24 merged in PR #26.
+- **Context:** Independent validation found that the ISO-offset parser accepts a minute of 60
+  and normalizes it to the next hour. It also accepts shortened fractional offsets that Python
+  can interpret inconsistently or silently reduce to zero. See [validation](validation.md#code-review).
+
+#### What
+
+Keep supported ISO-offset timestamps exact and reject spellings that would be silently
+normalized or reinterpreted. Preserve the original input and normalized offset in successful
+decodes. Retain the supported exact standard inputs, including `Z`, ordinary signed offsets,
+and offsets with an explicit seconds field and a representable fraction.
+
+#### How
+
+Validate the offset components and fractional-part placement at the domain parser boundary in
+`src/tssource/domain/time/representation.py` before delegating to `datetime.fromisoformat`.
+Accept fractions on explicit seconds fields, including subsecond offsets whose whole seconds
+are zero. Reject minute or second overflow and fractions attached to abbreviated fields.
+Keep the existing UTC range and precision checks. Exercise the shared parse path in
+`tests/tssource/domain/test_representation.py` and add regression coverage through
+`tests/tssource/test_timestamp_codec.py`.
+
+#### Out of scope
+
+Changes to numeric conversions, site rules, the CLI, the six representations, and new
+dependencies.
+
+#### Acceptance criteria (EARS)
+
+- AC1: If an ISO-offset input has an out-of-range offset component or a fraction attached to
+  an abbreviated field, then the decoder shall raise `ValueError` without producing a result.
+- AC2: When an ISO-offset input uses supported syntax and representable precision, then the
+  codec shall preserve the raw input and offset metadata and yield the exact UTC instant.
+
+#### Verification
+
+| Criterion | Tests and fixed evidence |
+| --- | --- |
+| AC1 | Reject `+00:60`, `+00:00:60`, `+00:00.5`, `+0000.5`, `+00.5`, and a shortened fractional wall time. |
+| AC2 | Preserve exact UTC and metadata for `Z`, `+05:30`, compact `+0530`, and signed `±00:00:00.5`. |
+
+Mark the tests with `@pytest.mark.ac("PBI-001-25:ACn")` as appropriate. Run
+`poetry run sdd item verify 001 25` before opening a pull request.
 
 ## Definition of done
 

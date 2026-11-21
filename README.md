@@ -117,7 +117,8 @@ poetry run sdd status             # where every dossier is
 ```
 
 The synthetic source's civil-time diagnostic uses declared site rules and reports both UTC
-candidates for repeated hours. For commands and timestamp formats, see the
+candidates for repeated hours. Its timestamp codec rejects malformed ISO offsets before
+converting to UTC. For commands and timestamp formats, see the
 [time-series source quick start](src/tssource/README.md).
 
 Before approving anything, put your names in [harness/team.yaml](harness/team.yaml).

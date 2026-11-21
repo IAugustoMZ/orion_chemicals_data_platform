@@ -20,6 +20,10 @@ numeric units for conversions. Both local formats use the declared site's fixed 
 rules through `ZoneResolver`, which returns both candidates for a repeated reading and the exact
 first valid instant for a skipped reading.
 
+ISO-offset decoding validates the offset fields before conversion. Fractions require an
+explicit seconds field. Valid compact and colon-delimited offsets retain their exact value
+in the UTC calculation.
+
 ## Alternatives considered
 
 | Option | Precision and source metadata | Civil-time behaviour | Decision |
