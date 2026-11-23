@@ -182,7 +182,40 @@ Each loop references a measurement, controller and final element in its area. Th
 shared across equipment, and a stream links distinct units. Inventory rows group instruments by
 site and scan class.
 
-## 3.3 Reference platform practices
+## 3.3 Source tag catalogue
+
+The `domain/naming` package resolves plant relationships, parses canonical names, allocates
+source spellings, and projects each instrument into a current record and a private reference.
+Bootstrap wires the draw port to `infrastructure/naming_draws.py`. Domains for name allocation,
+descriptors, units, and hold-out each receive an independent child seed.
+
+```mermaid
+flowchart LR
+    Plant["Private plant"] --> Builder["CatalogueBuilder"]
+    Builder --> Resolver["Point resolution and canonical names"]
+    Resolver --> Allocation["Source-scoped spelling allocation"]
+    Allocation --> Current["Consumer tags"]
+    Allocation --> Reference["Private references"]
+    Builder --> Port["DrawSource"]
+    Adapter["<img src='https://cdn.simpleicons.org/numpy/013243' width='32' height='32'/><br/>NumPy child seed adapter"] -. implements .-> Port
+```
+
+The resolver joins a point to its equipment, area, and site by plant ID. Allocation reserves
+current keys and historical aliases per source. The builder emits both row sets from the same
+resolved point and spelling. The reference carries the canonical name and evaluation labels.
+See the [version 1 naming convention](tag-naming-convention.md).
+
+```mermaid
+erDiagram
+    INSTRUMENT ||--|| REFERENCE_TAG : identified_by
+    CONTROL_LOOP o|--o{ REFERENCE_TAG : contains_role_for
+    CONSUMER_TAG ||--|| REFERENCE_TAG : matches_by_site_and_original_name
+```
+
+Only explicit membership in a measurement, controller, or actuator role supplies a loop link.
+The consumer can join to the reference by source and original name when authorized to access it.
+
+## 3.4 Reference platform practices
 
 The industrial data platform we studied (Kairon) contributes its *high-level architecture*, not
 its technology choices:
