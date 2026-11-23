@@ -215,6 +215,31 @@ erDiagram
 Only explicit membership in a measurement, controller, or actuator role supplies a loop link.
 The consumer can join to the reference by source and original name when authorized to access it.
 
+`application/catalogue.py` owns the `BuildCatalogue` use case and `CatalogueWriter` port.
+Bootstrap supplies the plant builder, seeded catalogue builder and
+`infrastructure/catalogue_parquet.py` adapter. The CLI in `interfaces/cli/app.py` resolves the
+same options as `plant build`.
+
+```mermaid
+sequenceDiagram
+    participant Command as "catalog build"
+    participant Build as "BuildCatalogue"
+    participant Writer as "CatalogueParquetWriter"
+    Command->>Build: Build at the effective seed
+    Build->>Writer: Publish the paired snapshot
+    Writer->>Writer: Validate keys and stage both files
+    Writer->>Writer: Check staged schemas and row counts
+    Writer->>Writer: Replace catalogue then reference
+    Writer-->>Build: Consumer and reference paths
+    Build-->>Command: Print both paths and exit 0
+```
+
+The writer uses an explicit consumer allowlist and an independent reference schema. Both
+carry version 1 metadata. Each staged file sits beside its target so replacement is local
+to that filesystem. If the second replacement fails, the CLI emits a diagnostic and the
+operator reruns with the intended seed before handing off the pair.
+[ADR-0031](decisions/0031-separate-the-consumer-catalogue-from-plant-truth.md)
+
 ## 3.4 Reference platform practices
 
 The industrial data platform we studied (Kairon) contributes its *high-level architecture*, not

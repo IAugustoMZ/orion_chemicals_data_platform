@@ -125,8 +125,10 @@ converting to UTC. For commands and timestamp formats, see the
 `poetry run tssource plant build --seed 42 --out data/ts_source` produces a private
 five-site inventory for repeatable fixture and sampling tests. See the
 [plant file contract](src/tssource/README.md#private-plant-fixture) for the output and access rules.
-The in-memory [tag catalogue builder](src/tssource/README.md#tag-catalogue-generation) adds
-source-specific spellings and private reference mappings to that fixture.
+`poetry run tssource catalog build --seed 42 --out data/ts_source` exports the current tag
+catalogue and its matching evaluator reference. Share `catalog/tags.parquet` and keep
+`truth/tag_key.parquet` with the private inventory.
+[Tag catalogue contract and recovery](src/tssource/README.md#tag-catalogue-generation)
 
 Before approving anything, put your names in [harness/team.yaml](harness/team.yaml).
 

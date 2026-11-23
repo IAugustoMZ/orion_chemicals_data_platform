@@ -39,6 +39,12 @@ flowchart LR
         Builder --> Naming["CatalogueBuilder"]
         Naming --> Draws["DrawSource"]
         RNG["<img src='https://cdn.simpleicons.org/numpy/013243' width='32' height='32'/><br/>NumPy child seed adapter"] -. implements .-> Draws
+        Command --> Export["BuildCatalogue"]
+        Export --> Builder
+        Export --> Naming
+        Export --> PairPort["CatalogueWriter"]
+        PairWriter["<img src='https://cdn.simpleicons.org/apacheparquet/50ABF1' width='32' height='32'/><br/>Apache Parquet writer"] -. implements .-> PairPort
+        PairWriter --> Pair["Consumer catalogue and private reference"]
     end
 ```
 
@@ -46,6 +52,8 @@ The CLI now calls the plant use case for the new command. The use case builds th
 passes it to the writer port. Bootstrap injects the adapter, which writes one private file.
 The catalogue builder uses the same plant model and receives independent permutations
 for name allocation, metadata, and the hold-out site.
+The catalogue use case runs these builders in memory and passes one snapshot to a writer port.
+The adapter publishes the consumer and reference projections under their fixed paths.
 
 ## 4. Decisions and the alternatives that lost
 
@@ -84,6 +92,10 @@ classDiagram
     CatalogueBuilder --> Catalogue
     Catalogue *-- ConsumerTag
     Catalogue *-- ReferenceTag
+    BuildCatalogue --> PlantBuilder
+    BuildCatalogue --> CatalogueBuilder
+    BuildCatalogue --> CatalogueWriter
+    CatalogueParquetWriter ..|> CatalogueWriter
 ```
 
 | Unit | Responsibility |
@@ -98,6 +110,9 @@ classDiagram
 | CatalogueBuilder | Coordinate point resolution, spelling allocation, and row projection |
 | DrawSource | Provide reproducible permutations to pure allocation rules |
 | ConsumerTag and ReferenceTag | Share the join key while keeping evaluation fields in the reference |
+| BuildCatalogue | Use one seed to regenerate the plant and coordinate one snapshot export |
+| CatalogueWriter | Define the contract for successful publication and ordered return paths |
+| CatalogueParquetWriter | Check key parity, serialize explicit schemas and manage staging and replacement |
 
 | Principle | Application |
 |---|---|
@@ -119,6 +134,10 @@ For catalogue generation, the builder first resolves plant points and reserves c
 per source. It then reserves shared names and each variation floor. After filling the tier
 quotas it derives the consumer and reference rows in plant order. An insufficient profile
 fails before the builder returns any rows.
+The writer checks that the two projections have the same unique keys before opening any output.
+It then checks schema and row count from each staged footer before either replacement. The
+[catalogue publication sequence](../../docs/architecture/README.md#33-source-tag-catalogue)
+shows the handoff to the CLI.
 
 ## 7. Data and contracts
 
@@ -131,6 +150,9 @@ class determines the interval, including null for lab and exception classes.
 The [naming convention](../../docs/architecture/tag-naming-convention.md) documents the versioned
 grammar. Both row sets share the `(site_code, original_name)` key. The builder reserves current
 names and old aliases within each source.
+The consumer allowlist fixes both the fields and their types. The reference schema carries
+evaluation data and uses a nullable UTC microsecond timestamp for rename instants. Both schemas
+carry version 1 metadata. [File contracts](plan.md#contracts-and-data)
 
 ## 8. Code tour
 
@@ -152,6 +174,10 @@ names and old aliases within each source.
    then reserves each variation floor before distributing the remaining quotas.
 9. [Catalogue builder](../../src/tssource/domain/naming/catalogue_builder.py) projects one current
    tag and one private reference from each resolved point and its selected spelling.
+10. [Catalogue use case](../../src/tssource/application/catalogue.py) passes the snapshot to the
+    injected `CatalogueWriter`.
+11. [Parquet adapter](../../src/tssource/infrastructure/catalogue_parquet.py) maps the two schemas,
+    uses `ExitStack` to clean up staging files, and replaces the consumer before the reference.
 
 ## 9. Security
 
@@ -161,6 +187,8 @@ mode `0600` for the staged file. Generation is bounded by the declared profiles.
 uses existing dependencies, and the writer uses the standard library.
 The current tag record carries source metadata and sampling policy. The private reference
 keeps plant identifiers, canonical names, rename history, and hold-out designations.
+The Parquet writer rejects symlinks at the fixed directories and files, and stages the exports
+with owner read and write access. The CLI reports only output paths on success.
 
 ## 10. How we tested it
 
@@ -172,6 +200,9 @@ The [grammar tests](../../tests/tssource/domain/test_convention.py) exercise bot
 reject malformed input. The [catalogue tests](../../tests/tssource/domain/test_catalogue_builder.py)
 check collisions, joins, coverage, metadata, rename history, and reproducibility with production
 draws and an injected fixed ordering (card 02 AC1–AC8).
+The [export tests](../../tests/tssource/test_catalogue_cli.py) check both schemas and link every
+exported tag to a same-seed plant instrument for seeds 0, 42 and 101. They also inject staging
+and second-replacement failures and exercise retry and symlink rejection (card 03 AC1–AC5).
 
 ## 11. Run it yourself
 
@@ -190,12 +221,22 @@ poetry run pytest --no-cov -q tests/tssource/domain/test_convention.py tests/tss
 
 Trace two colliding names from their source-scoped keys to their distinct equipment IDs.
 
+```bash
+poetry run tssource catalog build --seed 42 --out data/ts_source/seed-42
+poetry run pytest --no-cov -q tests/tssource/test_catalogue_cli.py
+```
+
+Compare the consumer and reference schemas using PyArrow. Use the reference's instrument ID to
+find the scan policy in the same-seed plant JSON.
+
 ## 12. Pitfalls and what we would do differently
 
 Changing display codes and changing structural identity are different operations. Preserve the
 structural segments if an ID should remain stable. Keep the same seed and fixture version when
 comparing output between runs. The fixture uses a fixed layout and its inventory is an input to
 sizing, separate from measured ingestion capacity.
+Read the exported pair after a successful command. A failed second replacement can leave the
+consumer and reference from different runs. Rerun with the intended seed before reading either.
 
 ## 13. Questions for the mentee
 
@@ -207,6 +248,8 @@ sizing, separate from measured ingestion capacity.
 6. Which relationships would give away answers in a tag-matching exercise?
 7. Why reserve shared names before filling the naming tiers?
 8. How does changing a draw stream for descriptors affect rename history?
+9. Why does the writer validate the staged footers before replacing either file?
+10. How do you recover if the second replacement fails?
 
 ## 14. Glossary
 
