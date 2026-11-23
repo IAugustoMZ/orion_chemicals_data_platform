@@ -54,7 +54,7 @@ items:
     pull_request: ''
     merged_at: '2026-11-23T16:56:56+00:00'
   '04':
-    state: verified
+    state: merged
     approvals:
     - member: mentor
       at: '2026-11-23T17:09:55+00:00'
@@ -67,6 +67,6 @@ items:
       git_identity: IZelioli <i.augustomz@gmail.com>
       note: ''
     branch: feat/004-04-redact-internal-paths-from-catalogue
-    commit: ''
+    commit: ee6bab4701b6c1f019cec93af4d312c3abc3d99a
     pull_request: ''
-    merged_at: null
+    merged_at: '2026-11-23T17:19:33+00:00'

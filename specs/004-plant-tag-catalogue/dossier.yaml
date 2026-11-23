@@ -63,10 +63,21 @@ approvals:
     git_identity: IZelioli <i.augustomz@gmail.com>
     note: Use one writer per directory, reproduce with locked dependencies, and restrict new truth files
       to their owner.
+  G6:
+  - member: mentor
+    at: '2026-11-23T17:26:10+00:00'
+    digest: sha256:8645f4a0e6ba41d7e7c5ee06c08089702b0859b1c41cbced13feae153a87ed52
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Accept the path-free fallback, single-writer retry, and fixture-level RT28 evidence.
+  - member: mentee
+    at: '2026-11-23T17:26:12+00:00'
+    digest: sha256:8645f4a0e6ba41d7e7c5ee06c08089702b0859b1c41cbced13feae153a87ed52
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Accept the path-free fallback, single-writer retry, and fixture-level RT28 evidence.
 verification:
-  at: '2026-11-23T16:57:45+00:00'
-  digest: sha256:7d084d8dde7aaac1e39f29e5e9b8ac3e38eac51a4bd8caeecc917de9d9112c71
-  commit: '7075286'
+  at: '2026-11-23T17:21:34+00:00'
+  digest: sha256:976d7a0d66418140df345090d52bba03bf5cd4ad22ae49d455bab6ae269d6846
+  commit: 4dd0ab0
   results:
   - check: format
     passed: true
@@ -92,11 +103,11 @@ verification:
 
       --------------------------------------------------------------------------------------------------
 
-      TOTAL                                                   3753    105    742     73    96%
+      TOTAL                                                   3761    105    744     73    96%
 
-      Required test coverage of 85% reached. Total coverage: 95.86%
+      Required test coverage of 85% reached. Total coverage: 95.87%
 
-      389 passed in 28.76s'
+      393 passed in 30.89s'
   - check: security
     passed: true
     summary: (no output)
@@ -114,11 +125,8 @@ verification:
       No known vulnerabilities found'
   - check: harness
     passed: true
-    summary: 'WARNING  gate-stale         specs/001-timeseries-source/dossier.yaml  G5 is stale: code
-      changed since the last `sdd verify`
-
-      WARNING  written-ahead      specs/001-timeseries-source/release.md  release.md written before G6
-      passed: review G6 first, then draft G7 (one gate at a time)
+    summary: 'WARNING  written-ahead      specs/001-timeseries-source/release.md  release.md written
+      before G6 passed: review G6 first, then draft G7 (one gate at a time)
 
       WARNING  gate-stale         specs/002-harness-item-flow/dossier.yaml  G5 is stale: code changed
       since the last `sdd verify`
@@ -129,7 +137,10 @@ verification:
       WARNING  written-ahead      specs/003-tssource-skeleton-spike/release.md  release.md written before
       G6 passed: review G6 first, then draft G7 (one gate at a time)
 
-      sdd check: 6 finding(s)'
+      WARNING  gate-failed        specs/004-plant-tag-catalogue/dossier.yaml  G5 is failed: failing:
+      tests
+
+      sdd check: 7 finding(s)'
   - check: docs-site
     passed: true
     summary: "\nFor more info visit \e[1mhttps://github.com/ProperDocs/properdocs/discussions/33\e[0m\

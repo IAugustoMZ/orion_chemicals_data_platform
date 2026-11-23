@@ -9,7 +9,7 @@
 - [x] T03 · Add grammar, variant, coverage and repeatability tests, then implement the catalogue builder and naming convention. *(B05–B07, step 2, PBI-004-02)*
 - [x] T04 · Add schema, join and scan-policy tests, then wire the Parquet writers and catalog build. *(B08–B09, step 3, PBI-004-03)*
 - [x] T05 · Add failure, retry and path-boundary tests, then verify safe staging, replacement and CLI diagnostics. *(B10, step 3, PBI-004-03)*
-- [ ] T06 · Verify the completed dossier, reconcile documentation and record RT evidence for independent review. *(B01–B10, step 4)*
+- [x] T06 · Verify the completed dossier, reconcile documentation and record RT evidence for independent review. *(B01–B10, step 4)*
 
 ## Loop limits
 

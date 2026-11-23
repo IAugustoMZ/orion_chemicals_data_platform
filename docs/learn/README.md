@@ -34,6 +34,7 @@ Short, self-contained explanations of the concepts the repository applies everyw
 | Chapter | Dossier | What it teaches |
 |---|---|---|
 | 0 | [The SDD harness](../../specs/000-sdd-harness/teaching-guide.md) | how the `sdd` tool is built: clean architecture, ports and adapters, strategies, digests, a computed state machine, the composition root, testing with fakes |
+| 4 | [Plant and tag catalogue](../../specs/004-plant-tag-catalogue/teaching-guide.md) | deterministic five-site fixtures, source-scoped tag names, sampling policies, private evaluation data, and recoverable Parquet publication |
 
 New chapters are added here when a dossier's teaching guide is approved (G6).
 
