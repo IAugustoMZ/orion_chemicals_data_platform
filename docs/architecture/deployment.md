@@ -28,6 +28,10 @@ flowchart LR
 | `docs` | `orion/docs:local` from [docker/docs.Dockerfile](../../docker/docs.Dockerfile) (python:3.12-slim, two stages) | `127.0.0.1:8000` | the published folders of the repository, each read-only | non-root user `10001`, `read_only: true` + `/tmp` tmpfs, `cap_drop: [ALL]`, `no-new-privileges`, healthcheck |
 | `tssource` | `orion/tssource:local` from [docker/tssource.Dockerfile](../../docker/tssource.Dockerfile) (python:3.12-slim pinned by digest, two stages, groups `main` and `tssource`) | none | one writable bind, `./data/ts_source` | non-root user `10001`, `read_only: true` + `/tmp` tmpfs, `cap_drop: [ALL]`, `no-new-privileges`, healthcheck `tssource health` |
 
+Provision the output bind for the host identity mapped to container UID 10001. The service
+health check verifies CLI availability. Before generating files, check that the service can
+write to the bind mount. [Provisioning and verification](../../src/tssource/README.md#persistent-docker-output)
+
 ```bash
 docker compose up --build docs     # start (first build takes a minute)
 docker compose ps                  # health

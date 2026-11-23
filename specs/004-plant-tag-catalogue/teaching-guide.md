@@ -197,6 +197,8 @@ The current tag record carries source metadata and sampling policy. The private 
 keeps plant identifiers, canonical names, rename history, and hold-out designations.
 The Parquet writer rejects symlinks at the fixed directories and files, and stages the exports
 with owner read and write access. The CLI reports only output paths on success.
+MkDocs scans the repository root for site inputs. Its exclusion rules keep root `data/`
+and `linkedin-posts/` outside the site even when those files are readable.
 
 ## 10. How we tested it
 
@@ -213,6 +215,8 @@ exported tag to a same-seed plant instrument for seeds 0, 42 and 101. They also 
 failures and exercise symlink rejection (card 03 AC1–AC5). Card 04 checks the exact stderr
 messages for an invalid destination, OS and Arrow staging failures, and failed replacement
 of either file. It also checks that a retry with the intended seed restores the pair.
+Card 05 checks MkDocs file selection and runs a strict site build with fake fixtures and a
+local draft. The release check repeats the strict build with the real files on the bind mount.
 The [validation record](validation.md) maps those tests to the complete dossier and records
 which engineering requirements still need production evidence.
 

@@ -129,6 +129,8 @@ five-site inventory for repeatable fixture and sampling tests. See the
 catalogue and its matching evaluator reference. Share `catalog/tags.parquet` and keep
 `truth/tag_key.parquet` with the private inventory.
 [Tag catalogue contract, error messages, and recovery](src/tssource/README.md#tag-catalogue-generation)
+For persistent Docker output, provision the bind mount for the service user.
+[Bind mount setup](src/tssource/README.md#persistent-docker-output)
 
 Before approving anything, put your names in [harness/team.yaml](harness/team.yaml).
 

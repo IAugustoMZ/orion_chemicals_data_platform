@@ -17,6 +17,8 @@ Documents must stay next to the code they describe and be reviewed with it.
 - **MkDocs with Material for MkDocs** publishes the repository as a site. With the `same-dir`
   plugin, `docs_dir` is the repository root, so every relative link works the same on GitHub,
   in editors and on the site, and the root README is the home page.
+  MkDocs excludes the root `data/` and `linkedin-posts/` trees so generated fixtures and
+  local drafts stay in the checkout.
 - The site runs with `poetry run mkdocs serve` or `docker compose up docs`; `mkdocs build --strict`
   is a G5 check, so broken anchors fail the suite.
 - Mermaid diagrams render natively (`pymdownx.superfences` custom fence).

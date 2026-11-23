@@ -13,6 +13,8 @@ site_dir: .cache/site
 use_directory_urls: true
 
 exclude_docs: |
+  /data/
+  /linkedin-posts/
   .venv/
   .git/
   .cache/

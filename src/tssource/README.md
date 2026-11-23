@@ -17,11 +17,28 @@ poetry run tssource --help
 poetry run tssource time-table --site us-gulf-coast --date 2024-03-10
 poetry run tssource plant build --seed 42 --out data/ts_source
 poetry run tssource catalog build --seed 42 --out data/ts_source
-mkdir -p data/ts_source                 # the one writable folder of the container
-docker compose up --build tssource      # idles, reported healthy
+docker compose up -d --build tssource   # provision the bind mount first
 docker compose run --rm tssource --help
 docker compose run --rm tssource bench --format parquet --seconds 60 --out /data/ts_source/parquet
 ```
+
+## Persistent Docker output
+
+On rootful Linux with the default UID mapping, provision a fresh output directory with
+`sudo install -d -m 0755 -o 10001 -g 10001 data/ts_source`. If Docker already created the
+directory, inspect its contents and ownership before changing them. For an empty directory,
+`sudo chown 10001:10001 data/ts_source` updates only that directory. With a user namespace,
+grant write access to the host identity mapped to container UID 10001.
+
+Verify write access and build both fixtures at the default bind mount:
+
+```bash
+docker compose exec -T tssource test -w /data/ts_source
+docker compose exec -T tssource tssource plant build --seed 42
+docker compose exec -T tssource tssource catalog build --seed 42
+```
+
+## Throughput benchmark
 
 `bench` writes events through one serialiser (`jsonl-gzip`, `jsonl` or `parquet`) for `--seconds`
 of wall time, deletes its scratch file and leaves `bench.json` (version 1: events per second as
