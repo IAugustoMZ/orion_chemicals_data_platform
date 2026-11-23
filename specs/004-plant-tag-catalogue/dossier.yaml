@@ -1,0 +1,68 @@
+# Dossier metadata (harness/how-it-works.md, "The dossier").
+# Edit freely: title, requirements (RT ids from docs/requirements/rt-catalog.yaml), rationale.
+# Never edit by hand: `approvals` (written by `sdd approve`, humans only) and `verification`
+# (written by `sdd verify`). Both are bound to content digests; a hand edit is detected.
+id: '004'
+slug: plant-tag-catalogue
+title: Plant and tag catalogue
+kind: feature
+created: 2026-11-23
+requirements:
+- RT09
+- RT17
+- RT28
+rationale: A seeded synthetic plant and source-scoped tag catalogue provide known equipment associations,
+  declared sampling expectations and measurable catalogue inputs for prototype integration and sizing
+  tests.
+approvals:
+  G1:
+  - member: mentor
+    at: '2026-11-23T13:31:28+00:00'
+    digest: sha256:b48d41f7455059a1626eab8d76277306de18ab6befaa9aecb425dd7e6ff1ad02
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: One source per site; lab intervals unset; relax the naming mix before the coverage floors.
+  - member: mentee
+    at: '2026-11-23T13:31:38+00:00'
+    digest: sha256:b48d41f7455059a1626eab8d76277306de18ab6befaa9aecb425dd7e6ff1ad02
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: One source per site; lab intervals unset; relax the naming mix before the coverage floors.
+  G2:
+  - member: mentor
+    at: '2026-11-23T13:45:30+00:00'
+    digest: sha256:3e150c7e7c8e2b5540c02cacd4faec0f1070a33c64fe2845af860853a17c26c2
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Use separate build commands, keep rename history private, and regenerate the pair after an
+      interrupted export.
+  - member: mentee
+    at: '2026-11-23T13:45:46+00:00'
+    digest: sha256:3e150c7e7c8e2b5540c02cacd4faec0f1070a33c64fe2845af860853a17c26c2
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Use separate build commands, keep rename history private, and regenerate the pair after an
+      interrupted export.
+  G3:
+  - member: mentor
+    at: '2026-11-23T13:51:27+00:00'
+    digest: sha256:6d248085cfec9442a29fbd09df580043f122938d6a0fa4e36dd99838faa48b5b
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Print output paths, share only the consumer catalogue, and rerun interrupted exports with the
+      same seed and directory.
+  - member: mentee
+    at: '2026-11-23T13:51:29+00:00'
+    digest: sha256:6d248085cfec9442a29fbd09df580043f122938d6a0fa4e36dd99838faa48b5b
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Print output paths, share only the consumer catalogue, and rerun interrupted exports with the
+      same seed and directory.
+  G4:
+  - member: mentor
+    at: '2026-11-23T14:26:35+00:00'
+    digest: sha256:119924803d8749c5d09e3a463916bcd50a8f18fedfb5a3f48861e6124a0c1f2e
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Use one writer per directory, reproduce with locked dependencies, and restrict new truth files
+      to their owner.
+  - member: mentee
+    at: '2026-11-23T14:26:37+00:00'
+    digest: sha256:119924803d8749c5d09e3a463916bcd50a8f18fedfb5a3f48861e6124a0c1f2e
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Use one writer per directory, reproduce with locked dependencies, and restrict new truth files
+      to their owner.
+verification: null
