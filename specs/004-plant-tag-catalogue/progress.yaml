@@ -20,7 +20,7 @@ items:
     pull_request: ''
     merged_at: '2026-11-23T14:49:18+00:00'
   '02':
-    state: verified
+    state: merged
     approvals:
     - member: mentor
       at: '2026-11-23T14:51:02+00:00'
@@ -33,6 +33,23 @@ items:
       git_identity: IZelioli <i.augustomz@gmail.com>
       note: ''
     branch: feat/004-02-generate-source-scoped-names-and
+    commit: 62e9968874fe53d3381cf1dafbe50c5fde50d884
+    pull_request: ''
+    merged_at: '2026-11-23T15:05:02+00:00'
+  '03':
+    state: verified
+    approvals:
+    - member: mentor
+      at: '2026-11-23T15:06:17+00:00'
+      digest: sha256:f8ca243fcf940c3bbb8dae8ea3c837756874ee042fa7c54ac56d1ddfd0cc0462
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-23T15:06:19+00:00'
+      digest: sha256:f8ca243fcf940c3bbb8dae8ea3c837756874ee042fa7c54ac56d1ddfd0cc0462
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: feat/004-03-export-the-catalogue-and-private
     commit: ''
     pull_request: ''
     merged_at: null

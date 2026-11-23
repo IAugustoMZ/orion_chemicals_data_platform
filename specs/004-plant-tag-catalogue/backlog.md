@@ -142,16 +142,21 @@
   synthetic generator marker. The reference shares the source and name join key and carries
   the private fields from PBI-004-02.
 - **How:**
-  1. Add proposed `BuildCatalogue` and writer ports in `application/catalogue.py`. Reuse the
-     model builder directly and derive both outputs from one catalogue build.
-  2. Use separate explicit Arrow schemas in proposed `infrastructure/catalogue_parquet.py`.
-     Map consumer records by allowlist. Stage and validate both files before publishing them.
-     Replace each destination with its staged file. The pair is ready for use after the command
-     exits successfully. An interruption between replacements can leave one file from each run.
-     Rerun with the intended seed and output directory to regenerate the pair. Handle write errors
-     through the CLI and report success only after both replacements complete.
-  3. Wire the use case in `bootstrap.py` and register the subcommand in
-     `interfaces/cli/app.py`, using the same settings defaults and exit conventions as plant build.
+  1. Add `BuildCatalogue` and a `CatalogueWriter` port in `application/catalogue.py`. Wire the
+     merged `PlantBuilder` and `build_catalogue_builder(seed)` in `bootstrap.py`. Generate one
+     `Catalogue` and pass its `ConsumerTag` and `ReferenceTag` rows to the writer together.
+  2. In `infrastructure/catalogue_parquet.py`, map consumer columns by allowlist and use separate
+     explicit Arrow schemas with `schema_version=1`, as defined in the approved plan. Validate
+     unique, matching `(site_code, original_name)` keys and the schemas before publishing. Stage
+     both files beside their targets and clean up unused staging files on failure. Reject symlinks
+     at the fixed child directories and targets. Set the private file to mode `0600` on Linux and
+     preserve existing directory permissions.
+  3. Register `catalog build` in `interfaces/cli/app.py` with the same settings and exit
+     conventions as `plant build`. Replace the catalogue first and the reference second. Print
+     their paths in that order after both replacements succeed. A replacement failure returns
+     exit 1 with a short stderr message and empty stdout. A failure between replacements can leave
+     a mixed pair. Rerun with the intended seed and output directory to restore it. Use one
+     writer per destination and keep readers out during publication.
 - **Out of scope:** Signal files, publication services and the broader answer-key leak guard.
 - **Acceptance criteria (EARS):**
   - AC1: When the CLI exports into an empty output directory, it shall create only the catalogue
@@ -165,8 +170,11 @@
     for lab and report-by-exception points. (RT17, RT28)
   - AC5: If staging fails for either file, then the command shall return a handled error and
     leave any previously published files intact. (RT09)
-- **Verification:** Proposed `tests/tssource/test_catalogue_cli.py` for AC1–AC5. Read Parquet
-  with PyArrow, compare it to a same-seed JSON plant, and induce a staging failure.
+- **Verification:** Use `tests/tssource/test_catalogue_cli.py` for AC1–AC5. Read both Parquet
+  schemas and metadata with PyArrow, check the private file mode, and reconcile every key,
+  instrument ID, scan class and interval with the same-seed JSON plant. Inject failures while
+  staging either file and during the second replacement, then verify same-seed recovery. Exercise
+  invalid seeds and both child-directory and file-target symlinks.
 
 ## Order and dependencies
 

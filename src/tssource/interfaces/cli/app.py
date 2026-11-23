@@ -14,7 +14,13 @@ from typing import Annotated
 
 import typer
 
-from tssource.bootstrap import build_plant_use_case, build_settings, resolve_time_table, run_bench
+from tssource.bootstrap import (
+    build_catalogue_use_case,
+    build_plant_use_case,
+    build_settings,
+    resolve_time_table,
+    run_bench,
+)
 from tssource.domain.benchmark import Format
 from tssource.domain.errors import TssourceError
 from tssource.domain.time.resolution import TimeRangeError
@@ -31,16 +37,45 @@ plant_app = typer.Typer(
     help="Generate the private synthetic plant inventory.", no_args_is_help=True
 )
 app.add_typer(plant_app, name="plant")
+catalog_app = typer.Typer(
+    help="Export the tag catalogue and private reference.", no_args_is_help=True
+)
+app.add_typer(catalog_app, name="catalog")
+
+BuildSeed = Annotated[int | None, typer.Option(min=0, help="Seed (default TSSOURCE_SEED).")]
+BuildOutput = Annotated[Path | None, typer.Option(help="Output directory (default TSSOURCE_OUT).")]
 
 
 @plant_app.command("build")
 def plant_build(
-    seed: Annotated[int | None, typer.Option(min=0, help="Seed (default TSSOURCE_SEED).")] = None,
-    out: Annotated[
-        Path | None, typer.Option(help="Output directory (default TSSOURCE_OUT).")
-    ] = None,
+    seed: BuildSeed = None,
+    out: BuildOutput = None,
 ) -> None:
     """Write the private truth/plant.json fixture and print its path."""
+    effective_seed, output_folder = _build_options(seed, out)
+    try:
+        path = build_plant_use_case().execute(effective_seed, output_folder)
+    except TssourceError as error:
+        typer.echo(f"error: {error}", err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(str(path))
+
+
+@catalog_app.command("build")
+def catalog_build(seed: BuildSeed = None, out: BuildOutput = None) -> None:
+    """Publish the consumer catalogue and private reference, then print both paths."""
+    effective_seed, output_folder = _build_options(seed, out)
+    try:
+        consumer, reference = build_catalogue_use_case(effective_seed).execute(output_folder)
+    except TssourceError as error:
+        typer.echo(f"error: {error}", err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(str(consumer))
+    typer.echo(str(reference))
+
+
+def _build_options(seed: int | None, out: Path | None) -> tuple[int, Path]:
+    """Resolve shared build defaults and translate invalid settings into usage errors."""
     try:
         settings = build_settings()
     except TssourceError as error:
@@ -48,14 +83,7 @@ def plant_build(
     effective_seed = settings.seed if seed is None else seed
     if effective_seed < 0:
         raise typer.BadParameter("TSSOURCE_SEED must be nonnegative.")
-    try:
-        path = build_plant_use_case().execute(
-            effective_seed, settings.output_folder if out is None else out
-        )
-    except TssourceError as error:
-        typer.echo(f"error: {error}", err=True)
-        raise typer.Exit(code=1) from error
-    typer.echo(str(path))
+    return effective_seed, settings.output_folder if out is None else out
 
 
 def _not_implemented(command: str) -> None:

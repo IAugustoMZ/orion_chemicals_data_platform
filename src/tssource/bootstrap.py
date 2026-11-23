@@ -15,6 +15,7 @@ from datetime import date
 from pathlib import Path
 
 from tssource.application.bench import EventSink, RunBenchmark
+from tssource.application.catalogue import BuildCatalogue
 from tssource.application.plant import BuildPlant
 from tssource.application.settings import Settings
 from tssource.application.time_table import ResolveTimeTable
@@ -24,6 +25,7 @@ from tssource.domain.naming.catalogue_builder import CatalogueBuilder
 from tssource.domain.plant.builder import PlantBuilder
 from tssource.domain.time.resolution import LocalResolution
 from tssource.domain.time.site_zone import SITE_ZONES, SiteCode
+from tssource.infrastructure.catalogue_parquet import CatalogueParquetWriter
 from tssource.infrastructure.clock import MonotonicClock
 from tssource.infrastructure.naming_draws import SeededDrawSource
 from tssource.infrastructure.numpy_source import NumpyBlockSource
@@ -112,3 +114,10 @@ def build_plant_use_case() -> BuildPlant:
 def build_catalogue_builder(seed: int) -> CatalogueBuilder:
     """Wire the in-memory catalogue builder to deterministic draw streams."""
     return CatalogueBuilder(SeededDrawSource(seed))
+
+
+def build_catalogue_use_case(seed: int) -> BuildCatalogue:
+    """Wire both deterministic generators with one seed and a Parquet pair writer."""
+    return BuildCatalogue(
+        seed, PlantBuilder(), build_catalogue_builder(seed), CatalogueParquetWriter()
+    )

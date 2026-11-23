@@ -13,9 +13,10 @@ Component of dossier [003](../../specs/003-tssource-skeleton-spike/spec.md) (chi
 
 ```bash
 poetry install --with tssource          # once
-poetry run tssource --help              # plant, run, bench, config, report, health, time-table
+poetry run tssource --help
 poetry run tssource time-table --site us-gulf-coast --date 2024-03-10
 poetry run tssource plant build --seed 42 --out data/ts_source
+poetry run tssource catalog build --seed 42 --out data/ts_source
 mkdir -p data/ts_source                 # the one writable folder of the container
 docker compose up --build tssource      # idles, reported healthy
 docker compose run --rm tssource --help
@@ -73,6 +74,24 @@ on Linux. It refuses symlinks at `truth/` and `truth/plant.json`. A generation o
 exits 1 with a diagnostic on stderr and empty stdout. Invalid arguments or settings exit 2.
 
 ## Tag catalogue generation
+
+`catalog build` uses the same seed and destination options as `plant build`. It rebuilds the
+plant in memory and prints two paths after both exports succeed.
+
+| Path under `--out` | Access | Contents |
+|---|---|---|
+| `catalog/tags.parquet` | Consumer | Site code, current name, descriptor, reported unit, data type, scan class, nullable expected interval in seconds, and the `tssource` marker |
+| `truth/tag_key.parquet` | Evaluator | Site and current name key, plant IDs, canonical data, naming tier and variations, hold-out flag, old alias and replacement time |
+
+Both files record `schema_version=1` in Parquet metadata. The private file has mode `0600`
+on Linux. Use the [approved contracts](../../specs/004-plant-tag-catalogue/plan.md#contracts-and-data)
+for exact column names, types and nullability.
+
+Use one writer per destination and wait for exit 0 before reading or sharing the files.
+The writer rejects symlinks at the fixed child directories and target files. If either stage
+fails, the command exits 1 with empty stdout and leaves the previous pair intact. If replacement
+is interrupted after the consumer file is replaced, rerun with the intended seed and output
+directory to restore the matching pair.
 
 In-process callers can use `build_catalogue_builder(seed).build(plant)` from the composition
 root to derive the current catalogue records and the private reference together. Build the
