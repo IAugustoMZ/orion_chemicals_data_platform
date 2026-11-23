@@ -4,7 +4,7 @@
 
 Each technical requirement of the [catalogue](README.md), the dossiers that cite it and how far it got: *in discovery* (cited), *specified* (G4 passed), *delivered* (G6 passed), *validated* (G7 passed). Enablers support requirements but never deliver them.
 
-Requirements RT01-RT42: in discovery **0** · specified **5** · delivered **3** · validated **0** · not started **34**.
+Requirements RT01-RT42: in discovery **0** · specified **5** · delivered **0** · validated **3** · not started **34**.
 
 ## 01 / Data integration and ingestion
 
@@ -23,7 +23,7 @@ Requirements RT01-RT42: in discovery **0** · specified **5** · delivered **3**
 
 | RT | Phase | First | Requirement | Specs | Status |
 |---|---|---|---|---|---|
-| RT09 | P | ★ | Original identifiers shall be stored with their source; the combination source + code shall never point to two pieces of equipment at the same time. | [004](../../specs/004-plant-tag-catalogue/prd.md) | delivered |
+| RT09 | P | ★ | Original identifiers shall be stored with their source; the combination source + code shall never point to two pieces of equipment at the same time. | [004](../../specs/004-plant-tag-catalogue/prd.md) | validated |
 | RT10 | P |  | Records with an unknown equipment or tag shall remain retrievable and pending, with a reason, without any presumed association. | — | not started |
 | RT11 | P |  | Every published dataset shall declare its grain and its relationship keys. | — | not started |
 | RT12 | P | ★ | Interpretable timestamps shall be standardised in UTC, preserving the original representation and time zone/offset when known; ambiguities shall be flagged. | [001](../../specs/001-timeseries-source/prd.md) | specified |
@@ -31,7 +31,7 @@ Requirements RT01-RT42: in discovery **0** · specified **5** · delivered **3**
 | RT14 | P |  | Quality rules shall have a version, scope, severity and a defined destination: publish, alert or keep pending. | — | not started |
 | RT15 | P |  | Compatible schema extensions shall be accepted; incompatible changes shall block only the affected publication and produce a diagnosis. | — | not started |
 | RT16 | A |  | Documents shall preserve content, ID, origin, revision and known links to equipment, system or area. | — | not started |
-| RT17 | P |  | Completeness shall only be computed when the expected frequency or quantity is defined. | [004](../../specs/004-plant-tag-catalogue/prd.md) | delivered |
+| RT17 | P |  | Completeness shall only be computed when the expected frequency or quantity is defined. | [004](../../specs/004-plant-tag-catalogue/prd.md) | validated |
 | RT18 | A |  | Observed values shall be distinguishable from estimated ones, with the estimation method and parameters. | — | not started |
 | RT19 | P |  | Common rules of identity, unit, time and quality shall produce the same result for every consumer. | — | not started |
 
@@ -52,7 +52,7 @@ Requirements RT01-RT42: in discovery **0** · specified **5** · delivered **3**
 
 | RT | Phase | First | Requirement | Specs | Status |
 |---|---|---|---|---|---|
-| RT28 | P | ★ | Sizing shall declare tags, frequencies, average size, history, concurrency and growth, separating measurement from projection. | [003](../../specs/003-tssource-skeleton-spike/prd.md), [004](../../specs/004-plant-tag-catalogue/prd.md) | delivered |
+| RT28 | P | ★ | Sizing shall declare tags, frequencies, average size, history, concurrency and growth, separating measurement from projection. | [003](../../specs/003-tssource-skeleton-spike/prd.md), [004](../../specs/004-plant-tag-catalogue/prd.md) | validated |
 | RT29 | P | ★ | The prototype shall measure sustained throughput, load duration, delay between availability and publication, and resources used. | [003](../../specs/003-tssource-skeleton-spike/prd.md) | specified |
 | RT30 | A |  | Scaling to the whole plant depends on a test at the required scale; the prototype does not prove industrial capacity by extrapolation. | — | not started |
 | RT31 | P |  | Queries shall declare period, resolution and return limits, with pagination or controlled export for large datasets. | — | not started |

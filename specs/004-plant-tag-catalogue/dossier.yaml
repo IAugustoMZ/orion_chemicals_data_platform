@@ -76,6 +76,17 @@ approvals:
     git_identity: IZelioli <i.augustomz@gmail.com>
     note: Accept the MkDocs exclusions and the build verified with persistent fixtures. Track legacy
       link warnings separately.
+  G7:
+  - member: mentor
+    at: '2026-11-23T18:32:50+00:00'
+    digest: sha256:3c93b74afd0d127fb1df090d4c33c6280793acd0ecfb0a6d7a78f8ff15a14654
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Verified default bind mount persistence, repeatable outputs, and site exclusions.
+  - member: mentee
+    at: '2026-11-23T18:32:52+00:00'
+    digest: sha256:3c93b74afd0d127fb1df090d4c33c6280793acd0ecfb0a6d7a78f8ff15a14654
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Verified default bind mount persistence, repeatable outputs, and site exclusions.
 verification:
   at: '2026-11-23T18:15:37+00:00'
   digest: sha256:ae2f173d8d22fd649172c9de6559ec6885077ae65b85a4b64902aac37a3d5fac
