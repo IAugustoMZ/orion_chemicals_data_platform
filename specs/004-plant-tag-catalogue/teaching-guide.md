@@ -183,6 +183,9 @@ carry version 1 metadata. [File contracts](plan.md#contracts-and-data)
     injected `CatalogueWriter`.
 11. [Parquet adapter](../../src/tssource/infrastructure/catalogue_parquet.py) maps the two schemas,
     uses `ExitStack` to clean up staging files, and replaces the consumer before the reference.
+    Follow `_safe_diagnostic` to see where the adapter catches filesystem and Arrow failures.
+    Each operation supplies a fixed message, which the CLI prints when it catches
+    `TssourceError`.
 
 ## 9. Security
 
