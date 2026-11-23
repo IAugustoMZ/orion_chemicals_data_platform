@@ -175,6 +175,11 @@ These are in-memory value objects and console output. The card introduces no sto
    signed UTC delta in integer microseconds and divides by the requested unit. A nonzero
    remainder signals lost precision. Decimal exponent shifting on numeric decode preserves
    exact microseconds even for signed inputs. FILETIME uses ten ticks per microsecond.
+   For ISO-offset input, follow `_parse_iso_offset` before the UTC conversion. Its pattern
+   validates the hour, minute and second fields, then the precision check rejects nonzero
+   digits beyond the sixth decimal place. An explicit fractional offset with zero whole
+   seconds may need its signed fraction restored before `decode_direct` records the source
+   offset and converts the instant to UTC.
 5. Read [event_times.py](../../src/tssource/domain/time/event_times.py) and
    [clock_fault.py](../../src/tssource/domain/time/clock_fault.py) for the source-time model.
 
@@ -195,6 +200,9 @@ used the installed entry point, an actual zone adapter and synthetic corrected-e
 The follow-up tests cover metadata, exact positive and negative epoch inputs, FILETIME ticks
 between microseconds, both repeated-hour encodings, the microsecond before a gap boundary,
 historical fixed offsets, and invalid or out-of-range CLI dates.
+The final independent review passed the malformed-offset reproducers through the assembled
+codec. It checked that `+00:60` and `+00:00.5` raise a value error, and that signed
+half-second offsets contribute exactly to UTC while the original text is retained.
 
 ## 11. Run it yourself
 
@@ -205,6 +213,7 @@ poetry run tssource time-table --site us-gulf-coast --date 2024-03-10
 poetry run tssource time-table --site us-gulf-coast --date 2024-11-03
 poetry run tssource time-table --site india --date 2024-11-03
 poetry run pytest -q tests/tssource/domain/test_site_zone.py tests/tssource/test_time_table.py --no-cov
+poetry run pytest -q tests/tssource/domain/test_representation.py tests/tssource/test_timestamp_codec.py --no-cov -k iso
 ```
 
 On the spring table, find `02:00` marked `gap` and compare its reported UTC instant with

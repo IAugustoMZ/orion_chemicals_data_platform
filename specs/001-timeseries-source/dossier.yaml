@@ -64,10 +64,21 @@ approvals:
     digest: sha256:62258da191f926542393f8cbc79cd0484020c12af44b4bfb133d69bc89222a2f
     git_identity: IZelioli <i.augustomz@gmail.com>
     note: ''
+  G6:
+  - member: mentor
+    at: '2026-11-23T02:03:27+00:00'
+    digest: sha256:6ccf952644f88b23a395c5ea9635dcf0b3947ea1642d28b4c6fad65c5a931031
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: ''
+  - member: mentee
+    at: '2026-11-23T02:03:33+00:00'
+    digest: sha256:6ccf952644f88b23a395c5ea9635dcf0b3947ea1642d28b4c6fad65c5a931031
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: ''
 verification:
-  at: '2026-11-21T16:41:32+00:00'
-  digest: sha256:48b181abdf37c85a3733db71c0b5f99330cc2eb78fd805f9247bb0b9f411cd92
-  commit: 909604e
+  at: '2026-11-23T01:58:34+00:00'
+  digest: sha256:a03b3de7fc0a2236b62e131bda42435e4179453a0e9291604e887f334ff17894
+  commit: 7f1c488
   results:
   - check: format
     passed: true
@@ -93,11 +104,11 @@ verification:
 
       --------------------------------------------------------------------------------------------------
 
-      TOTAL                                                   3030     88    610     61    96%
+      TOTAL                                                   3032     88    612     60    96%
 
-      Required test coverage of 85% reached. Total coverage: 95.74%
+      Required test coverage of 85% reached. Total coverage: 95.77%
 
-      316 passed in 21.81s'
+      333 passed in 22.97s'
   - check: security
     passed: true
     summary: (no output)
@@ -106,11 +117,15 @@ verification:
     summary: (no output)
   - check: dependencies
     passed: true
-    summary: 'Name                          Skip Reason
+    summary: 'WARNING:cachecontrol.controller:Cache entry deserialization failed, entry ignored
 
-      ----------------------------- -------------------------------
+      WARNING:cachecontrol.controller:Cache entry deserialization failed, entry ignored
 
-      orion-chemicals-data-platform distribution marked as editable
+      WARNING:cachecontrol.controller:Cache entry deserialization failed, entry ignored
+
+      WARNING:cachecontrol.controller:Cache entry deserialization failed, entry ignored
+
+      WARNING:cachecontrol.controller:Cache entry deserialization failed, entry ignored
 
       No known vulnerabilities found'
   - check: harness
