@@ -236,7 +236,8 @@ sequenceDiagram
 
 The writer uses an explicit consumer allowlist and an independent reference schema. Both
 carry version 1 metadata. Each staged file sits beside its target so replacement is local
-to that filesystem. If the second replacement fails, the CLI emits a diagnostic and the
+to that filesystem. Staging and replacement errors report the operation and filename. If the
+second replacement fails, the CLI reports a publication error and the
 operator reruns with the intended seed before handing off the pair.
 [ADR-0031](decisions/0031-separate-the-consumer-catalogue-from-plant-truth.md)
 

@@ -89,7 +89,8 @@ for exact column names, types and nullability.
 
 Use one writer per destination and wait for exit 0 before reading or sharing the files.
 The writer rejects symlinks at the fixed child directories and target files. If either stage
-fails, the command exits 1 with empty stdout and leaves the previous pair intact. If replacement
+fails, the command exits 1 with empty stdout and leaves the previous pair intact. Staging and
+publication diagnostics name the operation and the fixed filename on stderr. If replacement
 is interrupted after the consumer file is replaced, rerun with the intended seed and output
 directory to restore the matching pair.
 

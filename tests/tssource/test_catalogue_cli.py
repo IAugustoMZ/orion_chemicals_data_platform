@@ -110,10 +110,24 @@ def test_exports_reconcile_with_same_seed_plant(tmp_path: Path, seed: str) -> No
         assert row["expected_interval_seconds"] == point["expected_interval_seconds"]
 
 
+@pytest.mark.ac("PBI-004-04:AC1")
+def test_file_destination_reports_safe_staging_error(tmp_path: Path) -> None:
+    """Handle a real filesystem failure without exposing the destination."""
+    destination = tmp_path / "existing-file"
+    destination.write_bytes(b"keep")
+    result = export(destination)
+    assert result.exit_code == 1
+    assert result.stdout == ""
+    assert result.stderr.strip() == "error: could not stage tags.parquet"
+    assert destination.read_bytes() == b"keep"
+
+
 @pytest.mark.ac("PBI-004-03:AC5")
-@pytest.mark.parametrize("fail_in", ["catalog", "truth"])
+@pytest.mark.ac("PBI-004-04:AC1")
+@pytest.mark.parametrize("fail_in", [PUBLIC, PRIVATE])
+@pytest.mark.parametrize("error_type", [OSError, pa.ArrowInvalid])
 def test_failed_staging_preserves_previous_pair(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, fail_in: str
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, fail_in: Path, error_type: type[Exception]
 ) -> None:
     """Fail either Parquet write and verify both previous files and cleanup."""
     assert export(tmp_path).exit_code == 0
@@ -121,17 +135,17 @@ def test_failed_staging_preserves_previous_pair(
     write_table = pq.write_table
 
     def fail_stage(table: pa.Table, where: Path) -> None:
-        """Inject an IO error after the selected file is opened."""
-        if where.parent.name == fail_in:
+        """Inject an error containing the selected staging path."""
+        if where.parent == tmp_path / fail_in.parent:
             where.write_bytes(b"partial")
-            raise OSError("staging failed")
+            raise error_type(f"raw staging error in {where}")
         write_table(table, where)
 
     monkeypatch.setattr(pq, "write_table", fail_stage)
     result = export(tmp_path, "101")
     assert result.exit_code == 1
     assert result.stdout == ""
-    assert "staging failed" in result.stderr
+    assert result.stderr.strip() == f"error: could not stage {fail_in.name}"
     after = {
         path.relative_to(tmp_path): path.read_bytes()
         for path in tmp_path.rglob("*")
@@ -174,34 +188,37 @@ def test_writer_rejects_inconsistent_staged_footer(
     assert not any(path.is_file() for path in tmp_path.rglob("*"))
 
 
-def test_second_replace_reports_failure_and_retry_restores_pair(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+@pytest.mark.ac("PBI-004-04:AC2")
+@pytest.mark.parametrize("fail_in", [PUBLIC, PRIVATE])
+def test_failed_replace_reports_safe_error_and_retry_restores_pair(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, fail_in: Path
 ) -> None:
     """Exercise an interrupted publication and a same-seed recovery."""
     assert export(tmp_path).exit_code == 0
-    old_private = (tmp_path / PRIVATE).read_bytes()
+    before = {path: (tmp_path / path).read_bytes() for path in (PUBLIC, PRIVATE)}
     replace = Path.replace
 
-    def fail_private(self: Path, target: Path) -> Path:
-        """Fail publication of the reference after the consumer file is replaced."""
-        if target == tmp_path / PRIVATE:
-            raise OSError("replacement failed")
+    def fail_replace(self: Path, target: Path) -> Path:
+        """Inject a replacement failure containing both paths."""
+        if target == tmp_path / fail_in:
+            raise OSError(f"raw replacement error from {self} to {target}")
         return replace(self, target)
 
     with monkeypatch.context() as patch:
-        patch.setattr(Path, "replace", fail_private)
+        patch.setattr(Path, "replace", fail_replace)
         result = export(tmp_path, "101")
         assert result.exit_code == 1
         assert result.stdout == ""
-        assert "replacement failed" in result.stderr
-    assert (tmp_path / PRIVATE).read_bytes() == old_private
+        assert result.stderr.strip() == f"error: could not publish {fail_in.name}"
+    assert (tmp_path / PRIVATE).read_bytes() == before[PRIVATE]
+    assert ((tmp_path / PUBLIC).read_bytes() == before[PUBLIC]) == (fail_in == PUBLIC)
     assert export(tmp_path, "101").exit_code == 0
     public = pq.read_table(tmp_path / PUBLIC).to_pylist()
     private = pq.read_table(tmp_path / PRIVATE).to_pylist()
     assert {(row["site_code"], row["original_name"]) for row in public} == {
         (row["site_code"], row["original_name"]) for row in private
     }
-    assert (tmp_path / PRIVATE).read_bytes() != old_private
+    assert (tmp_path / PRIVATE).read_bytes() != before[PRIVATE]
     assert {path.relative_to(tmp_path) for path in tmp_path.rglob("*") if path.is_file()} == {
         PUBLIC,
         PRIVATE,

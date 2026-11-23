@@ -53,3 +53,20 @@ items:
     commit: b7af6cfd1f47b7cfccec3e1e779ce0b712e608eb
     pull_request: ''
     merged_at: '2026-11-23T16:56:56+00:00'
+  '04':
+    state: verified
+    approvals:
+    - member: mentor
+      at: '2026-11-23T17:09:55+00:00'
+      digest: sha256:12f1b0f8f39f52bb1f0139cdbff0e914c6e9530e83c12bd4ff40744df9db191e
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-23T17:09:57+00:00'
+      digest: sha256:12f1b0f8f39f52bb1f0139cdbff0e914c6e9530e83c12bd4ff40744df9db191e
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: feat/004-04-redact-internal-paths-from-catalogue
+    commit: ''
+    pull_request: ''
+    merged_at: null

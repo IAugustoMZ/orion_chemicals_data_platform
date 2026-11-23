@@ -98,7 +98,7 @@ The full picture, with every rule and how it is enforced: **[how the harness wor
 | [001 · Time-series source: global time core](specs/001-timeseries-source/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/001-timeseries-source/teaching-guide.md) |
 | [002 · Harness: item-by-item flow and CI](specs/002-harness-item-flow/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/002-harness-item-flow/teaching-guide.md) |
 | [003 · Generator skeleton and throughput spike](specs/003-tssource-skeleton-spike/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/003-tssource-skeleton-spike/teaching-guide.md) |
-| [004 · Plant and tag catalogue](specs/004-plant-tag-catalogue/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | ⏸️ | ⏸️ | [📘](specs/004-plant-tag-catalogue/teaching-guide.md) |
+| [004 · Plant and tag catalogue](specs/004-plant-tag-catalogue/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/004-plant-tag-catalogue/teaching-guide.md) |
 
 ✅ passed · 🟡 partly approved · ⚪ pending · 🟠 stale (changed after approval) · ❌ failed · ⏸️ blocked by an earlier gate
 <!-- sdd:status:end -->
@@ -128,7 +128,7 @@ five-site inventory for repeatable fixture and sampling tests. See the
 `poetry run tssource catalog build --seed 42 --out data/ts_source` exports the current tag
 catalogue and its matching evaluator reference. Share `catalog/tags.parquet` and keep
 `truth/tag_key.parquet` with the private inventory.
-[Tag catalogue contract and recovery](src/tssource/README.md#tag-catalogue-generation)
+[Tag catalogue contract, error messages, and recovery](src/tssource/README.md#tag-catalogue-generation)
 
 Before approving anything, put your names in [harness/team.yaml](harness/team.yaml).
 
