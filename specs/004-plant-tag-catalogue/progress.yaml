@@ -37,7 +37,7 @@ items:
     pull_request: ''
     merged_at: '2026-11-23T15:05:02+00:00'
   '03':
-    state: verified
+    state: merged
     approvals:
     - member: mentor
       at: '2026-11-23T15:06:17+00:00'
@@ -50,6 +50,6 @@ items:
       git_identity: IZelioli <i.augustomz@gmail.com>
       note: ''
     branch: feat/004-03-export-the-catalogue-and-private
-    commit: ''
+    commit: b7af6cfd1f47b7cfccec3e1e779ce0b712e608eb
     pull_request: ''
-    merged_at: null
+    merged_at: '2026-11-23T16:56:56+00:00'

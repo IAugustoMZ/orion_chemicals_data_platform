@@ -28,17 +28,15 @@ approvals:
     note: One source per site; lab intervals unset; relax the naming mix before the coverage floors.
   G2:
   - member: mentor
-    at: '2026-11-23T13:45:30+00:00'
-    digest: sha256:3e150c7e7c8e2b5540c02cacd4faec0f1070a33c64fe2845af860853a17c26c2
+    at: '2026-11-23T17:02:29+00:00'
+    digest: sha256:946915112e57d4335de09065c1a3201b7d204d400deeba46dc62cc4d4adc32a6
     git_identity: IZelioli <i.augustomz@gmail.com>
-    note: Use separate build commands, keep rename history private, and regenerate the pair after an
-      interrupted export.
+    note: Use fixed catalogue error messages and test staging failure, replacement failure, and retry.
   - member: mentee
-    at: '2026-11-23T13:45:46+00:00'
-    digest: sha256:3e150c7e7c8e2b5540c02cacd4faec0f1070a33c64fe2845af860853a17c26c2
+    at: '2026-11-23T17:02:31+00:00'
+    digest: sha256:946915112e57d4335de09065c1a3201b7d204d400deeba46dc62cc4d4adc32a6
     git_identity: IZelioli <i.augustomz@gmail.com>
-    note: Use separate build commands, keep rename history private, and regenerate the pair after an
-      interrupted export.
+    note: Use fixed catalogue error messages and test staging failure, replacement failure, and retry.
   G3:
   - member: mentor
     at: '2026-11-23T13:51:27+00:00'
@@ -65,4 +63,75 @@ approvals:
     git_identity: IZelioli <i.augustomz@gmail.com>
     note: Use one writer per directory, reproduce with locked dependencies, and restrict new truth files
       to their owner.
-verification: null
+verification:
+  at: '2026-11-23T16:57:45+00:00'
+  digest: sha256:7d084d8dde7aaac1e39f29e5e9b8ac3e38eac51a4bd8caeecc917de9d9112c71
+  commit: '7075286'
+  results:
+  - check: format
+    passed: true
+    summary: 356 files already formatted
+  - check: lint
+    passed: true
+    summary: All checks passed!
+  - check: types
+    passed: true
+    summary: 'Success: no issues found in 112 source files'
+  - check: architecture
+    passed: true
+    summary: "tssource interfaces never touch infrastructure directly (only through the \ncomposition\
+      \ root) KEPT\ntssource domain and application stay free of numpy, pyarrow, typer and \nsubprocess\
+      \ KEPT\n\nContracts: 6 kept, 0 broken."
+  - check: tests
+    passed: true
+    summary: 'tools/sdd/interfaces/cli/app.py                          164     10     32      5    92%   98,
+      207, 224-228, 306, 308, 310, 345, 354
+
+      tools/sdd/interfaces/cli/presenters.py                    46     13     16      4    63%   36,
+      61-67, 76-78, 103, 104->106, 107
+
+      --------------------------------------------------------------------------------------------------
+
+      TOTAL                                                   3753    105    742     73    96%
+
+      Required test coverage of 85% reached. Total coverage: 95.86%
+
+      389 passed in 28.76s'
+  - check: security
+    passed: true
+    summary: (no output)
+  - check: secrets
+    passed: true
+    summary: (no output)
+  - check: dependencies
+    passed: true
+    summary: 'Name                          Skip Reason
+
+      ----------------------------- -------------------------------
+
+      orion-chemicals-data-platform distribution marked as editable
+
+      No known vulnerabilities found'
+  - check: harness
+    passed: true
+    summary: 'WARNING  gate-stale         specs/001-timeseries-source/dossier.yaml  G5 is stale: code
+      changed since the last `sdd verify`
+
+      WARNING  written-ahead      specs/001-timeseries-source/release.md  release.md written before G6
+      passed: review G6 first, then draft G7 (one gate at a time)
+
+      WARNING  gate-stale         specs/002-harness-item-flow/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      WARNING  gate-stale         specs/003-tssource-skeleton-spike/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
+
+      WARNING  written-ahead      specs/003-tssource-skeleton-spike/release.md  release.md written before
+      G6 passed: review G6 first, then draft G7 (one gate at a time)
+
+      sdd check: 6 finding(s)'
+  - check: docs-site
+    passed: true
+    summary: "\nFor more info visit \e[1mhttps://github.com/ProperDocs/properdocs/discussions/33\e[0m\
+      \ and \e[1mhttps://properdocs.org/\e[0m\n\n(This warning was initiated by one of the plugins that\
+      \ you depend on.)\n\n----------------------------------------------------------------"
