@@ -71,7 +71,7 @@ items:
     pull_request: ''
     merged_at: '2026-11-23T17:19:33+00:00'
   '05':
-    state: verified
+    state: merged
     approvals:
     - member: mentor
       at: '2026-11-23T18:05:38+00:00'
@@ -84,6 +84,6 @@ items:
       git_identity: IZelioli <i.augustomz@gmail.com>
       note: ''
     branch: feat/004-05-keep-generated-fixtures-out-of-the
-    commit: ''
+    commit: 964a69bd2b959c29b18d4bcc9eb8e77695c9aa51
     pull_request: ''
-    merged_at: null
+    merged_at: '2026-11-23T18:14:41+00:00'

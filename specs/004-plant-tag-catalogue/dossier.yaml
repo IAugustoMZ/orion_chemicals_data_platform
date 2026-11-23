@@ -65,19 +65,21 @@ approvals:
       to their owner.
   G6:
   - member: mentor
-    at: '2026-11-23T17:26:10+00:00'
-    digest: sha256:8645f4a0e6ba41d7e7c5ee06c08089702b0859b1c41cbced13feae153a87ed52
+    at: '2026-11-23T18:20:38+00:00'
+    digest: sha256:582e1ea69439cb75ecac711311bfd2c0bd645c16cedcb99132141c8032e3975e
     git_identity: IZelioli <i.augustomz@gmail.com>
-    note: Accept the path-free fallback, single-writer retry, and fixture-level RT28 evidence.
+    note: Accept the MkDocs exclusions and the build verified with persistent fixtures. Track legacy
+      link warnings separately.
   - member: mentee
-    at: '2026-11-23T17:26:12+00:00'
-    digest: sha256:8645f4a0e6ba41d7e7c5ee06c08089702b0859b1c41cbced13feae153a87ed52
+    at: '2026-11-23T18:20:40+00:00'
+    digest: sha256:582e1ea69439cb75ecac711311bfd2c0bd645c16cedcb99132141c8032e3975e
     git_identity: IZelioli <i.augustomz@gmail.com>
-    note: Accept the path-free fallback, single-writer retry, and fixture-level RT28 evidence.
+    note: Accept the MkDocs exclusions and the build verified with persistent fixtures. Track legacy
+      link warnings separately.
 verification:
-  at: '2026-11-23T17:55:42+00:00'
-  digest: sha256:f8eea66cc3e627e12e2345c47331bb087019585d95ad977149110ee171e2afa1
-  commit: 648010d
+  at: '2026-11-23T18:15:37+00:00'
+  digest: sha256:ae2f173d8d22fd649172c9de6559ec6885077ae65b85a4b64902aac37a3d5fac
+  commit: 5fab8ff
   results:
   - check: format
     passed: true
@@ -107,7 +109,7 @@ verification:
 
       Required test coverage of 85% reached. Total coverage: 95.87%
 
-      393 passed in 31.33s'
+      395 passed in 30.66s'
   - check: security
     passed: true
     summary: (no output)
@@ -125,8 +127,11 @@ verification:
       No known vulnerabilities found'
   - check: harness
     passed: true
-    summary: 'WARNING  gate-stale         specs/002-harness-item-flow/dossier.yaml  G5 is stale: code
-      changed since the last `sdd verify`
+    summary: 'WARNING  written-ahead      specs/001-timeseries-source/release.md  release.md written
+      before G6 passed: review G6 first, then draft G7 (one gate at a time)
+
+      WARNING  gate-stale         specs/002-harness-item-flow/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
 
       WARNING  gate-stale         specs/003-tssource-skeleton-spike/dossier.yaml  G5 is stale: code changed
       since the last `sdd verify`
@@ -137,13 +142,9 @@ verification:
       WARNING  gate-stale         specs/004-plant-tag-catalogue/dossier.yaml  G5 is stale: code changed
       since the last `sdd verify`
 
-      WARNING  written-ahead      specs/004-plant-tag-catalogue/release.md  release.md written before
-      G6 passed: review G6 first, then draft G7 (one gate at a time)
-
-      sdd check: 8 finding(s)'
+      sdd check: 7 finding(s)'
   - check: docs-site
-    passed: false
-    summary: "  File \"/mnt/AdditionalData/phd_repos/orion_chemicals_data_platform/.venv/lib/python3.12/site-packages/mkdocs/utils/__init__.py\"\
-      , line 123, in copy_file\n    shutil.copyfile(source_path, output_path)\n  File \"/home/izelioli/.local/opt/python3.12/lib/python3.12/shutil.py\"\
-      , line 260, in copyfile\n    with open(src, 'rb') as fsrc:\n         ^^^^^^^^^^^^^^^\nPermissionError:\
-      \ [Errno 13] Permission denied: '/mnt/AdditionalData/phd_repos/orion_chemicals_data_platform/data/ts_source/catalog/tags.parquet'"
+    passed: true
+    summary: "\nFor more info visit \e[1mhttps://github.com/ProperDocs/properdocs/discussions/33\e[0m\
+      \ and \e[1mhttps://properdocs.org/\e[0m\n\n(This warning was initiated by one of the plugins that\
+      \ you depend on.)\n\n----------------------------------------------------------------"
