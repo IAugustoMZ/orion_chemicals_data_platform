@@ -111,7 +111,8 @@ flowchart LR
   GitHub, in your editor and on the site. The root `README.md` becomes the home page; every
   folder's `README.md` becomes that folder's index page.
 - **`exclude_docs`** keeps caches, the virtual environment and generated tool adapters
-  (`.claude/`, `.cursor/`, `.github/`) out of the site.
+  (`.claude/`, `.cursor/`, `.github/`) out of the site. It also excludes the root trees
+  `data/` and `linkedin-posts/`, which contain local outputs and drafts.
 - **`pymdownx.superfences`** turns ```` ```mermaid ```` blocks into diagrams; `admonition`,
   `tabbed`, `tasklist` and `details` give notes, tabs (like the two ways of starting the site
   above), checkboxes and collapsible blocks.

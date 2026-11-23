@@ -70,3 +70,20 @@ items:
     commit: ee6bab4701b6c1f019cec93af4d312c3abc3d99a
     pull_request: ''
     merged_at: '2026-11-23T17:19:33+00:00'
+  '05':
+    state: verified
+    approvals:
+    - member: mentor
+      at: '2026-11-23T18:05:38+00:00'
+      digest: sha256:e6a68ba9313c0283701c63538268d860bf88732cc7e3031bc949f261b7408b58
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-23T18:05:39+00:00'
+      digest: sha256:e6a68ba9313c0283701c63538268d860bf88732cc7e3031bc949f261b7408b58
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: feat/004-05-keep-generated-fixtures-out-of-the
+    commit: ''
+    pull_request: ''
+    merged_at: null
