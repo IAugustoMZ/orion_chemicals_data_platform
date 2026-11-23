@@ -1,10 +1,7 @@
 """The `tssource` command line: one Typer command per use case.
 
-Interfaces layer. Five commands exist: ``run``, ``config`` and ``report`` say "not implemented
-yet" (exit 1) until their cards arrive; ``bench`` (card 02) measures throughput; ``health``
-checks that the settings are readable (exit 0). Exit codes: 0 success, 1 not implemented or a
-handled ``TssourceError``, 2 usage error (Typer), 3 benchmark floor missed. Errors are one line,
-never a stack trace.
+Exit codes are 0 for success, 1 for handled failures or unavailable commands, 2 for
+usage errors and 3 when the benchmark misses its throughput floor.
 """
 
 from __future__ import annotations
@@ -17,7 +14,7 @@ from typing import Annotated
 
 import typer
 
-from tssource.bootstrap import build_settings, resolve_time_table, run_bench
+from tssource.bootstrap import build_plant_use_case, build_settings, resolve_time_table, run_bench
 from tssource.domain.benchmark import Format
 from tssource.domain.errors import TssourceError
 from tssource.domain.time.resolution import TimeRangeError
@@ -30,6 +27,35 @@ app = typer.Typer(
     no_args_is_help=True,
     add_completion=False,
 )
+plant_app = typer.Typer(
+    help="Generate the private synthetic plant inventory.", no_args_is_help=True
+)
+app.add_typer(plant_app, name="plant")
+
+
+@plant_app.command("build")
+def plant_build(
+    seed: Annotated[int | None, typer.Option(min=0, help="Seed (default TSSOURCE_SEED).")] = None,
+    out: Annotated[
+        Path | None, typer.Option(help="Output directory (default TSSOURCE_OUT).")
+    ] = None,
+) -> None:
+    """Write the private truth/plant.json fixture and print its path."""
+    try:
+        settings = build_settings()
+    except TssourceError as error:
+        raise typer.BadParameter(str(error)) from error
+    effective_seed = settings.seed if seed is None else seed
+    if effective_seed < 0:
+        raise typer.BadParameter("TSSOURCE_SEED must be nonnegative.")
+    try:
+        path = build_plant_use_case().execute(
+            effective_seed, settings.output_folder if out is None else out
+        )
+    except TssourceError as error:
+        typer.echo(f"error: {error}", err=True)
+        raise typer.Exit(code=1) from error
+    typer.echo(str(path))
 
 
 def _not_implemented(command: str) -> None:

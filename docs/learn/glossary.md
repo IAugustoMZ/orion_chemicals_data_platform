@@ -20,10 +20,12 @@ introduces them.
 | **Composition root** | the one place where adapters are created and wired into use cases (`bootstrap.py`) |
 | **Constitution** | the non-negotiable articles of the harness (`harness/constitution.md`) |
 | **Context plane** | the governed knowledge agents read: requirements, code, architecture, docs, contracts |
+| **Control loop** | a measurement, controller and final element associated to regulate a process |
 | **Control plane (AI)** | how agents are governed: model routing, guardrails, cost, audit, loop limits |
 | **Daylight-saving gap** | local clock readings skipped when the UTC offset moves forward |
 | **Digest** | a SHA-256 fingerprint of content; an approval stores the digest of what was approved |
 | **Dossier** | the folder `specs/<id>-<slug>/` holding everything about one piece of work |
+| **Driver** (plant) | a shared influence on equipment in an area |
 | **EARS** | Easy Approach to Requirements Syntax: sentence patterns like "When X, the system shall Y" |
 | **Enabler** | a dossier that builds tooling or foundations; supports RTs without delivering them |
 | **Feature** | a dossier that delivers platform behaviour; cites the RTs it serves, or is *outside the catalogue* |
@@ -49,10 +51,13 @@ introduces them.
 | **Reception time** | when a receiving system obtained a record |
 | **RQ** | a business requirement of the Business Case Canvas (RQ01-RQ25), the source of the RTs |
 | **RT** | a technical requirement of the Orion Chemicals catalogue (RT01-RT42) |
+| **Scan class** | a point's sampling policy, including periodic, laboratory and report-by-exception |
 | **Source-update time** | when the source last changed a record |
 | **Stale** | gate state: approvals or a verification exist but the content changed since |
 | **Strategy** | a pattern: interchangeable classes behind one interface (doc rules, generators) |
+| **Stream** (plant) | a directed material flow between pieces of equipment |
 | **STRIDE** | threat categories: spoofing, tampering, repudiation, information disclosure, denial of service, elevation of privilege |
+| **Surrogate ID** | an identifier derived independently of display names |
 | **Tag** | an industrial measurement point (a sensor's time series), identified by a code in its source |
 | **Teaching guide** | the didactic record of a dossier, explaining every decision for the mentee |
 | **TODO(sdd)** | the placeholder marking text an author must replace before approval |
