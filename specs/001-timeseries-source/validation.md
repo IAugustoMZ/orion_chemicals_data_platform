@@ -1,24 +1,25 @@
 # Validation · 001 · Time-series source: global time core
 
 The original review covered PR #24 at merge commit `74bd96f`. PR #26 at merge commit
-`909604e` implements the revised specification. The findings below include the original
-review so each correction can be traced to the evidence that prompted it.
+`909604e` implements the revised specification. PR #27 at merge commit `7f1c488` closes the
+ISO-offset finding from PR #26. The original findings are retained below alongside the
+evidence for their corrections.
 
 ## Verification (G5)
 
-The dossier records a passing verification at `2026-11-21T16:41:32Z` for merge commit
-`909604e` and governed digest `48b181abdf37`.
+The dossier records a passing verification at `2026-11-23T01:58:34Z` for merge commit
+`7f1c488` and governed digest `a03b3de7fc0a`.
 
 | Check | Recorded result |
 | --- | --- |
 | Format, lint, types | Passed. The run reported 322 formatted files and 94 type-checked source files. |
 | Architecture | Passed. All six import contracts held. |
-| Tests | Passed. 316 tests and 95.74% coverage. |
+| Tests | Passed. 333 tests and 95.77% coverage. |
 | Security, secrets, dependencies | Bandit, detect-secrets and the dependency audit passed. |
 | Harness, docs site | The harness consistency check and strict MkDocs build passed. |
 
-`sdd item merged 001 05` recorded commit `87efef9` and `sdd item merged 001 24` recorded
-commit `6c59112`. `sdd status 001` reports G5 passed on the merged code.
+The card ledger records cards 05, 24 and 25 as merged at commits `87efef9`, `6c59112`
+and `5fe0a4e`, respectively. `sdd status 001` reports G5 passed on the merged code.
 
 ## Code review
 
@@ -43,6 +44,13 @@ specified cases. It found a remaining blocker in the direct ISO-offset input pat
 | --- | --- | --- |
 | Blocking | [representation.py](../../src/tssource/domain/time/representation.py#L79) | The decoder accepts `2024-01-01T00:00:00+00:60` and treats it as `+01:00`, moving the decoded instant by an hour. It accepts `2024-01-01T00:00:00+00:00.5` and drops the nonzero offset fraction. Validate the supported offset-bearing syntax and component ranges before parsing. Test exact accepted forms and rejection of malformed or unsupported spellings. |
 
+The independent PR #27 review confirmed that the ISO parser checks offset component
+ranges and requires explicit seconds before accepting a fraction. It checks both fractions
+against datetime precision and adjusts the parsed zone when Python discards a fractional
+offset with zero whole seconds. The assembled codec rejects both original reproducers and
+retains the raw value, format and normalized offset on valid inputs. No blocking finding
+remains in the reviewed scope.
+
 ## Architecture review
 
 The source and test paths match the implementation plan. The domain imports standard-library
@@ -52,14 +60,15 @@ and renders the returned rows. The benchmark path remains in place.
 
 PR #26 connects the input path to `DecodedTimestamp`. The application delegates direct formats
 to the domain and uses the `ZoneResolver` port for both local formats. Bootstrap wires the
-adapter. The ISO-offset correction belongs at the existing domain parser boundary.
+adapter. PR #27 applies the ISO-offset correction at the existing domain parser boundary.
+The diff adds no dependency, I/O path or layer crossing.
 
 ## Security review
 
 | STRIDE | Evidence and result |
 | --- | --- |
 | Spoofing | The CLI looks up `SiteCode` through a whitelist. An unknown site exited 2. |
-| Tampering | QA confirmed metadata retention and exact results for the standard fixtures. The ISO-offset cases in Code review can still silently change the instant. The adapter uses the runtime's zone data provider, which can be supplied by the host. |
+| Tampering | QA confirmed metadata retention and exact results for the standard fixtures. On PR #27 the original malformed ISO-offset cases raise a value error, and accepted offsets yield the expected UTC instant. The adapter uses the runtime's zone data provider, which can be supplied by the host. |
 | Repudiation | The diff creates no mutable configuration or audit event. |
 | Information disclosure | Six representative invalid inputs, including range boundaries, exited 2 with one diagnostic, empty stdout and no traceback. The secret scan passed. |
 | Denial of service | A request covers one date and one of five sites. The adapter bisects the interval between the gap's two UTC probes down to datetime precision. |
@@ -90,14 +99,24 @@ All 83 component tests passed. Synthetic exploratory checks gave these results.
 | B05 / RT07 | The three synthetic event times stayed separate. Clock adjustments at days −1, 0 and 2 were zero, five and seven minutes. |
 | B06 / RT12 | Each site's installed CLI run produced 25 lines and repeated byte for byte. Six invalid inputs exited 2 with a single diagnostic, empty stdout and no traceback. |
 
+Independent validation on the PR #27 merge used the assembled codec and installed CLI.
+
+| Behaviour or RT | Result |
+| --- | --- |
+| B01–B02 / RT12 | Sub-minute gaps in Chicago, Brussels and São Paulo resolved to the exact UTC boundary and preserved the requested wall reading. Historical China and India probes returned a single candidate under their declared fixed offsets. |
+| B03 / RT12 | Seven malformed or over-precise offsets and two UTC range overflows raised `ValueError`. Six accepted examples retained their original value, form and offset, with exact UTC results. These included compact and colon-delimited offsets, both signs of a half-second offset and a near-24-hour offset. Negative epoch seconds and milliseconds and one exact FILETIME sample retained their original metadata. Inexact numeric values raised `ValueError`. |
+| B04 / RT12 | Both local forms required a site. Each encoded the two Chicago UTC candidates to the same local text, and decoding returned both candidates in UTC order with the original text and zone. |
+| B05 / RT07 | A corrected synthetic event retained occurrence, source update and reception as three distinct UTC values. The clock fault left the instant before activation intact, applied five minutes at activation and seven minutes after two days. |
+| B06 / RT12 | The installed CLI returned a header and 24 rows for each of the five sites, with byte-for-byte repeatability. Five invalid inputs covering site, date syntax, calendar date and both UTC range boundaries exited 2 with one error, empty stdout and no traceback. |
+
 ## Documentation upkeep
 
-- [x] ADR-0029 is accepted and linked from the decision index.
+- [x] ADR-0029 and ADR-0030 are accepted and linked from the decision index.
 - [x] The architecture map explains the implemented path. The guide diagrams use the registered
   Python logo on the adapter node.
 - [x] Root and component READMEs point readers to the implemented diagnostic.
 - [x] The teaching guide describes the shipped implementation and the findings above.
-- [ ] Close the remaining ISO-offset blocker and rerun independent validation before G6 approval.
+- [x] Close the ISO-offset blocker and rerun independent validation on merged code.
 
 ## Build log
 
@@ -116,7 +135,10 @@ PBI-001-25 validates ISO offset components before the standard-library conversio
 tests reproduced nine failures on the prior parser. `poetry run sdd item verify 001 25` passed
 both acceptance criteria and all ten quality checks after the correction.
 
+After PR #27 merged, `sdd item merged 001 25` recorded the merge and `sdd verify 001` passed all
+ten checks on the merge commit.
+
 ## Review notes (optional)
 
-PBI-001-25 tracks the correction under the existing B03 exactness contract. Repeat the
-ISO-offset probes after the fix and before requesting G6 approval.
+PBI-001-25 closes the ISO-offset finding under the existing B03 exactness contract. The
+independent follow-up also rechecked B01–B06 against the merged code.

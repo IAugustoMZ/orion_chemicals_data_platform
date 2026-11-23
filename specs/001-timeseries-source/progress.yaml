@@ -37,7 +37,7 @@ items:
     pull_request: ''
     merged_at: '2026-11-21T16:40:48+00:00'
   '25':
-    state: verified
+    state: merged
     approvals:
     - member: mentor
       at: '2026-11-21T16:53:57+00:00'
@@ -52,6 +52,6 @@ items:
       note: Reject malformed and shortened fractional offsets. Preserve exact compact
         offsets and explicit fractional seconds.
     branch: feat/001-25-validate-iso-offset-components-before
-    commit: ''
+    commit: 5fe0a4eb1c35f33056d86ad508f3dad6f6c172b6
     pull_request: ''
-    merged_at: null
+    merged_at: '2026-11-23T01:57:41+00:00'
