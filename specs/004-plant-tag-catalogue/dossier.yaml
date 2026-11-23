@@ -28,15 +28,15 @@ approvals:
     note: One source per site; lab intervals unset; relax the naming mix before the coverage floors.
   G2:
   - member: mentor
-    at: '2026-11-23T17:02:29+00:00'
-    digest: sha256:946915112e57d4335de09065c1a3201b7d204d400deeba46dc62cc4d4adc32a6
+    at: '2026-11-23T18:00:16+00:00'
+    digest: sha256:6e7c86423a767504d47914a94fadb536ce058305eafb06982018031b72f16014
     git_identity: IZelioli <i.augustomz@gmail.com>
-    note: Use fixed catalogue error messages and test staging failure, replacement failure, and retry.
+    note: Exclude generated data and local drafts from the documentation site.
   - member: mentee
-    at: '2026-11-23T17:02:31+00:00'
-    digest: sha256:946915112e57d4335de09065c1a3201b7d204d400deeba46dc62cc4d4adc32a6
+    at: '2026-11-23T18:00:18+00:00'
+    digest: sha256:6e7c86423a767504d47914a94fadb536ce058305eafb06982018031b72f16014
     git_identity: IZelioli <i.augustomz@gmail.com>
-    note: Use fixed catalogue error messages and test staging failure, replacement failure, and retry.
+    note: Exclude generated data and local drafts from the documentation site.
   G3:
   - member: mentor
     at: '2026-11-23T13:51:27+00:00'
@@ -75,13 +75,13 @@ approvals:
     git_identity: IZelioli <i.augustomz@gmail.com>
     note: Accept the path-free fallback, single-writer retry, and fixture-level RT28 evidence.
 verification:
-  at: '2026-11-23T17:21:34+00:00'
-  digest: sha256:976d7a0d66418140df345090d52bba03bf5cd4ad22ae49d455bab6ae269d6846
-  commit: 4dd0ab0
+  at: '2026-11-23T17:55:42+00:00'
+  digest: sha256:f8eea66cc3e627e12e2345c47331bb087019585d95ad977149110ee171e2afa1
+  commit: 648010d
   results:
   - check: format
     passed: true
-    summary: 356 files already formatted
+    summary: 357 files already formatted
   - check: lint
     passed: true
     summary: All checks passed!
@@ -107,7 +107,7 @@ verification:
 
       Required test coverage of 85% reached. Total coverage: 95.87%
 
-      393 passed in 30.89s'
+      393 passed in 31.33s'
   - check: security
     passed: true
     summary: (no output)
@@ -125,11 +125,8 @@ verification:
       No known vulnerabilities found'
   - check: harness
     passed: true
-    summary: 'WARNING  written-ahead      specs/001-timeseries-source/release.md  release.md written
-      before G6 passed: review G6 first, then draft G7 (one gate at a time)
-
-      WARNING  gate-stale         specs/002-harness-item-flow/dossier.yaml  G5 is stale: code changed
-      since the last `sdd verify`
+    summary: 'WARNING  gate-stale         specs/002-harness-item-flow/dossier.yaml  G5 is stale: code
+      changed since the last `sdd verify`
 
       WARNING  gate-stale         specs/003-tssource-skeleton-spike/dossier.yaml  G5 is stale: code changed
       since the last `sdd verify`
@@ -137,12 +134,16 @@ verification:
       WARNING  written-ahead      specs/003-tssource-skeleton-spike/release.md  release.md written before
       G6 passed: review G6 first, then draft G7 (one gate at a time)
 
-      WARNING  gate-failed        specs/004-plant-tag-catalogue/dossier.yaml  G5 is failed: failing:
-      tests
+      WARNING  gate-stale         specs/004-plant-tag-catalogue/dossier.yaml  G5 is stale: code changed
+      since the last `sdd verify`
 
-      sdd check: 7 finding(s)'
+      WARNING  written-ahead      specs/004-plant-tag-catalogue/release.md  release.md written before
+      G6 passed: review G6 first, then draft G7 (one gate at a time)
+
+      sdd check: 8 finding(s)'
   - check: docs-site
-    passed: true
-    summary: "\nFor more info visit \e[1mhttps://github.com/ProperDocs/properdocs/discussions/33\e[0m\
-      \ and \e[1mhttps://properdocs.org/\e[0m\n\n(This warning was initiated by one of the plugins that\
-      \ you depend on.)\n\n----------------------------------------------------------------"
+    passed: false
+    summary: "  File \"/mnt/AdditionalData/phd_repos/orion_chemicals_data_platform/.venv/lib/python3.12/site-packages/mkdocs/utils/__init__.py\"\
+      , line 123, in copy_file\n    shutil.copyfile(source_path, output_path)\n  File \"/home/izelioli/.local/opt/python3.12/lib/python3.12/shutil.py\"\
+      , line 260, in copyfile\n    with open(src, 'rb') as fsrc:\n         ^^^^^^^^^^^^^^^\nPermissionError:\
+      \ [Errno 13] Permission denied: '/mnt/AdditionalData/phd_repos/orion_chemicals_data_platform/data/ts_source/catalog/tags.parquet'"

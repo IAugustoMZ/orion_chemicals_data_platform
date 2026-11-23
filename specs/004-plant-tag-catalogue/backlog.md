@@ -206,12 +206,44 @@
   destination, a staging exception carrying a temporary path, and failed replacement of either
   artifact. Add the card's acceptance markers and retain the existing cleanup and recovery checks.
 
+### PBI-004-05 · Keep generated fixtures out of the documentation site
+
+- **Feature:** F2.2.
+- **Supports:** RT09, by preserving the approved boundary between consumer data and its private
+  reference when exported files persist in the checkout.
+- **Size:** S.
+- **Depends on:** PBI-004-03 and PBI-004-04.
+- **Context:** The default Compose bind can persist catalogue output after host provisioning.
+  The root-based MkDocs build then attempts to copy generated data despite Git ignoring
+  `data/`. The strict build failed reading the owner-only catalogue. A readable reference
+  must also stay out of the generated site. The same scan picked up the checkout's local
+  LinkedIn draft directory, which is Git-ignored and meant to stay local.
+- **What:** Keep the root `data/` and `linkedin-posts/` trees outside the documentation build
+  and document how to provision and verify the existing bind mount for the non-root service.
+- **How:** Add root-anchored `/data/` and `/linkedin-posts/` patterns to `exclude_docs` in
+  `mkdocs.yml`. Exercise MkDocs file selection using a temporary docs directory with a
+  readable Markdown page, synthetic fixture files at the three declared output paths and a
+  placeholder draft under `linkedin-posts/`. Document bind mount
+  provisioning and the write preflight in the root and component READMEs and the deployment page.
+- **Out of scope:** Changes to the container user, Compose mount, data schemas, permissions on
+  generated files, or other publication paths.
+- **Acceptance criteria (EARS):**
+  - AC1: When MkDocs enumerates a checkout containing files under root `data/` or
+    `linkedin-posts/`, the site shall exclude those files even if they are readable and
+    shall keep normal documentation pages.
+  - AC2: When the default bind contains the three persisted seed-42 artifacts, the strict MkDocs
+    build shall succeed without copying either excluded tree into its output.
+- **Verification:** Mark the file-selection regression test with AC1. Mark an isolated strict
+  build with a minimal documentation page and fake fixture files with AC2, and repeat the
+  strict build against this checkout's real persisted artifacts before G7 review.
+
 ## Order and dependencies
 
 Build the plant first to establish deterministic identity and inventory. Prove naming coverage
 and source-scoped collision rules in memory next, when failures can be isolated from file output.
-Export next and validate the consumer and reference schemas together. The follow-up card addresses
-the diagnostic finding observed during independent validation. The PRD's first scope cut
+Export next and validate the consumer and reference schemas together. The diagnostic card addresses
+the finding observed during independent validation. The final card protects the fixture boundary
+when the default mount contains persistent data. The PRD's first scope cut
 is naming-tier tolerance. The variation and collision floors still apply.
 
 ```mermaid
@@ -219,10 +251,12 @@ flowchart LR
     Plant["Build the private plant"] --> Naming["Generate source-scoped names"]
     Naming --> Export["Export the catalogue and reference"]
     Export --> Diagnostics["Redact internal paths from export errors"]
+    Diagnostics --> DocsBoundary["Exclude generated data from the site"]
 ```
 
 Naming depends on stable plant identities. Export depends on the two catalogue projections.
-The final card tests the error surface of the merged export.
+The diagnostic card tests the error surface of the merged export. The final card keeps the
+resulting on-disk files outside the documentation site.
 
 Inspect the inventory with `plant build` and the consumer and reference files with
 `catalog build`, using the same seed for both commands when comparing their outputs. The

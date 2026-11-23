@@ -10,6 +10,6 @@ Every piece of work is a *dossier*: one folder with one artifact per phase of th
 | [001 · Time-series source: global time core](001-timeseries-source/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](001-timeseries-source/teaching-guide.md) |
 | [002 · Harness: item-by-item flow and CI](002-harness-item-flow/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](002-harness-item-flow/teaching-guide.md) |
 | [003 · Generator skeleton and throughput spike](003-tssource-skeleton-spike/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](003-tssource-skeleton-spike/teaching-guide.md) |
-| [004 · Plant and tag catalogue](004-plant-tag-catalogue/prd.md) | feature | Release & Learn (G7) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | [📘](004-plant-tag-catalogue/teaching-guide.md) |
+| [004 · Plant and tag catalogue](004-plant-tag-catalogue/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](004-plant-tag-catalogue/teaching-guide.md) |
 
 ✅ passed · 🟡 partly approved · ⚪ pending · 🟠 stale (changed after approval) · ❌ failed · ⏸️ blocked by an earlier gate
