@@ -98,13 +98,13 @@ The full picture, with every rule and how it is enforced: **[how the harness wor
 | [001 · Time-series source: global time core](specs/001-timeseries-source/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/001-timeseries-source/teaching-guide.md) |
 | [002 · Harness: item-by-item flow and CI](specs/002-harness-item-flow/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/002-harness-item-flow/teaching-guide.md) |
 | [003 · Generator skeleton and throughput spike](specs/003-tssource-skeleton-spike/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/003-tssource-skeleton-spike/teaching-guide.md) |
-| [004 · Plant and tag catalogue](specs/004-plant-tag-catalogue/prd.md) | feature | Release & Learn (G7) | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ⚪ | [📘](specs/004-plant-tag-catalogue/teaching-guide.md) |
+| [004 · Plant and tag catalogue](specs/004-plant-tag-catalogue/prd.md) | feature | Build (G5) | ✅ | ✅ | ✅ | ✅ | ✅ | 🟠 | ⏸️ | ⏸️ | [📘](specs/004-plant-tag-catalogue/teaching-guide.md) |
 
 ✅ passed · 🟡 partly approved · ⚪ pending · 🟠 stale (changed after approval) · ❌ failed · ⏸️ blocked by an earlier gate
 <!-- sdd:status:end -->
 
 <!-- sdd:coverage:start -->
-Requirements RT01-RT42: in discovery **0** · specified **5** · delivered **3** · validated **0** · not started **34**. [Full traceability matrix](docs/requirements/traceability.md).
+Requirements RT01-RT42: in discovery **0** · specified **8** · delivered **0** · validated **0** · not started **34**. [Full traceability matrix](docs/requirements/traceability.md).
 <!-- sdd:coverage:end -->
 
 ## Quick start
