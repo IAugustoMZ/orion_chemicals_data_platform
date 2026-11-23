@@ -1,8 +1,7 @@
 """Composition root: the only place that reads the environment and wires adapters.
 
-Everything above it (the command line) receives ready-made objects; everything below it
-receives ports. It wires the settings (card 01) and the benchmark use case with its adapters
-(card 02): the only place that knows numpy, pyarrow and the file names.
+The command line receives ready-made objects. Application use cases receive ports.
+This module supplies the benchmark, time core and private plant adapters.
 """
 
 from __future__ import annotations
@@ -16,14 +15,17 @@ from datetime import date
 from pathlib import Path
 
 from tssource.application.bench import EventSink, RunBenchmark
+from tssource.application.plant import BuildPlant
 from tssource.application.settings import Settings
 from tssource.application.time_table import ResolveTimeTable
 from tssource.application.timestamp_codec import TimestampCodec
 from tssource.domain.benchmark import BenchResult, Format
+from tssource.domain.plant.builder import PlantBuilder
 from tssource.domain.time.resolution import LocalResolution
 from tssource.domain.time.site_zone import SITE_ZONES, SiteCode
 from tssource.infrastructure.clock import MonotonicClock
 from tssource.infrastructure.numpy_source import NumpyBlockSource
+from tssource.infrastructure.plant_json import PlantJsonWriter
 from tssource.infrastructure.probe import ProcessResourceProbe
 from tssource.infrastructure.sinks import JsonlGzipSink, JsonlSink, ParquetSink
 from tssource.infrastructure.zoneinfo_resolver import ZoneInfoResolver
@@ -98,3 +100,8 @@ def resolve_time_table(site_code: str, requested_date: date) -> tuple[LocalResol
 def build_timestamp_codec() -> TimestampCodec:
     """Wire the timestamp codec with the declared-site resolver used by the CLI."""
     return TimestampCodec(ZoneInfoResolver())
+
+
+def build_plant_use_case() -> BuildPlant:
+    """Wire the deterministic plant builder to the private JSON writer."""
+    return BuildPlant(PlantBuilder(), PlantJsonWriter())

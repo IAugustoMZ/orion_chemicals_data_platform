@@ -1,4 +1,21 @@
 # Progress of the backlog, one entry per card (ADR-0023). Written only by `sdd`:
 # never edit by hand. Approvals are bound to the digest of the card's section of backlog.md.
 version: 1
-items: {}
+items:
+  '01':
+    state: verified
+    approvals:
+    - member: mentor
+      at: '2026-11-23T14:35:14+00:00'
+      digest: sha256:2d61853beac22f91dd4625a1ce2b441de2ecbf9aa4e0199f0816048f7edd9da7
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-23T14:35:16+00:00'
+      digest: sha256:2d61853beac22f91dd4625a1ce2b441de2ecbf9aa4e0199f0816048f7edd9da7
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: feat/004-01-build-the-private-plant-model
+    commit: ''
+    pull_request: ''
+    merged_at: null

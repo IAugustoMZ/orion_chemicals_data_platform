@@ -132,6 +132,58 @@ all rows before writing stdout. The codec retains the raw value and explicit res
 in-process consumers. See the [command examples](../../src/tssource/README.md) and
 [exact conversion decision](decisions/0030-preserve-exact-timestamps-and-declared-site-rules.md).
 
+## 3.2 Private plant inventory
+
+The `plant build` handler in `interfaces/cli/app.py` selects the settings and seed.
+The composition root supplies `application/plant.py` with the builder from `domain/plant`
+and the file adapter from `infrastructure/plant_json.py`. The existing import contracts
+govern both paths. See the [private plant decision](decisions/0031-separate-the-consumer-catalogue-from-plant-truth.md).
+
+```mermaid
+sequenceDiagram
+    actor Operator
+    participant Command as "plant build"
+    participant UseCase as "BuildPlant"
+    participant Builder as "PlantBuilder"
+    participant Writer as "PlantJsonWriter"
+    Operator->>Command: Seed and destination
+    Command->>UseCase: Execute with effective settings
+    UseCase->>Builder: Build and validate seeded topology
+    Builder-->>UseCase: Plant and inventory
+    UseCase->>Writer: Write private fixture
+    alt Publication succeeds
+        Writer-->>UseCase: Path after replacement
+        UseCase-->>Command: Path
+        Command-->>Operator: Path on stdout
+    else Write fails
+        Writer-->>Command: Handled write error via use case
+        Command-->>Operator: Diagnostic on stderr and exit 1
+    end
+```
+
+The builder has no file access. The writer stages JSON beside the target and returns the path
+only after replacement. The CLI prints that path or the handled error.
+
+```mermaid
+erDiagram
+    SITE ||--|{ AREA : contains
+    SITE ||--|{ INVENTORY_COUNT : summarizes
+    AREA ||--|{ EQUIPMENT : contains
+    AREA ||--o{ CONTROL_LOOP : contains
+    AREA ||--|| DRIVER : holds
+    DRIVER ||--|{ EQUIPMENT : influences
+    EQUIPMENT ||--|{ INSTRUMENT : holds
+    EQUIPMENT ||--o{ STREAM : supplies
+    EQUIPMENT ||--o{ STREAM : receives
+    CONTROL_LOOP o|--|{ INSTRUMENT : references
+```
+
+Each loop references a measurement, controller and final element in its area. The area driver is
+shared across equipment, and a stream links distinct units. Inventory rows group instruments by
+site and scan class.
+
+## 3.3 Reference platform practices
+
 The industrial data platform we studied (Kairon) contributes its *high-level architecture*, not
 its technology choices:
 
