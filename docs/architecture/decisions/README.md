@@ -44,3 +44,9 @@ ADR is listed here and has a status and a date.
 | [0028](0028-writer-choice-after-the-throughput-spike.md) | Writer choice after the throughput spike: Parquet by row group, JSON Lines as fallback (draft for card 15 of 001) | Proposed |
 | [0029](0029-resolve-site-local-time-with-zoneinfo.md) | We resolve site-local time with zoneinfo and explicit civil-time outcomes | Accepted |
 | [0030](0030-preserve-exact-timestamps-and-declared-site-rules.md) | We preserve exact timestamps and apply declared site rules | Accepted |
+
+## Plant and tag catalogue (dossier 004)
+
+| ADR | Decision | Status |
+|---|---|---|
+| [0031](0031-separate-the-consumer-catalogue-from-plant-truth.md) | We separate the consumer catalogue from plant truth | Accepted |
