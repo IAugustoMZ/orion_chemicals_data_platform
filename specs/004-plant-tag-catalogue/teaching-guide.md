@@ -140,6 +140,9 @@ The writer checks that the two projections have the same unique keys before open
 It then checks schema and row count from each staged footer before either replacement. The
 [catalogue publication sequence](../../docs/architecture/README.md#33-source-tag-catalogue)
 shows the handoff to the CLI.
+The writer translates filesystem and Arrow exceptions at the staging and publication steps.
+It keeps the original exception as the cause for debugging. The CLI prints the fixed diagnostic
+with the operation and artifact filename, so the destination and temporary paths stay private.
 
 ## 7. Data and contracts
 
@@ -204,7 +207,9 @@ check collisions, joins, coverage, metadata, rename history, and reproducibility
 draws and an injected fixed ordering (card 02 AC1–AC8).
 The [export tests](../../tests/tssource/test_catalogue_cli.py) check both schemas and link every
 exported tag to a same-seed plant instrument for seeds 0, 42 and 101. They also inject staging
-and second-replacement failures and exercise retry and symlink rejection (card 03 AC1–AC5).
+failures and exercise symlink rejection (card 03 AC1–AC5). Card 04 checks the exact stderr
+messages for an invalid destination, OS and Arrow staging failures, and failed replacement
+of either file. It also checks that a retry with the intended seed restores the pair.
 The [validation record](validation.md) maps those tests to the complete dossier and records
 which engineering requirements still need production evidence.
 

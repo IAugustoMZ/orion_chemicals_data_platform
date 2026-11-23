@@ -1,7 +1,8 @@
 """Publish the consumer and private catalogue projections as versioned Parquet files."""
 
 import os
-from contextlib import ExitStack
+from collections.abc import Iterator
+from contextlib import ExitStack, contextmanager
 from pathlib import Path
 from tempfile import NamedTemporaryFile
 
@@ -53,7 +54,7 @@ class CatalogueParquetWriter:
         consumer = output_folder / "catalog" / "tags.parquet"
         reference = output_folder / "truth" / "tag_key.parquet"
         _validate_keys(catalogue)
-        try:
+        with _safe_diagnostic("could not prepare or clean up catalogue files"):
             if any(
                 path.parent.is_symlink() or path.is_symlink() for path in (consumer, reference)
             ):
@@ -61,20 +62,31 @@ class CatalogueParquetWriter:
                     "catalogue output refuses symlinks at fixed directories or files"
                 )
             with ExitStack() as cleanup:
-                consumer_table = pa.Table.from_pylist(
-                    [_consumer_row(row) for row in catalogue.records], schema=_CONSUMER_SCHEMA
-                )
-                reference_table = pa.Table.from_pylist(
-                    [_reference_row(row) for row in catalogue.references], schema=_REFERENCE_SCHEMA
-                )
-                staged_consumer = _stage(consumer_table, consumer, cleanup)
-                staged_reference = _stage(reference_table, reference, cleanup)
-                staged_consumer.replace(consumer)
-                staged_reference.replace(reference)
-        except (OSError, pa.ArrowException) as error:
-            detail = str(error).partition("\n")[0]
-            raise TssourceError(f"could not write catalogue files ({detail})") from error
+                with _safe_diagnostic(f"could not stage {consumer.name}"):
+                    consumer_table = pa.Table.from_pylist(
+                        [_consumer_row(row) for row in catalogue.records], schema=_CONSUMER_SCHEMA
+                    )
+                    staged_consumer = _stage(consumer_table, consumer, cleanup)
+                with _safe_diagnostic(f"could not stage {reference.name}"):
+                    reference_table = pa.Table.from_pylist(
+                        [_reference_row(row) for row in catalogue.references],
+                        schema=_REFERENCE_SCHEMA,
+                    )
+                    staged_reference = _stage(reference_table, reference, cleanup)
+                with _safe_diagnostic(f"could not publish {consumer.name}"):
+                    staged_consumer.replace(consumer)
+                with _safe_diagnostic(f"could not publish {reference.name}"):
+                    staged_reference.replace(reference)
         return consumer, reference
+
+
+@contextmanager
+def _safe_diagnostic(message: str) -> Iterator[None]:
+    """Report a fixed diagnostic while preserving the underlying exception as its cause."""
+    try:
+        yield
+    except (OSError, pa.ArrowException) as error:
+        raise TssourceError(message) from error
 
 
 def _validate_keys(catalogue: Catalogue) -> None:
