@@ -75,6 +75,17 @@ approvals:
     digest: sha256:6ccf952644f88b23a395c5ea9635dcf0b3947ea1642d28b4c6fad65c5a931031
     git_identity: IZelioli <i.augustomz@gmail.com>
     note: ''
+  G7:
+  - member: mentor
+    at: '2026-11-23T02:30:01+00:00'
+    digest: sha256:d98f574705d2ee00c4599d463fc9cf6dd692fb9becc36896e5119403c01d77f1
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Reviewed the Docker release results and DST examples.
+  - member: mentee
+    at: '2026-11-23T02:30:17+00:00'
+    digest: sha256:d98f574705d2ee00c4599d463fc9cf6dd692fb9becc36896e5119403c01d77f1
+    git_identity: IZelioli <i.augustomz@gmail.com>
+    note: Reviewed the Docker release results and DST examples.
 verification:
   at: '2026-11-23T01:58:34+00:00'
   digest: sha256:a03b3de7fc0a2236b62e131bda42435e4179453a0e9291604e887f334ff17894

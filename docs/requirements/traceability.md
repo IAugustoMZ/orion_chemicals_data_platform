@@ -4,7 +4,7 @@
 
 Each technical requirement of the [catalogue](README.md), the dossiers that cite it and how far it got: *in discovery* (cited), *specified* (G4 passed), *delivered* (G6 passed), *validated* (G7 passed). Enablers support requirements but never deliver them.
 
-Requirements RT01-RT42: in discovery **0** · specified **4** · delivered **2** · validated **0** · not started **36**.
+Requirements RT01-RT42: in discovery **0** · specified **4** · delivered **0** · validated **2** · not started **36**.
 
 ## 01 / Data integration and ingestion
 
@@ -16,7 +16,7 @@ Requirements RT01-RT42: in discovery **0** · specified **4** · delivered **2**
 | RT04 | P |  | The resume point (checkpoint) shall advance only after the source data has been preserved and the load completed successfully. | — | not started |
 | RT05 | P |  | Transient failures shall have bounded retries, progressive back-off and logging; permanent failures shall require visible intervention. | — | not started |
 | RT06 | P |  | Extractions shall respect the agreed volume and concurrency limits per source. | — | not started |
-| RT07 | P |  | When available, the occurrence time, the update time at the source and the reception time shall be stored separately. | [001](../../specs/001-timeseries-source/prd.md) | delivered |
+| RT07 | P |  | When available, the occurrence time, the update time at the source and the reception time shall be stored separately. | [001](../../specs/001-timeseries-source/prd.md) | validated |
 | RT08 | P |  | The ingestion mechanism shall support batch, continuous arrival or trigger, without imposing one pattern on every source. | — | not started |
 
 ## 02 / Identity, model and quality
@@ -26,7 +26,7 @@ Requirements RT01-RT42: in discovery **0** · specified **4** · delivered **2**
 | RT09 | P | ★ | Original identifiers shall be stored with their source; the combination source + code shall never point to two pieces of equipment at the same time. | — | not started |
 | RT10 | P |  | Records with an unknown equipment or tag shall remain retrievable and pending, with a reason, without any presumed association. | — | not started |
 | RT11 | P |  | Every published dataset shall declare its grain and its relationship keys. | — | not started |
-| RT12 | P | ★ | Interpretable timestamps shall be standardised in UTC, preserving the original representation and time zone/offset when known; ambiguities shall be flagged. | [001](../../specs/001-timeseries-source/prd.md) | delivered |
+| RT12 | P | ★ | Interpretable timestamps shall be standardised in UTC, preserving the original representation and time zone/offset when known; ambiguities shall be flagged. | [001](../../specs/001-timeseries-source/prd.md) | validated |
 | RT13 | P |  | The original value, unit and quality shall be preserved; a conversion is published only with a sufficient rule and context. | — | not started |
 | RT14 | P |  | Quality rules shall have a version, scope, severity and a defined destination: publish, alert or keep pending. | — | not started |
 | RT15 | P |  | Compatible schema extensions shall be accepted; incompatible changes shall block only the affected publication and produce a diagnosis. | — | not started |
