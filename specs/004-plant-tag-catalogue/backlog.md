@@ -176,12 +176,53 @@
   staging either file and during the second replacement, then verify same-seed recovery. Exercise
   invalid seeds and both child-directory and file-target symlinks.
 
+### PBI-004-04 · Redact internal paths from catalogue errors
+
+- **Feature:** F2.2.
+- **Supports:** RT09, by keeping the catalogue export within the repository security baseline.
+- **Size:** S.
+- **Depends on:** PBI-004-03.
+- **Context:** Independent validation found that `catalog build` can print internal paths in
+  exception text. With a file as the destination, stderr includes the filesystem path of a fixed
+  child. The [security baseline](../../harness/security.md#4-inputs-and-outputs) requires paths
+  to stay out of errors.
+- **What:** Publish a short catalogue error that identifies staging or publication and the
+  affected artifact without forwarding the OS or Arrow exception text.
+- **How:** In `src/tssource/infrastructure/catalogue_parquet.py`, translate OS and Arrow
+  exceptions into fixed `TssourceError` messages at the affected operation. Preserve the original
+  exception as its cause. Keep staging, cleanup and ordered replacement in the writer.
+  The CLI already translates `TssourceError` into exit 1 and sends the message to stderr.
+- **Out of scope:** Success output, schema, file permissions, and the publication protocol.
+- **Acceptance criteria (EARS):**
+  - AC1: If catalogue preparation or staging fails with an OS or Arrow error, the CLI shall
+    exit 1 with empty stdout and a short stderr message identifying the failed operation.
+    The message shall omit the destination, temporary paths and raw exception text. Previously
+    published files shall remain intact.
+  - AC2: If replacing either catalogue file fails, the CLI shall exit 1 with empty stdout and
+    a short stderr message identifying publication and the affected artifact. The message shall
+    omit filesystem paths and raw exception text. A successful same-seed rerun shall restore the
+    pair.
+- **Verification:** In `tests/tssource/test_catalogue_cli.py`, cover an existing file as the
+  destination, a staging exception carrying a temporary path, and failed replacement of either
+  artifact. Add the card's acceptance markers and retain the existing cleanup and recovery checks.
+
 ## Order and dependencies
 
 Build the plant first to establish deterministic identity and inventory. Prove naming coverage
 and source-scoped collision rules in memory next, when failures can be isolated from file output.
-Export last and validate the consumer and reference schemas together. The PRD's first scope cut
+Export next and validate the consumer and reference schemas together. The follow-up card addresses
+the diagnostic finding observed during independent validation. The PRD's first scope cut
 is naming-tier tolerance. The variation and collision floors still apply.
+
+```mermaid
+flowchart LR
+    Plant["Build the private plant"] --> Naming["Generate source-scoped names"]
+    Naming --> Export["Export the catalogue and reference"]
+    Export --> Diagnostics["Redact internal paths from export errors"]
+```
+
+Naming depends on stable plant identities. Export depends on the two catalogue projections.
+The final card tests the error surface of the merged export.
 
 Inspect the inventory with `plant build` and the consumer and reference files with
 `catalog build`, using the same seed for both commands when comparing their outputs. The

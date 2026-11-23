@@ -2,7 +2,7 @@
 
 ## 1. The problem in plain words
 
-A fixture is generated data used to exercise software under known conditions. This card makes a
+A fixture is generated data used to exercise software under known conditions. This dossier makes a
 fixture for five fictional industrial sites. Each site contains areas, such as numbered production
 sections. Equipment holds instruments, meaning individual points that can report a measurement
 or status. A periodic point arrives on a schedule. A laboratory point comes from a sample, and a
@@ -20,6 +20,7 @@ carry a null interval (B03, AC5). RT28 needs credible source sizing inputs. The 
 points by site and scan class so a planner can measure the fixture composition (B01, AC1).
 RT09 needs each current name scoped to a source. The catalogue assigns names to plant IDs and
 keeps that mapping in the private reference (B05–B07, card 02 AC1–AC8).
+The exported pair preserves those keys and sampling policies (B08–B09, card 03 AC1–AC4).
 See the [traceability matrix](../../docs/requirements/traceability.md).
 
 ## 3. Architecture before and after
@@ -36,7 +37,8 @@ flowchart LR
         Build --> Port["PlantWriter"]
         Adapter["PlantJsonWriter"] -. implements .-> Port
         Adapter --> File["truth/plant.json"]
-        Builder --> Naming["CatalogueBuilder"]
+        Builder --> PlantModel["Plant"]
+        Naming["CatalogueBuilder"] -->|reads| PlantModel
         Naming --> Draws["DrawSource"]
         RNG["<img src='https://cdn.simpleicons.org/numpy/013243' width='32' height='32'/><br/>NumPy child seed adapter"] -. implements .-> Draws
         Command --> Export["BuildCatalogue"]
@@ -50,7 +52,7 @@ flowchart LR
 
 The CLI now calls the plant use case for the new command. The use case builds the model then
 passes it to the writer port. Bootstrap injects the adapter, which writes one private file.
-The catalogue builder uses the same plant model and receives independent permutations
+The catalogue builder reads the plant model and receives independent permutations
 for name allocation, metadata, and the hold-out site.
 The catalogue use case runs these builders in memory and passes one snapshot to a writer port.
 The adapter publishes the consumer and reference projections under their fixed paths.
@@ -125,7 +127,7 @@ classDiagram
 ## 6. How it behaves at runtime
 
 Follow the [publication sequence](../../docs/architecture/README.md#32-private-plant-inventory).
-The command validates the seed and resolves the destination before invoking the use case. The
+The command validates the seed and selects the destination before invoking the use case. The
 builder materializes the ordered plant in memory. The writer stages the document in the same
 directory as the target, closes it and replaces the target. Only then does the CLI print the
 path. If replacement fails, the writer removes the staging file and the command reports failure.
@@ -203,6 +205,8 @@ draws and an injected fixed ordering (card 02 AC1–AC8).
 The [export tests](../../tests/tssource/test_catalogue_cli.py) check both schemas and link every
 exported tag to a same-seed plant instrument for seeds 0, 42 and 101. They also inject staging
 and second-replacement failures and exercise retry and symlink rejection (card 03 AC1–AC5).
+The [validation record](validation.md) maps those tests to the complete dossier and records
+which engineering requirements still need production evidence.
 
 ## 11. Run it yourself
 
