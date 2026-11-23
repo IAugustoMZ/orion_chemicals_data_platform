@@ -71,3 +71,13 @@ and the [approved contracts](../../specs/004-plant-tag-catalogue/plan.md#contrac
 The writer stages a complete file before replacing the previous version and sets mode `0600`
 on Linux. It refuses symlinks at `truth/` and `truth/plant.json`. A generation or write failure
 exits 1 with a diagnostic on stderr and empty stdout. Invalid arguments or settings exit 2.
+
+## Tag catalogue generation
+
+In-process callers can use `build_catalogue_builder(seed).build(plant)` from the composition
+root to derive the current catalogue records and the private reference together. Build the
+plant with the same explicit seed for repeatability. Both sets of rows use the
+`(site_code, original_name)` key, including when that name is deliberately repeated at different
+sites. The consumer fields include source metadata and the original point's sampling policy.
+The reference contains plant IDs, canonical names and units, naming variations, rename history,
+and the hold-out site. See the [version 1 naming convention](../../docs/architecture/tag-naming-convention.md).

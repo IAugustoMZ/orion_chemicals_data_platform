@@ -83,7 +83,8 @@
   PV, SP, OUT, MODE and ALM signal codes.
 - **How:**
   1. Add `CanonicalName` under proposed `domain/naming/convention.py` with parse and render rules
-     for both branches. Define the site abbreviations and signal tokens in the grammar.
+     for both branches. Define the site abbreviations and signal tokens in the grammar. Derive
+     the name tokens from the merged plant's site, area, equipment and point definitions.
   2. Add named variation strategies under proposed `domain/naming/violations.py` and one dialect
      per site. Cover dropped area, changed separators or case, glued equipment and loop, legacy
      abbreviations, changed signal suffix, numeric-only names, free text, typos and a renamed
@@ -98,7 +99,9 @@
      descriptors (Portuguese primarily at the Brazil site), data type and the original unit
      spelling to the consumer record. Keep the canonical name, equipment and instrument IDs,
      loop, measurement, canonical unit, tier, applied variations and hold-out designation in
-     the reference. Assign one of the five sites as hold-out deterministically from the seed.
+     the reference. Use the plant's IDs for these links. Resolve the nullable loop ID from
+     explicit membership in a plant loop role. Assign one of the five sites as hold-out
+     deterministically from the seed.
 - **Out of scope:** Parquet output, model training, unit conversion and production identity rules.
 - **Acceptance criteria (EARS):**
   - AC1: When a canonical instrument or lab name is parsed and rendered, the result shall equal

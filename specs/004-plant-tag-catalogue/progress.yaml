@@ -3,7 +3,7 @@
 version: 1
 items:
   '01':
-    state: verified
+    state: merged
     approvals:
     - member: mentor
       at: '2026-11-23T14:35:14+00:00'
@@ -16,6 +16,23 @@ items:
       git_identity: IZelioli <i.augustomz@gmail.com>
       note: ''
     branch: feat/004-01-build-the-private-plant-model
+    commit: a404bae3be75376c6284b6384423028dc9420203
+    pull_request: ''
+    merged_at: '2026-11-23T14:49:18+00:00'
+  '02':
+    state: verified
+    approvals:
+    - member: mentor
+      at: '2026-11-23T14:51:02+00:00'
+      digest: sha256:141ca25d9dcdcc5a06764191021cd2f267a31b28454e22da8508283179f9ffa4
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    - member: mentee
+      at: '2026-11-23T14:51:04+00:00'
+      digest: sha256:141ca25d9dcdcc5a06764191021cd2f267a31b28454e22da8508283179f9ffa4
+      git_identity: IZelioli <i.augustomz@gmail.com>
+      note: ''
+    branch: feat/004-02-generate-source-scoped-names-and
     commit: ''
     pull_request: ''
     merged_at: null

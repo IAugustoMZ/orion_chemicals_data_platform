@@ -17,6 +17,7 @@ introduces them.
 | **Blocked** | gate state: an earlier gate has not passed, so this one cannot be judged yet |
 | **Checkpoint** (data) | the resume point of an incremental load; must advance only after the data is preserved (RT04) |
 | **Civil time** | the clock reading under a site's calendar and time-zone rules |
+| **Canonical tag name** | the exact spelling of a tag under the versioned fixture grammar |
 | **Composition root** | the one place where adapters are created and wired into use cases (`bootstrap.py`) |
 | **Constitution** | the non-negotiable articles of the harness (`harness/constitution.md`) |
 | **Context plane** | the governed knowledge agents read: requirements, code, architecture, docs, contracts |
@@ -26,6 +27,7 @@ introduces them.
 | **Digest** | a SHA-256 fingerprint of content; an approval stores the digest of what was approved |
 | **Dossier** | the folder `specs/<id>-<slug>/` holding everything about one piece of work |
 | **Driver** (plant) | a shared influence on equipment in an area |
+| **Hold-out site** | a site reserved for independent evaluation and identified in the private reference |
 | **EARS** | Easy Approach to Requirements Syntax: sentence patterns like "When X, the system shall Y" |
 | **Enabler** | a dossier that builds tooling or foundations; supports RTs without delivering them |
 | **Feature** | a dossier that delivers platform behaviour; cites the RTs it serves, or is *outside the catalogue* |

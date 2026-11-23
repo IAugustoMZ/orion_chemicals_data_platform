@@ -1,7 +1,7 @@
 """Composition root: the only place that reads the environment and wires adapters.
 
 The command line receives ready-made objects. Application use cases receive ports.
-This module supplies the benchmark, time core and private plant adapters.
+This module supplies the benchmark, time core, plant and catalogue adapters.
 """
 
 from __future__ import annotations
@@ -20,10 +20,12 @@ from tssource.application.settings import Settings
 from tssource.application.time_table import ResolveTimeTable
 from tssource.application.timestamp_codec import TimestampCodec
 from tssource.domain.benchmark import BenchResult, Format
+from tssource.domain.naming.catalogue_builder import CatalogueBuilder
 from tssource.domain.plant.builder import PlantBuilder
 from tssource.domain.time.resolution import LocalResolution
 from tssource.domain.time.site_zone import SITE_ZONES, SiteCode
 from tssource.infrastructure.clock import MonotonicClock
+from tssource.infrastructure.naming_draws import SeededDrawSource
 from tssource.infrastructure.numpy_source import NumpyBlockSource
 from tssource.infrastructure.plant_json import PlantJsonWriter
 from tssource.infrastructure.probe import ProcessResourceProbe
@@ -105,3 +107,8 @@ def build_timestamp_codec() -> TimestampCodec:
 def build_plant_use_case() -> BuildPlant:
     """Wire the deterministic plant builder to the private JSON writer."""
     return BuildPlant(PlantBuilder(), PlantJsonWriter())
+
+
+def build_catalogue_builder(seed: int) -> CatalogueBuilder:
+    """Wire the in-memory catalogue builder to deterministic draw streams."""
+    return CatalogueBuilder(SeededDrawSource(seed))
